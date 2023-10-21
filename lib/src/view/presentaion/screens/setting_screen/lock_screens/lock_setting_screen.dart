@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:p_4/src/config/theme/theme.dart';
+import 'package:p_4/src/core/common/extension/navigation.dart';
+import 'package:p_4/src/core/common/sizes.dart';
+import 'package:p_4/src/core/widget/fail_bloc_widget.dart';
+import 'package:p_4/src/core/widget/loading.dart';
+import 'package:p_4/src/view/presentaion/blocs/lock_bloc/lock_bloc.dart';
+
+import 'lock_change_pass.dart';
+
+class LockSettingScreen extends StatefulWidget {
+  const LockSettingScreen({super.key});
+
+  @override
+  State<LockSettingScreen> createState() => _LockSettingScreenState();
+}
+
+class _LockSettingScreenState extends State<LockSettingScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<LockBloc>().add(GetLockEvent());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(sizeH(context)*0.001),
+          child: Container(
+            height :sizeH(context)*0.001,
+            width: sizeW(context),
+            color: theme(context).primaryColor,
+          ),
+        ),
+        title: Text('Lock Setting',style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
+        leading: IconButton(icon:const Icon(Icons.arrow_back),onPressed: (){context.navigationBack(context);context.navigationBack(context);},),
+      ),
+      body: BlocBuilder<LockBloc,LockState>(
+        builder: (context, state) {
+          if(state is LoadingLockState)return loading(context);
+          if(state is SuccessLockState){
+            return Container(
+              height: sizeH(context)*0.4,
+              width: sizeW(context),
+              color: theme(context).backgroundColor,
+              margin: EdgeInsets.only(top: sizeH(context)*0.04),
+              child: ListView(
+                children: [
+                  ListTile(
+                    minLeadingWidth: sizeW(context)*0.02,
+                    title:const Text('Trun Off PassCode'),
+                    leading: Icon(Icons.lock_open,color: theme(context).primaryColor),
+                    onTap: () {
+                      context.read<LockBloc>().add(DeleteLockEvent());
+                      context.navigationBack(context);
+                      context.navigationBack(context);
+                    } ,),
+                  ListTile(
+                    minLeadingWidth: sizeW(context)*0.02,
+                    title: const Text('Change Passcode'),
+                    leading: Icon(Icons.change_circle_outlined,color: theme(context).primaryColor,),
+                    onTap: () => context.navigation(context, const LockChangePass()),
+                  ),
+                ],
+              ),
+            );
+          }
+          if(state is FailLockState)return FailBlocWidget(state.fail);
+
+          return Container();
+        },
+      ),
+    );
+  }
+}
