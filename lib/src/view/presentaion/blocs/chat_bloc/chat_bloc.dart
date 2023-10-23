@@ -29,8 +29,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         catch(e){ emit(ChatFailState(error: e.toString())); }
 
       });
-      on<SendMessageEvent>((event, emit) async => await useCase.sendMessage(event.message, event.receiverId));
-      on<SendLocationMessageEvent>((event, emit) async => await useCase.sendLocationMessage(event.message, event.receiverId));
+      on<SendMessageEvent>((event, emit) async => await useCase.sendMessage(event.message, event.receiverId,event.replyMessage));
+      on<SendLocationMessageEvent>((event, emit) async => await useCase.sendLocationMessage(event.message, event.receiverId,event.replyMessage));
       on<DeleteMessageEvent>((event, emit) async => await useCase.deleteMessage(event.uid));
       on<IsOnlineStatusEvent>((event, emit) async => await useCase.isOnlineStatus(event.status));
       
@@ -98,13 +98,16 @@ class MessagesBloc extends HydratedBloc<ChatEvent,MessagesState>{
     on<GetMessageEvent>((event, emit)async {
       try{
         
-        Stream<List<MessageModel>>? stream = useCase.getMessage(event.context,event.receiverId);
-        List<MessageModel> messages = [];
-        stream!.listen((event) {
-          for(var i in event) messages.add(i);
-        });
-        log('in Bloc ===>$messages');
-        emit(LoadedMessagesState(messages));
+        Stream<List<MessageModel>>? model = useCase.getMessage(event.context, event.receiverId);
+        await model!
+          .forEach((element) {
+            emit(LoadedMessagesState(element));
+          })
+          .catchError((e)=> emit(FailMessagesState(e.toString())));
+        
+        
+      
+
       }
       catch(e){log('$e');emit(FailMessagesState(e.toString()));}
     });
@@ -113,12 +116,12 @@ class MessagesBloc extends HydratedBloc<ChatEvent,MessagesState>{
   
   @override
   MessagesState fromJson(Map<String, dynamic> json){
-    List<MessageModel> model = json['value'] as List<MessageModel>;
-    return LoadedMessagesState(model);
+    List<MessageModel>? model = json['value'] as List<MessageModel>?;
+    return LoadedMessagesState(model!);
   }
   
   @override
-  Map<String, dynamic>? toJson(MessagesState state) => {'value':<UserModel>[]};
+  Map<String, dynamic>? toJson(MessagesState state) => {'value': []};
 }
 
 

@@ -39,7 +39,7 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
       }
       catch(e){ emit(GroupFailState(e.toString())); }
     });
-    on<SendGroupMessageEvent>((event, emit) async => await usecase.sendGroupMessage(event.message, event.groupUid)); 
+    on<SendGroupMessageEvent>((event, emit) async => await usecase.sendGroupMessage(event.message, event.groupUid,event.replyMessage)); 
     on<DeleteGroupEvent>((event, emit) async {
       emit(GroupLoadingState());
       try{

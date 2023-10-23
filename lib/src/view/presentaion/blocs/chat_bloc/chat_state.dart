@@ -58,7 +58,7 @@ class LoadingMessagesState extends MessagesState{
 }
 
 class LoadedMessagesState extends MessagesState{
-  LoadedMessagesState(List<MessageModel>? model):super(model);
+  LoadedMessagesState(List<MessageModel> model):super(model);
 }
 
 

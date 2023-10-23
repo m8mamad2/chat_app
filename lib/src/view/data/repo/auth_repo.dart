@@ -86,4 +86,17 @@ class AuthRepoBody extends AuthRepoHeader{
     }
     catch(e){log('$e====> After Info');return e.toString();}
   }
+
+  @override
+  Future<void> deleteAccount(BuildContext context)async{
+    final String curretnUser = supabase.auth.currentUser!.id;
+    try{
+      await supabase.auth.admin.deleteUser(curretnUser);
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const AuthCheckWidget(),));
+    }
+    on Exception catch(e){ log(e.toString());}
+    catch(e){ log(e.toString());}
+  }
+
 }

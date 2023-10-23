@@ -21,7 +21,8 @@ class GetGroupMessagesEvent extends GroupEvent{
 class SendGroupMessageEvent extends GroupEvent{
   final String message;
   final String groupUid;
-  SendGroupMessageEvent({required this.message,required this.groupUid});
+  final MessageModel replyMessage;
+  SendGroupMessageEvent({required this.message,required this.groupUid,required this.replyMessage});
 }
 
 class DeleteGroupEvent extends GroupEvent{

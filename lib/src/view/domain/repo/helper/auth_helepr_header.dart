@@ -7,5 +7,6 @@ abstract class AuthHelperHeader{
   Future<void> logOut(BuildContext context,);
   bool isUserLogedIn();
   Future<void> addUserInfo(BuildContext context,XFile? image,String name);
+  Future<void> deleteAccount(BuildContext context);
   // Future otpVerify(BuildContext context,String phone,String token);
 }

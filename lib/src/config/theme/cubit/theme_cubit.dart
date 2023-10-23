@@ -65,12 +65,16 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     colorSchemeSeed: color,
     brightness: Brightness.light,
     useMaterial3: true,
-    cardColor: Colors.black//!
+    cardColor: Colors.black,//!
+    // colorScheme: ColorScheme.light(
+    //   primary: color
+    // ),
   );
   ThemeData dark(Color color)=> ThemeData(
     colorSchemeSeed: color,
     brightness: Brightness.dark,
     useMaterial3: true,
-    cardColor: Colors.white //! 
+    cardColor: Colors.white, //! 
   );
 }
+

@@ -16,7 +16,7 @@ class ChatHelperRepoBody extends ChatHelperRepoHeader{
   ChatHelperRepoBody(this.repo);
 
   @override
-  Stream<List<UserModel>>? getUserStatus()=> repo.getUserStatus();
+  Stream<List<UserModel>>? getUserStatus(String uid)=> repo.getUserStatus(uid);
   
   @override
   Stream<List<MessageModel>>? getMessage(BuildContext context,String receiverID) {
@@ -116,12 +116,12 @@ class ChatHelperRepoBody extends ChatHelperRepoHeader{
   Future<void> deleteMessagee(String uid) async => await repo.deleteMessagee(uid);
   
   @override
-  Future<void> sendMessage(String message,String receiverID)async => await repo.sendMessage(message, receiverID);
+  Future<void> sendMessage(String message,String receiverID,MessageModel? replyMessage)async => await repo.sendMessage(message, receiverID,replyMessage);
   
   @override
   Future<void> isOnlineStatus(bool status)async => await repo.isOnlineStatus(status);
 
   @override
-  Future<void> sendLocationMessage(String message,String receiverID,)async => await repo.sendLocationMessage(message, receiverID);
+  Future<void> sendLocationMessage(String message,String receiverID,MessageModel? replyMessage)async => await repo.sendLocationMessage(message, receiverID,replyMessage);
   
 }

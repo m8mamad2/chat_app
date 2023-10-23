@@ -4,10 +4,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'dart:developer';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
@@ -20,45 +16,15 @@ import 'package:p_4/src/view/data/repo/chat_repo_body.dart';
 import 'package:p_4/src/view/data/repo/helper/chat_helper_repo_body.dart';
 import 'package:p_4/src/view/domain/usecase/chat_usecase.dart';
 import 'package:p_4/src/view/presentaion/blocs/chat_bloc/chat_bloc.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:p_4/src/config/theme/notification/notification_service.dart';
-import 'package:p_4/src/config/theme/theme.dart';
-import 'package:p_4/src/core/common/sizes.dart';
-import 'package:p_4/src/core/widget/fail_bloc_widget.dart';
-import 'dart:developer';
-import 'package:flutter/material.dart';
-import 'package:p_4/src/config/theme/theme.dart';
-import 'package:p_4/src/core/common/extension/navigation.dart';
-import 'package:p_4/src/core/common/sizes.dart';
-import 'package:p_4/src/view/data/repo/calling_repo_body.dart';
-import 'package:p_4/src/view/data/repo/chat_repo_body.dart';
-import 'package:p_4/src/view/domain/entity/message_entity.dart';
-import 'package:p_4/src/view/presentaion/widget/chat_widget/video_call_screen.dart';
-import 'package:p_4/src/view/data/model/user_model.dart';
-import 'package:p_4/src/core/widget/loading.dart';
 import 'package:p_4/src/view/data/model/message_model.dart';
-import 'package:p_4/src/view/data/repo/chat_repo_body.dart';
-import 'dart:developer';
-import 'package:flutter/material.dart';
-import 'dart:async';
 import 'dart:io';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:p_4/src/core/common/extension/navigation.dart';
-import 'package:p_4/src/core/common/sizes.dart';
-import 'package:p_4/src/view/presentaion/blocs/chat_bloc/chat_bloc.dart';
 import 'package:p_4/src/view/presentaion/blocs/upload_bloc/upload_bloc.dart';
 import 'package:p_4/src/view/presentaion/widget/chat_widget/location_send.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:uuid/uuid.dart';
-import 'package:p_4/src/view/presentaion/blocs/chat_bloc/chat_bloc.dart';
-import 'package:p_4/src/view/presentaion/widget/chat_widget/chat_button.dart';
-import 'package:p_4/src/view/presentaion/widget/chat_widget/chat_app_bar.dart';
 import 'package:p_4/src/view/presentaion/widget/chat_widget/type_of_item.dart';
-import 'package:p_4/src/view/data/model/user_model.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
-
 import '../../../core/common/constance/lotties.dart';
 import '../widget/chat_widget/chat_emoji_picker.dart';
 
@@ -127,7 +93,7 @@ class _SaveMessageScreenScreenState extends State<SaveMessageScreen> with Widget
                                         itemBuilder: (context, index){
                                           return GestureDetector(
                                             onTap: () => log('in ListView -> $index'),
-                                            onDoubleTap: ()async => context.read<ChatBloc>().add(DeleteMessageEvent(messages[index].uid)),
+                                            onDoubleTap: ()async => showDeleteDialg(messages[index].uid),
                                             child: messageItemWidget(context, messages[index],));}),
                                     );}
                               }
@@ -264,6 +230,42 @@ class _SaveMessageScreenScreenState extends State<SaveMessageScreen> with Widget
         },
       ),
     );
+  
+    showDeleteDialg(String uid)async{
+    await showDialog(
+      context: context, 
+      builder:(context)=> AlertDialog(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+              title: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Text('Delte Message',style:theme(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),),
+              ),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: [
+                    Padding(
+                      padding:const EdgeInsets.only(bottom: 10),
+                      child: Text('Are you sure you want to delete this message?',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body'),)),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: ()=>context.navigationBack(context), 
+                          child: Text('cancel',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColor),)),
+                        TextButton(
+                          onPressed: ()async{
+                            log('Delete');
+                            context.read<ChatBloc>().add(DeleteMessageEvent(uid));
+                            context.navigationBack(context);
+                          }, 
+                          child: Text('Delete',style: theme(context).textTheme.titleSmall!.copyWith(color: Colors.red),)),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ));
+  }
+
 }
 
 
@@ -367,8 +369,8 @@ class _SaveMessageButtonsWidgetState extends State<SaveMessageButtonsWidget> {
     super.initState();
     isEmojiSelected = widget.isEmojiSelected;
     kBottomShetEvent = [
-     ()=> context.read<UploadBloc>().add(UploadMediaEvent(widget.receiverId, widget.chatRoomId)),
-     ()=> context.read<UploadBloc>().add(UploadFileEvent(widget.receiverId, widget.chatRoomId)),
+     ()=> context.read<UploadBloc>().add(UploadMediaEvent(widget.receiverId, widget.chatRoomId,null)),
+     ()=> context.read<UploadBloc>().add(UploadFileEvent(widget.receiverId, widget.chatRoomId,null)),
      ()=> context.navigation(context, LocationSendWidget(receiverId: widget.receiverId,)),
     ];
   }
@@ -439,7 +441,7 @@ class _SaveMessageButtonsWidgetState extends State<SaveMessageButtonsWidget> {
               isSendButton 
                 ? IconButton(onPressed: ()async{
                     if(widget.controller.text.isNotEmpty) {
-                      context.read<ChatBloc>().add(SendMessageEvent(receiverId: widget.receiverId, message: widget.controller.text));
+                      context.read<ChatBloc>().add(SendMessageEvent(receiverId: widget.receiverId, message: widget.controller.text,replyMessage: null));
                       widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
                       widget.controller.clear();
                     }
@@ -511,7 +513,7 @@ class _SaveMessageButtonsWidgetState extends State<SaveMessageButtonsWidget> {
       String? path = await audioRecord.stop();
       stop();
       // await repo.uploadVoice(receiverId, path!).then((value) => print('_____AFter uplaod VOice'));
-      context.read<UploadBloc>().add(UploadVoiceEvent(receiverId,path!,widget.chatRoomId));
+      context.read<UploadBloc>().add(UploadVoiceEvent(receiverId,path!,widget.chatRoomId,null));
     }
     catch(e){ print('in Stop VOice Error = $e');}
   }

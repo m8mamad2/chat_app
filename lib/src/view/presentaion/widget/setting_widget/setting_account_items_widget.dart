@@ -62,8 +62,8 @@ Widget oneAccountWidget(BuildContext context,String title,String subtitle,VoidCa
   padding: EdgeInsets.zero,
   child: ListTile(
     onTap: onTap,
-    title: Text(title,style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.02),),
-    subtitle: Text(subtitle,style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.015),),
+    title: Text(title,style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body',fontWeight: FontWeight.bold,fontSize: sizeW(context)*0.02),),
+    subtitle: Text(subtitle,style: theme(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400,fontSize: sizeW(context)*0.015),),
   ),
 );
 

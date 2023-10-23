@@ -36,6 +36,7 @@ class CallingRepoBody{
       markAsRead: false, 
       isMine: true, 
       chatRoomID: chatRoomID, 
+      replyMessage: null,
       uid: const Uuid().v1());
 
     try{
@@ -61,6 +62,7 @@ class CallingRepoBody{
       markAsRead: false, 
       isMine: true, 
       chatRoomID: chatRoomID, 
+      replyMessage: null,
       uid: const Uuid().v1()); 
 
     await supabase.from('chat').update(model.toMap()).eq('uid', uid).then((value) => print('UPDATED')).catchError((e)=>print('FAILED'));

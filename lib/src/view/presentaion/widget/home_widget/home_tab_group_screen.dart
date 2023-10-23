@@ -75,7 +75,7 @@ class _TabGroupScreenState extends State<TabGroupScreen> {
                   );
                 },);
           }
-          return Container(width: 100,height: 100,color: Colors.amber,);
+          return Container();
         }
       ),
       floatingActionButton: FloatingActionButton(

@@ -60,7 +60,7 @@ class _LocationSendWidgetState extends State<LocationSendWidget> {
           // geocode.Address address = await geoCode.reverseGeocoding(latitude: p.latitude, longitude: p.longitude);
           // String? data = '${address.countryName ?? ''},${address.city ?? ''},${address.streetAddress ?? ''}';
           String data = '${p.latitude},${p.longitude}';
-          context.read<ChatBloc>().add(SendLocationMessageEvent(receiverId: widget.receiverId, message: data));
+          context.read<ChatBloc>().add(SendLocationMessageEvent(receiverId: widget.receiverId, message: data,replyMessage: null));
 
           context.navigationBack(context);
         }

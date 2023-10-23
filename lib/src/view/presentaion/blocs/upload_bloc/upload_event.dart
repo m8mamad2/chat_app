@@ -7,20 +7,23 @@ class UploadEvent {}
 class UploadMediaEvent extends UploadEvent{
   final String receiverId;
   final String chatRoomId;
-  UploadMediaEvent(this.receiverId,this.chatRoomId);
+  final MessageModel? replyMessage;
+  UploadMediaEvent(this.receiverId,this.chatRoomId,this.replyMessage);
 }
 
 class UploadFileEvent extends UploadEvent{
   final String receiverId;
   final String chatRoomId;
-  UploadFileEvent(this.receiverId,this.chatRoomId);
+  final MessageModel? replyMessage;
+  UploadFileEvent(this.receiverId,this.chatRoomId,this.replyMessage);
 }
 
 class UploadVoiceEvent extends UploadEvent{
   final String receiverId;
   final String path;
   final String chatRoomId;
-  UploadVoiceEvent(this.receiverId,this.path,this.chatRoomId);
+  final MessageModel? replyMessage;
+  UploadVoiceEvent(this.receiverId,this.path,this.chatRoomId,this.replyMessage);
 }
 
 class DownloadFileEvent extends UploadEvent{

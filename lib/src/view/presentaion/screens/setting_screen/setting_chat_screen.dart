@@ -71,6 +71,7 @@ Container fontSizeChangerWidget(BuildContext context)=> Container(
       sizeBoxH(sizeH(context)*0.02),
       Padding(
         padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.04,vertical: sizeH(context)*0.02),
+        // child: Text('Message Text Size',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColor,fontWeight: FontWeight.w400),),
         child: Text('Message Text Size',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColor,fontWeight: FontWeight.w400),),
       ),
       BlocBuilder<FontSizeBloc,FontSizeState>(
@@ -113,8 +114,8 @@ Container fontSizeChangerWidget(BuildContext context)=> Container(
   
 );
 List<MessageModel> models = [
-  MessageModel.create('uid', 'senderID', 'receiverID', 'Hi Man ! Whats up?', 'chatRoomID'),
-  MessageModel.create('uid', 'senderID', 'receiverID', 'Its AllWrith', 'chatRoomID')
+  MessageModel.create('uid', 'senderID', 'receiverID', 'Hi Man ! Whats up?', 'chatRoomID',null),
+  MessageModel.create('uid', 'senderID', 'receiverID', 'Its AllWrith', 'chatRoomID',null)
 ];
 
 Container changeColorTheme(BuildContext context)=> Container(

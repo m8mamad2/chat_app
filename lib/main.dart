@@ -5,7 +5,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:p_4/dsfsd.dart';
+import 'package:p_4/src/config/theme/theme.dart';
+import 'package:p_4/src/core/common/sizes.dart';
 import 'package:p_4/src/core/widget/auth_check.dart';
 import 'package:p_4/src/core/common/internet_check/internet_check_connection.dart';
 import 'package:p_4/src/core/widget/is_lock_screen.dart';
@@ -77,8 +78,7 @@ class _MyAppState extends State<MyApp> {
             themeAnimationDuration: const Duration(microseconds: 1000),
             
             home: SplashScreen(),
-            // home: MMMScsren(),
-            // home: GivePermission(),
+            // home: MyWidget(),
           );
         }
         return const MaterialApp();
@@ -91,7 +91,6 @@ class _MyAppState extends State<MyApp> {
 //   const NNN({
 //     super.key,
 //   });
-
 //   @override
 //   Widget build(BuildContext context) {
 //     return Container(
@@ -345,14 +344,10 @@ class _MyAppState extends State<MyApp> {
 
 // class GivePermission extends StatefulWidget {
 //   const GivePermission({super.key});
-
 //   @override
 //   State<GivePermission> createState() => _GivePermissionState();
 // }
-
 // class _GivePermissionState extends State<GivePermission> {
-
-
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
@@ -368,3 +363,18 @@ class _MyAppState extends State<MyApp> {
 //   }
 // }
 
+class MyWidget extends StatefulWidget {
+  const MyWidget({super.key});
+
+  @override
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+    );
+  }
+}

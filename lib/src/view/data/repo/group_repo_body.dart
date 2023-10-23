@@ -72,7 +72,7 @@ class GroupRepoBody extends GroupRepoHeader{
   }
   
   @override
-  Future<void> sendGroupMessage(String message,String groupID)async{
+  Future<void> sendGroupMessage(String message,String groupID,MessageModel? replyMessage)async{
 
     try{String currentUser = supabase.auth.currentUser!.id;
       String uid = const Uuid().v4();
@@ -81,7 +81,8 @@ class GroupRepoBody extends GroupRepoHeader{
         uid, 
         currentUser, 
         message, 
-        groupID);
+        groupID,
+        replyMessage);
 
       return supabase.from('chat').insert(messageModel.toMap());
     }

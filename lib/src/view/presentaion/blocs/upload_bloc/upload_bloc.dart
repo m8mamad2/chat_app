@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:p_4/src/view/domain/usecase/upload_usecase.dart';
+
+import '../../../data/model/message_model.dart';
 part 'upload_event.dart';
 part 'upload_state.dart';
 
@@ -9,9 +11,9 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
   final UploadUseCaes useCase;
   UploadBloc(this.useCase) : super(UploadInitialState()) {
     
-    on<UploadMediaEvent>((event, emit) async => await useCase.uploadMedia(event.receiverId,event.chatRoomId));
-    on<UploadFileEvent>((event, emit) async => await useCase.uploadFile(event.receiverId,event.chatRoomId));
-    on<UploadVoiceEvent>((event, emit) async => await useCase.uploadVoice(event.receiverId,event.path,event.chatRoomId));
+    on<UploadMediaEvent>((event, emit) async => await useCase.uploadMedia(event.receiverId,event.chatRoomId,event.replyMessage));
+    on<UploadFileEvent>((event, emit) async => await useCase.uploadFile(event.receiverId,event.chatRoomId,event.replyMessage));
+    on<UploadVoiceEvent>((event, emit) async => await useCase.uploadVoice(event.receiverId,event.path,event.chatRoomId,event.replyMessage));
     on<DownloadFileEvent>((event, emit){
       emit(UploadLoadingState());
       try{

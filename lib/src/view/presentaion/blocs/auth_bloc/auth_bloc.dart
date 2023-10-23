@@ -66,7 +66,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState0> {
     }
     catch(e){ emit(AuthFailState(error: e.toString()));}
   },);
+  on<AuthDeleteAccout>((event, emit) async{
+    emit(AuthLoadingState());
 
+    try{
+      await useCase.deleteAccount(event.context).then((value) => emit(AuthSucessState(isUserLoggedIn: false)));
+    }
+    catch(e){log('____))))_____>$e') ;emit(AuthFailState(error: e.toString())); }
+  });
   // on<AuthVeriFyEvent>((event, emit) async {
     
   //   try{

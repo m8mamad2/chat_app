@@ -28,7 +28,9 @@ class AuthHelperBody extends AuthHelperHeader{
     return await authRepo.login(email, password)
       .then((value) async {
         if(value == 'ok'){ context.navigation(context, const HomeScreen());}
-        else{ errorBottomShetHelper(context, value,(){context.navigationBack(context);}); }
+        else{ errorBottomShetHelper(context, value,(){
+          context.navigationBack(context);
+        }); }
       });
   }
 
@@ -45,6 +47,9 @@ class AuthHelperBody extends AuthHelperHeader{
 
   @override
   Future<void> logOut(BuildContext context) async => await authRepo.signOut(context);
+
+  @override
+  Future<void> deleteAccount(BuildContext context)async=>await authRepo.deleteAccount(context);
   // {
   //   return await authRepo.signOut()
   //     .then((value)async {

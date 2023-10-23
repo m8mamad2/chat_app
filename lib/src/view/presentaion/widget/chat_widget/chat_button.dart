@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
 import 'package:p_4/src/core/common/sizes.dart';
+import 'package:p_4/src/view/data/model/message_model.dart';
 import 'package:p_4/src/view/presentaion/blocs/chat_bloc/chat_bloc.dart';
 import 'package:p_4/src/view/presentaion/blocs/upload_bloc/upload_bloc.dart';
 import 'package:p_4/src/view/presentaion/widget/chat_widget/location_send.dart';
@@ -27,8 +28,10 @@ class ChatButtonsWidget extends StatefulWidget {
   final String chatRoomId;
   bool isEmojiSelected;
   TextEditingController controller;
-  ChatButtonsWidget({super.key,required this.scrollController
-,required this.receiverId,required this.chatRoomId,required this.isEmojiSelected,required this.controller});
+  FocusNode focusNode;
+  MessageModel? replayMessage;
+  VoidCallback onCancelReply;
+  ChatButtonsWidget({super.key,required this.scrollController,required this.receiverId,required this.chatRoomId,required this.isEmojiSelected,required this.controller,required this.focusNode,required this.replayMessage,required this.onCancelReply});
 
   @override
   State<ChatButtonsWidget> createState() => _ChatButtonsWidgetState();
@@ -56,7 +59,6 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
   );
   
   late bool isEmojiSelected;
-  final FocusNode focusNode = FocusNode();
   bool isSendButton = false;
   late List kBottomShetEvent;
 
@@ -65,21 +67,23 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
     super.initState();
     isEmojiSelected = widget.isEmojiSelected;
     kBottomShetEvent = [
-     ()=> context.read<UploadBloc>().add(UploadMediaEvent(widget.receiverId, widget.chatRoomId)),
-     ()=> context.read<UploadBloc>().add(UploadFileEvent(widget.receiverId, widget.chatRoomId)),
-     ()=> context.navigation(context, LocationSendWidget(receiverId: widget.receiverId,)),
+     () { context.read<UploadBloc>().add(UploadMediaEvent(widget.receiverId, widget.chatRoomId,null));context.navigationBack(context);},
+     () { context.read<UploadBloc>().add(UploadFileEvent(widget.receiverId, widget.chatRoomId,null));context.navigationBack(context);},
+     () { context.navigation(context, LocationSendWidget(receiverId: widget.receiverId,));context.navigationBack(context);},
     ];
   }
 
   @override
   void dispose() {
     audioRecord.dispose();
-    focusNode.dispose();
+    widget.focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isReply = widget.replayMessage != null ;
+
    return Column(
      children: [
 
@@ -105,71 +109,91 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
               ),
             ),
           )
-          : Container(
-            width: sizeW(context),
-            height: sizeH(context)*0.15,
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.001)),
-              color: theme(context).backgroundColor,
-            ),
-            child: Row(
+          : Column(
             children: [
-              IconButton(
-                onPressed: ()async {
-                  FocusScope.of(context).unfocus();
-                  isEmojiSelected = !isEmojiSelected;
-                  setState(() { });  
-                },
-                icon:Icon(isEmojiSelected ? Icons.keyboard : Icons.emoji_emotions,color: theme(context).cardColor,)),
-              Expanded(
-                child:TextFormField(
-                  focusNode: focusNode,
-                  controller: widget.controller, 
-                  onChanged: (value) => widget.controller.text.isNotEmpty || widget.controller.text != '' ? setState(() => isSendButton = true) : setState(() => isSendButton = false),
-                  onTap: () {
-                    isEmojiSelected ? setState(() => isEmojiSelected = !isEmojiSelected,) : null;
-                    widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
-                    // Timer(const Duration(milliseconds: 500),()=>scrollController.jumpTo(scrollController.position.maxScrollExtent));
-                  },
-                  decoration: InputDecoration( border: InputBorder.none,hintText: 'Enter message',hintStyle: TextStyle(color: theme(context).cardColor) ),
-                  )),
-              isSendButton 
-                ? IconButton(onPressed: ()async{
-                    if(widget.controller.text.isNotEmpty) {
-                      context.read<ChatBloc>().add(SendMessageEvent(receiverId: widget.receiverId, message: widget.controller.text));
-                      widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
-                      widget.controller.clear();
-                      setState(() => isSendButton = false);
-                    }
-                  }, 
-                    icon: Icon(Icons.send,color: theme(context).cardColor))
-                : Row(children: [
-                    IconButton(
-                      onPressed: ()=> showBottomSheet(
-                        context: context, 
-                        builder: (context) => Container(
-                          width: sizeW(context),
-                          height: sizeH(context)*0.4,
-                          padding: EdgeInsets.only(left: sizeW(context)*0.08),
-                          decoration: BoxDecoration(
-                            color:  theme(context).backgroundColor,
-                            border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.002)),
+              isReply 
+                ? Container(
+                  height: sizeH(context)*0.15,
+                  width: sizeW(context),
+                  color: Colors.amber,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.keyboard_arrow_right_rounded),
+                      Text(widget.replayMessage!.messsage),
+                      const Spacer(),
+                      IconButton(onPressed: (){
+                        widget.onCancelReply();
+                      }, icon: Icon(Icons.close))
+                    ],
+                  ),
+                )
+                : const SizedBox.shrink(),
+              Container(
+                width: sizeW(context),
+                height: sizeH(context)*0.15,
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.001)),
+                  color: theme(context).backgroundColor,
+                ),
+                child: Row(
+                children: [
+                  IconButton(
+                    onPressed: ()async {
+                      FocusScope.of(context).unfocus();
+                      isEmojiSelected = !isEmojiSelected;
+                      setState(() { });  
+                    },
+                    icon:Icon(isEmojiSelected ? Icons.keyboard : Icons.emoji_emotions,color: theme(context).cardColor,)),
+                  Expanded(
+                    child:TextFormField(
+                      focusNode: widget.focusNode,
+                      controller: widget.controller, 
+                      onChanged: (value) => widget.controller.text.isNotEmpty || widget.controller.text != '' ? setState(() => isSendButton = true) : setState(() => isSendButton = false),
+                      onTap: () {
+                        isEmojiSelected ? setState(() => isEmojiSelected = !isEmojiSelected,) : null;
+                        widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
+                      },
+                      decoration: InputDecoration( border: InputBorder.none,hintText: 'Enter message',hintStyle: TextStyle(color: theme(context).cardColor) ),
+                      )),
+                  isSendButton 
+                    ? IconButton(onPressed: ()async{
+                        if(widget.controller.text.isNotEmpty) {
+                          context.read<ChatBloc>().add(SendMessageEvent(receiverId: widget.receiverId, message: widget.controller.text,replyMessage: widget.replayMessage));
+                          widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
+                          widget.controller.clear();
+                          setState(() => isSendButton = false);
+                        }
+                      }, 
+                        icon: Icon(Icons.send,color: theme(context).cardColor))
+                    : Row(children: [
+                        IconButton(
+                          onPressed: ()=> showBottomSheet(
+                            context: context, 
+                            builder: (context) => Container(
+                              width: sizeW(context),
+                              height: sizeH(context)*0.4,
+                              padding: EdgeInsets.only(left: sizeW(context)*0.08),
+                              decoration: BoxDecoration(
+                                color:  theme(context).backgroundColor,
+                                border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.002)),
+                              ),
+                              child:ListView.builder(
+                                itemCount: 3,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) => oneItemBottomShet(kBottomShetIcon[index],kBottomShetTitle[index],kBottomShetEvent[index]),)
                           ),
-                          child:ListView.builder(
-                            itemCount: 3,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => oneItemBottomShet(kBottomShetIcon[index],kBottomShetTitle[index],kBottomShetEvent[index]),)
-                      ),
-                    ),
-                    icon: Icon(Icons.perm_media_outlined,color: theme(context).cardColor,)),
-                    IconButton(onPressed: ()async {
-                      await startRecording();
-                      setState(() => isRecording = true );
-                    }, 
-                    icon: Icon(Icons.mic,color: theme(context).cardColor)),
-                  ],)
-              ],
-            ),
+                        ),
+                        icon: Icon(Icons.perm_media_outlined,color: theme(context).cardColor,)),
+                        IconButton(onPressed: ()async {
+                          await startRecording();
+                          setState(() => isRecording = true );
+                        }, 
+                        icon: Icon(Icons.mic,color: theme(context).cardColor)),
+                      ],)
+                  ],
+                ),
+              ),
+            ],
           ),
 
       if(isEmojiSelected) ChatEmojiPickerWidget(controller: widget.controller)
@@ -209,7 +233,7 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
       String? path = await audioRecord.stop();
       stop();
       // await repo.uploadVoice(receiverId, path!).then((value) => print('_____AFter uplaod VOice'));
-      context.read<UploadBloc>().add(UploadVoiceEvent(receiverId,path!,widget.chatRoomId));
+      context.read<UploadBloc>().add(UploadVoiceEvent(receiverId,path!,widget.chatRoomId,null));
     }
     catch(e){ print('in Stop VOice Error = $e');}
   }

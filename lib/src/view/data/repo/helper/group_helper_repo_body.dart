@@ -41,7 +41,7 @@ class GroupHelperRepoBody extends GroupRepoHelperHeader{
   Future<List<CreateGroupModel>?> groupsModel() async => await repo.groupsModel();
 
   @override
-  Future<void> sendGroupMessage(String message, String groupID)async => await sendGroupMessage(message, groupID);
+  Future<void> sendGroupMessage(String message, String groupID,MessageModel replyMessage)async => await repo.sendGroupMessage(message, groupID,replyMessage);
   
   @override
   Future<void> deleteGroup(BuildContext context,String uid)async {

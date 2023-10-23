@@ -4,6 +4,7 @@
 import 'dart:developer';
 import 'dart:async';
 import 'dart:io' as io;
+import 'dart:io';
 import 'package:p_4/src/core/common/permission_service.dart';
 import 'package:path/path.dart' as pathh;
 
@@ -26,7 +27,7 @@ class UploadRepoBody extends UploadRepoHead{
   PermissionService permission = PermissionService();
 
   @override
-  Future<bool> uploadThings(dynamic thing,String receiverID,String type,String fakeType,String chatRoomId) async {
+  Future<bool> uploadThings(dynamic thing,String receiverID,String type,String fakeType,String chatRoomId,MessageModel? replyMessage) async {
 
       String curretnUserID = supabase.auth.currentUser!.id;
       String uid =const Uuid().v1();
@@ -44,6 +45,7 @@ class UploadRepoBody extends UploadRepoHead{
         markAsRead: false, 
         isMine: true, 
         chatRoomID: chatRoomId,
+        replyMessage: replyMessage
         );
       await supabase.from('chat').insert(firstModel.toMap()).then((value) => print('AFTER CREATE  ---> 1/ and UId is$uid'));
       
@@ -71,13 +73,15 @@ class UploadRepoBody extends UploadRepoHead{
         markAsRead: false, 
         isMine: true, 
         chatRoomID: chatRoomId,
+        replyMessage: replyMessage
         );
       await supabase.from('chat').update(data.toMap()).eq('uid', uid);
       return true;
 
     } 
     on StorageException catch (error) { await supabase.from('chat').delete().eq('uid', uid); return false;} 
-
+    on PostgrestException catch (error) { await supabase.from('chat').delete().eq('uid', uid); return false;} 
+    on Exception catch (error) { await supabase.from('chat').delete().eq('uid', uid); return false;} 
     catch (error) { 
       await supabase.from('chat').delete().eq('uid', uid);
       return false;
@@ -86,7 +90,7 @@ class UploadRepoBody extends UploadRepoHead{
   }
   
   @override
-  Future<bool> uploadMedia(String receiverId,String chatRoomId) async {
+  Future<bool> uploadMedia(String receiverId,String chatRoomId,MessageModel? replyMessage) async {
     XFile? media = await ImagePicker().pickMedia();
     String? mime = media?.path.split('.').last;
     String type (){
@@ -101,7 +105,7 @@ class UploadRepoBody extends UploadRepoHead{
 
     if(media != null){
       try{
-        await uploadThings(media, receiverId,dataType,'fake$dataType',chatRoomId);
+        await uploadThings(media, receiverId,dataType,'fake$dataType',chatRoomId,replyMessage);
         return true;
       }
       catch(e){ return false; }
@@ -110,12 +114,12 @@ class UploadRepoBody extends UploadRepoHead{
   }
 
   @override
-  Future<bool> uploadFile(String receiverId,String chatRoomId) async {
+  Future<bool> uploadFile(String receiverId,String chatRoomId,MessageModel? replyMessage) async {
     FilePickerResult? res = await FilePicker.platform.pickFiles();
     if(res != null){
       try{
         io.File file = io.File(res.files.single.path!);
-        await uploadThings(file, receiverId, 'file','fakeFile',chatRoomId);
+        await uploadThings(file, receiverId, 'file','fakeFile',chatRoomId,replyMessage);
         return true;
       }
       catch(e){ return false; }
@@ -124,10 +128,10 @@ class UploadRepoBody extends UploadRepoHead{
   }
 
   @override
-  Future<bool> uploadVoice(String receiverId,String path,String chatRoomId) async {
+  Future<bool> uploadVoice(String receiverId,String path,String chatRoomId,MessageModel? replyMessage) async {
   io.File file = io.File(path);
   try{
-    await uploadThings(file, receiverId, 'voice','fakeVoice',chatRoomId);
+    await uploadThings(file, receiverId, 'voice','fakeVoice',chatRoomId,replyMessage);
     return true;
   }
   catch(e){ return false; }
@@ -269,38 +273,44 @@ class UploadRepoBody extends UploadRepoHead{
 
   Future<String?> imageOfVideo(String url,String fileUid)async{
 
-    // await [Permission.storage,Permission.manageExternalStorage,Permission.videos,Permission.mediaLibrary].request();
-    await permission.req([Permission.storage,Permission.manageExternalStorage,Permission.videos,Permission.mediaLibrary]);
-    
-    bool isDownloaded = false;
-    final String mainpath = (await getExternalStorageDirectory())!.path;
-    final io.File file = io.File('$mainpath/${fileUid.substring(0,5)}.png');
-    List<io.FileSystemEntity> fileDirectory = io.Directory('$mainpath/').listSync();
+    try{
+      await permission.req([Permission.storage,Permission.manageExternalStorage,Permission.videos,Permission.mediaLibrary]);
+      
+      bool isDownloaded = false;
+      final String mainpath = (await getExternalStorageDirectory())!.path;
+      final io.File file = io.File('$mainpath/${fileUid.substring(0,5)}.png');
+      List<io.FileSystemEntity> fileDirectory = io.Directory('$mainpath/').listSync();
 
-    //! check if in Files
-    for(var onePath in fileDirectory){
-      if(onePath.path.contains(file.path)){
-        log('---->>>>>in For');
-        isDownloaded = true;
-        log('In For ---, Video Image');
-        return onePath.path;
+      //! check if in Files
+      for(var onePath in fileDirectory){
+        if(onePath.path.contains(file.path)){
+          log('---->>>>>in For');
+          isDownloaded = true;
+          log('In For ---, Video Image');
+          return onePath.path;
+        }
+      }
+
+    if(isDownloaded == false){
+      try{
+
+        String? img = await VideoThumbnail.thumbnailFile( video: url, thumbnailPath: mainpath,imageFormat: ImageFormat.PNG,maxWidth: 120,quality: 30);
+        String newEndPath = '${fileUid.substring(0,5)}.png';
+        String newPath = pathh.join(mainpath,newEndPath);
+        io.File f = await io.File(img!).copy(newPath);
+        log('In Downloaded ---, Video Image');
+        log(f.path);
+
+        return f.path;
+      }
+      catch(e){log('-------> $e') ;return '';}
       }
     }
-
-  if(isDownloaded == false){
-    try{
-
-      String? img = await VideoThumbnail.thumbnailFile( video: url, thumbnailPath: mainpath,imageFormat: ImageFormat.PNG,maxWidth: 120,quality: 30);
-      String newEndPath = '${fileUid.substring(0,5)}.png';
-      String newPath = pathh.join(mainpath,newEndPath);
-      io.File f = await io.File(img!).copy(newPath);
-      log('In Downloaded ---, Video Image');
-      log(f.path);
-
-      return f.path;
-    }
-    catch(e){log('-------> $e') ;return '';}
-    }
+    on SupabaseRealtimeError catch(e){return e.toString();}
+    on PostgrestException catch(e){return e.toString();}
+    on SocketException catch(e){return e.toString();}
+    on Exception catch(e){return e.toString();}
+    catch(e){return e.toString();}
   }
 
 }

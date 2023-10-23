@@ -55,7 +55,7 @@ class TabChatScreenState extends State<TabChatScreen> {
                 itemBuilder: (context, index) {
                   return Container(
                     margin: const EdgeInsets.only(top: 10),
-                    child: data[index].uid == supabase.auth.currentSession!.user.id
+                    child: data[index].uid == supabase.auth.currentSession?.user.id
                       ? ListTile(
                         leading: CircleAvatar(
                           backgroundColor: theme(context).primaryColor,
@@ -72,7 +72,7 @@ class TabChatScreenState extends State<TabChatScreen> {
                             height: sizeH(context)*0.2,
                             width: sizeW(context)*0.07,
                             decoration: BoxDecoration(
-                              color: theme(context).primaryColor,
+                              color: theme(context).colorScheme.onPrimary,
                               shape: BoxShape.circle,
                             ),
                             child: ClipRRect(

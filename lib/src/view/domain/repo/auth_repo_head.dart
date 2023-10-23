@@ -8,5 +8,6 @@ abstract class AuthRepoHeader{
   Future<void> signOut(BuildContext context);
   bool isUserLogedIn();
   Future<String> addUserInfo(XFile? image,String name);
+  Future<void> deleteAccount(BuildContext context);
   // Future<String> otpVerify(String phone,String token,);
 }

@@ -7,7 +7,7 @@ class ChatUseCase{
   ChatHelperRepoHeader chatRepo;
   ChatUseCase( this.chatRepo);
 
-  Future<void> sendMessage(String message,String receiverID,) async => await chatRepo.sendMessage(message,receiverID);
+  Future<void> sendMessage(String message,String receiverID,MessageModel? replyMessage) async => await chatRepo.sendMessage(message,receiverID,replyMessage);
   Stream<List<MessageModel>>? getMessage(BuildContext context,String receiverID)=> chatRepo.getMessage(context,receiverID);
   Future<void> deleteMessage(String uid) async => await chatRepo.deleteMessagee(uid);
   Future<List<MessageModel>> getExistConversition (BuildContext context)async =>  await chatRepo.getExistConversition(context);
@@ -15,7 +15,7 @@ class ChatUseCase{
   Future<List<UserModel>> getUsers(BuildContext context) async => await chatRepo.allUsers(context);
   String? currentUserId() => chatRepo.currentUserId();
   Future<void> isOnlineStatus(bool status) async => await chatRepo.isOnlineStatus(status);
-  Future<void> sendLocationMessage(message,receiverID,)async => await chatRepo.sendLocationMessage(message, receiverID);
+  Future<void> sendLocationMessage(String message,String receiverID,MessageModel? replyMessage)async => await chatRepo.sendLocationMessage(message, receiverID,replyMessage);
   Future<List<MessageModel?>> getImageMessage(BuildContext context,String receiverID)async => await chatRepo.getImageMessage(context, receiverID);
   Future<List<MessageModel?>> getFileMessage(BuildContext context,String receiverID)async => await chatRepo.getFileMessage(context, receiverID);
 }

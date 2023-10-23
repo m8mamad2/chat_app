@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/constance/lotties.dart';
+import 'package:p_4/src/core/common/extension/navigation.dart';
 import 'package:p_4/src/core/common/sizes.dart';
 import 'package:p_4/src/core/widget/fail_bloc_widget.dart';
 import 'package:p_4/src/core/widget/loading.dart';
@@ -27,255 +28,6 @@ import 'package:scrollview_observer/scrollview_observer.dart';
 import '../widget/chat_widget/group_app_bar.dart';
 
 
-
-// class GroupScreen extends StatefulWidget {
-//   final CreateGroupModel groupModel;
-//   const GroupScreen({super.key,required this.groupModel});
-
-//   @override
-//   State<GroupScreen> createState() => _GroupScreenState();
-// }
-// class _GroupScreenState extends State<GroupScreen> with WidgetsBindingObserver{
-
-//   final Stopwatch stopwatch = Stopwatch();
-//   final Record audioRecord = Record();
-//   bool isRecording = false;
-//   late final Timer _timer;
-//   String _result = '0:0';
-  
-//   Future<void> startRecording()async{
-//     try{
-//       if(await audioRecord.hasPermission()){
-//         String path = await getDir();
-//         await audioRecord.start(path: path);
-//         start();
-//       }
-//     }
-//     catch(e){ print('----Recordign Start Error : $e');}
-//   }
-  
-//   Future<void> stopRecording(String groupUid,)async{
-//     try{
-//       String? path = await audioRecord.stop();
-//       stop();
-//       context.read<UploadBloc>().add(UploadVoiceEvent(chatRoomId,path!,chatRoomId));
-//     }
-//     catch(e){ print('in Stop VOice Error = $e');}
-//   }
-  
-//   Future<String> getDir()async{
-//     final Directory? dir = await getExternalStorageDirectory();
-//     final String path = '${dir!.path}/${const Uuid().v1()}.m4a';
-//     return path;
-//   }
-  
-//   start(){
-//     _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer t) {
-//       setState(() {
-//         _result = '${stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}:${(stopwatch.elapsed.inMilliseconds % 100).toString().padLeft(2, '0')}';
-//       });
-//     });
-//     stopwatch.start();
-//   }
-  
-//   stop(){
-//     _timer.cancel();
-//     stopwatch.stop();
-//     stopwatch.reset();
-//   }
-  
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTap: ()=>FocusScope.of(context).unfocus(),
-//       child: WillPopScope(
-//         onWillPop: () {
-//           if(isEmojiSelected){
-//             setState(() => isEmojiSelected = !isEmojiSelected,);
-//             return Future.value(false);
-//           }
-//           else{ return Future.value(true);}
-//         },
-//         child: Scaffold(
-//           // appBar: chatAppBar(widget.groupModel,context),
-//           body: BlocBuilder<GroupBloc,GroupState>(
-//             builder: (context, state) {
-//               if(state is GroupLoadingState)return loading();
-//               if(state is GroupSuccessState){
-//                 return Column(
-//                 children: [
-          
-//                   //* chat
-//                   Expanded(
-//                     child: StreamBuilder(
-//                       stream: state.messages,
-//                       builder: (context, snapshot) {
-//                         switch(snapshot.connectionState){
-//                           case ConnectionState.none:
-//                           case ConnectionState.waiting:
-//                           case ConnectionState.active:
-//                           default:
-//                             if(snapshot.data == null){return const Text('Start');}
-//                             else{
-//                               List<MessageModel> messages = snapshot.data!;
-//                               return ListView.builder(
-//                                 shrinkWrap: true,
-//                                 controller: scrollController,
-//                                 itemCount: messages.length,
-//                                 itemBuilder: (context, index) {
-//                                   return GestureDetector(
-//                                     // onDoubleTap: ()async => context.read<GroupBloc>().add(DeleteMessageEvent(messages[index].uid)),
-//                                     child: messageItemWidget(context, messages[index],));});}
-//                         }
-//                       },
-//                     )),
-                  
-//                   //* buttons
-//                   isRecording 
-//                     ? Container(
-//                       width: sizeW(context),
-//                       height: sizeH(context)*0.14,
-//                       color: Colors.green.shade200,
-//                       child: Row(
-//                         children: [
-//                           Text(_result),
-//                           IconButton(
-//                             onPressed: () async {
-//                               setState(()=> isRecording = false);
-//                               await stopRecording(chatRoomId);
-//                             }, 
-//                             icon: const Icon(Icons.stop))
-//                         ],
-//                       ),
-//                     )
-//                     : Container(
-//                       width: sizeW(context),
-//                       height: sizeH(context)*0.14,
-//                       color: Colors.grey.shade300,
-//                       child: Row(
-//                       children: [
-//                         IconButton(
-//                           onPressed: ()async {
-//                             // isEmojiSelected ? focusNode.requestFocus() : FocusScope.of(context).unfocus() ;
-//                             FocusScope.of(context).unfocus();
-//                             isEmojiSelected = !isEmojiSelected;
-//                             setState(() { });  
-//                           },
-//                           icon:Icon(isEmojiSelected ? Icons.keyboard : Icons.emoji_emotions)),
-//                         Expanded(
-//                           child:TextFormField(
-//                             focusNode: focusNode,
-//                             controller: _controller, 
-//                             onTap: () {
-//                               isEmojiSelected ? setState(() => isEmojiSelected = !isEmojiSelected,) : null;
-//                               Timer(const Duration(milliseconds: 500),()=>scrollController.jumpTo(scrollController.position.maxScrollExtent));
-                              
-//                             },
-//                             decoration: const InputDecoration( hintText: 'Enter message', ),
-//                             )),
-//                         IconButton(onPressed: ()async{
-//                           if(_controller.text.isNotEmpty) {
-// context.read<GroupBloc>().add(
-// SendGroupMessageEvent(
-// message: _controller.text,
-// groupUid: chatRoomId));
-//                             _controller.clear();
-//                           }
-//                         }, 
-//                           icon: const Icon(Icons.send)),
-//                         IconButton(onPressed: ()async => context.read<UploadBloc>().add(UploadMediaEvent(chatRoomId,chatRoomId)), icon:const Icon(Icons.image)),
-//                         IconButton(onPressed: ()async => context.read<UploadBloc>().add(UploadFileEvent(chatRoomId,chatRoomId)), icon:const Icon(Icons.file_copy)),
-//                         IconButton(onPressed: ()async {
-//                           await startRecording();
-//                           setState(() => isRecording = true );
-//                         }, icon:const Icon(Icons.mic)),
-//                         ],
-//                       ),
-//                     ),
-                    
-//                   //* emoji
-//                   if(isEmojiSelected) SizedBox(
-//                     height: 250,
-//                     child: EmojiPicker(
-//                       textEditingController: _controller,
-//                       onBackspacePressed: (){},
-//                       config: const Config(
-//                         columns: 7,
-//                         verticalSpacing: 0, 
-//                         horizontalSpacing: 0,
-//                         gridPadding: EdgeInsets.zero,
-//                         initCategory: Category.RECENT,
-//                         bgColor: Color(0xFFF2F2F2),
-//                         indicatorColor: Colors.blue,
-//                         iconColor: Colors.grey,
-//                         iconColorSelected: Colors.blue,
-//                         backspaceColor: Colors.blue,
-//                         skinToneDialogBgColor: Colors.white,
-//                         skinToneIndicatorColor: Colors.grey,
-//                         enableSkinTones: true,
-//                         recentTabBehavior: RecentTabBehavior.RECENT,
-//                         recentsLimit: 28,
-//                         replaceEmojiOnLimitExceed: false,
-//                         noRecents: Text(
-//                           'No Recents',
-//                           style: TextStyle(fontSize: 20, color: Colors.black26),
-//                           textAlign: TextAlign.center,
-//                         ),
-//                         loadingIndicator: SizedBox.shrink(),
-//                         tabIndicatorAnimDuration: kTabScrollDuration,
-//                         categoryIcons: CategoryIcons(),
-//                         buttonMode: ButtonMode.MATERIAL,
-//                         checkPlatformCompatibility: true,
-//                       ),
-//                     ),
-//               ),
-                
-//                 ],
-//               );
-            
-//               }
-//               if(state is GroupFailState)return FailBlocWidget(state.error);
-//               return Container();
-//             },
-//           )),
-//       ),
-//     );
-//   }
-
-
-//   // late ChatRepoBody repo;
-//   late TextEditingController _controller;
-//   late int indexSelected ;
-//   late bool isEmojiSelected ;
-//   final FocusNode focusNode = FocusNode();
-//   final ScrollController scrollController = ScrollController();
-//   late String chatRoomId;
-
-  
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _controller =  TextEditingController();
-//     isEmojiSelected = false;
-
-//     WidgetsBinding.instance.addObserver(this);
-
-//     context.read<GroupBloc>().add(GetGroupMessagesEvent(widget.groupModel.uid));
-//     chatRoomId = widget.groupModel.uid;
-
-//   }
-
-
-//   @override
-//   void dispose() {
-//     focusNode.dispose();
-//     audioRecord.dispose();
-//     super.dispose();
-//   }
-
-
-// }
 
 
 
@@ -344,7 +96,7 @@ class _GroupScreenState extends State<GroupScreen> with WidgetsBindingObserver{
                                         itemBuilder: (context, index){
                                           return GestureDetector(
                                             onTap: () => log('in ListView -> $index'),
-                                            onDoubleTap: ()async => context.read<ChatBloc>().add(DeleteMessageEvent(messages[index].uid)),
+                                            onDoubleTap: ()async => showDeleteDialg(messages[index].uid),
                                             child: messageItemWidget(context, messages[index],));}),
                                     );}
                               }
@@ -468,4 +220,40 @@ class _GroupScreenState extends State<GroupScreen> with WidgetsBindingObserver{
         },
       ),
     );
+
+    showDeleteDialg(String uid)async{
+    await showDialog(
+      context: context, 
+      builder:(context)=> AlertDialog(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+              title: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Text('Delte Message',style:theme(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),),
+              ),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: [
+                    Padding(
+                      padding:const EdgeInsets.only(bottom: 10),
+                      child: Text('Are you sure you want to delete this message?',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body'),)),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: ()=>context.navigationBack(context), 
+                          child: Text('cancel',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColor),)),
+                        TextButton(
+                          onPressed: ()async{
+                            log('Delete');
+                            context.read<ChatBloc>().add(DeleteMessageEvent(uid));
+                            context.navigationBack(context);
+                          }, 
+                          child: Text('Delete',style: theme(context).textTheme.titleSmall!.copyWith(color: Colors.red),)),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ));
+  }
+
 }

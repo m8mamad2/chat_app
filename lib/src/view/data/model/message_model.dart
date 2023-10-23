@@ -34,10 +34,12 @@ class MessageModel extends MessageEntity{
   @override
   final String chatRoomID;
 
+  @override
+  final MessageModel? replyMessage;
 
 
-  MessageModel({required this.senderID, required this.receiverID, required this.messsage, required this.type,required this.timestamp,required this.fileType,required this.markAsRead,required this.isMine,required this.chatRoomID,required this.uid
-  })
+
+  MessageModel({required this.senderID, required this.receiverID, required this.messsage, required this.type,required this.timestamp,required this.fileType,required this.markAsRead,required this.isMine,required this.chatRoomID,required this.uid,required this.replyMessage})
     :super(
       uid: uid,
       fileType: fileType,
@@ -49,6 +51,7 @@ class MessageModel extends MessageEntity{
       markAsRead:markAsRead,
       isMine:isMine,
       chatRoomID: chatRoomID,
+      replyMessage: replyMessage
     );
 
   factory MessageModel.fromJson(Map<String,dynamic> json,String? curretnUser)=>MessageModel(
@@ -62,6 +65,9 @@ class MessageModel extends MessageEntity{
     markAsRead: json['markAsRead'], 
     isMine:  json['senderID'] == curretnUser,
     chatRoomID: json['chatRoomId'],
+    replyMessage: json['replyMessage'] == null 
+      ? null 
+      : MessageModel.fromJson(json['replyMessage'], null),
     );
 
   Map<String,dynamic> toMap()=> {
@@ -75,9 +81,11 @@ class MessageModel extends MessageEntity{
     'markAsRead':markAsRead,
     'isMine':isMine,
     'chatRoomId':chatRoomID,
+    // ignore: prefer_null_aware_operators
+    'replyMessage': replyMessage == null ? null : replyMessage?.toMap()
   }; 
   
-  factory MessageModel.create(String uid ,String senderID,String receiverID,String messsage,String chatRoomID)=> MessageModel(
+  factory MessageModel.create(String uid ,String senderID,String receiverID,String messsage,String chatRoomID,MessageModel? replyMessage)=> MessageModel(
     uid: uid,
     senderID: senderID, 
     receiverID: receiverID, 
@@ -88,9 +96,11 @@ class MessageModel extends MessageEntity{
     fileType: 'message', 
     markAsRead: false, 
     isMine: true,
+    replyMessage: replyMessage
+
     );
 
-  factory MessageModel.forImage(String uid,String senderId,String receiverId,String chatRoomID,String fakeType)=> MessageModel(
+  factory MessageModel.forImage(String uid,String senderId,String receiverId,String chatRoomID,String fakeType,MessageModel? replyMessage)=> MessageModel(
     uid: uid,
     senderID: senderId, 
     receiverID: receiverId, 
@@ -101,9 +111,10 @@ class MessageModel extends MessageEntity{
     markAsRead: false, 
     isMine: true, 
     chatRoomID: chatRoomID, 
+    replyMessage: replyMessage
   );
 
-  factory MessageModel.forGroup(String uid,String senderID,String messsage,String chatRoomID)=> MessageModel(
+  factory MessageModel.forGroup(String uid,String senderID,String messsage,String chatRoomID,MessageModel? replyMessage)=> MessageModel(
     uid: uid,
     senderID: senderID, 
     receiverID: 'groups', 
@@ -114,6 +125,6 @@ class MessageModel extends MessageEntity{
     fileType: 'message', 
     markAsRead: false, 
     isMine: true,
-  
+    replyMessage: replyMessage
     );
 }

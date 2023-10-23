@@ -1,5 +1,6 @@
 import 'dart:developer';
-
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:p_4/src/view/data/model/user_model.dart';
@@ -12,11 +13,18 @@ class UserRepoBody extends UserRepoHead{
   @override
   Stream<UserModel> getUserInfo(){
     String currentUser = supbase.auth.currentUser!.id;
-    return supbase.from('user')
-      .stream(primaryKey: ['id'])
-      .order('timestamp')
-      .eq('uid', currentUser)
-      .map((event) => UserModel.fromJson(event[0]));
+    try{
+      return supbase.from('user')
+        .stream(primaryKey: ['id'])
+        .order('timestamp')
+        .eq('uid', currentUser)
+        .map((event) => UserModel.fromJson(event[0]));
+    }
+    on SocketException catch(e){log('in Group Created Metod $e');return const Stream.empty();}
+    on PostgrestException catch(e){log('in Group Created Metod $e');return const Stream.empty();}
+    on SupabaseRealtimeError catch(e){log('in Group Created Metod $e');return const Stream.empty();}
+    on Exception catch(e){log('in Group Created Metod $e');return const Stream.empty();}
+    
   }
 
   @override
@@ -29,6 +37,10 @@ class UserRepoBody extends UserRepoHead{
         .eq('uid', user).then((value) => log('OK Updated'));
       return 'ok';
     }
+    on SupabaseRealtimeError catch(e){return e.toString();}
+    on PostgrestException catch(e){return e.toString();}
+    on SocketException catch(e){return e.toString();}
+    on Exception catch(e){return e.toString();}
     catch(e){ log('Error in Update user Info-> $e');return e.toString(); }
   }
 
@@ -47,6 +59,10 @@ class UserRepoBody extends UserRepoHead{
       await supbase.from('user').update({'image':getUrl}).eq('uid', user).then((value) => log('After UPdate Picture'));
       return 'ok';
     }
+    on SupabaseRealtimeError catch(e){return e.toString();}
+    on PostgrestException catch(e){return e.toString();}
+    on SocketException catch(e){return e.toString();}
+    on Exception catch(e){return e.toString();}
     catch(e){ log('Error update User Picture -> $e'); return e.toString();}
   }
 

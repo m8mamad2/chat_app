@@ -39,10 +39,9 @@ class _MessageTypeWidgetState extends State<MessageTypeWidget> {
   }
 
 
-  
-
   @override
   Widget build(BuildContext context) {
+    final bool isReply = widget.data.replyMessage != null;
     return FractionallySizedBox(
       alignment: widget.aligment,
       widthFactor: 0.6,
@@ -52,7 +51,6 @@ class _MessageTypeWidgetState extends State<MessageTypeWidget> {
           padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
           child: BlocBuilder<BorderRadiusBloc,BorderRadiusState>(
             builder:(context, state) {
-              log(state.toString());
               if(state is LoadedBorderRadiusState){
                return ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(state.borderRadius)),
@@ -64,20 +62,36 @@ class _MessageTypeWidgetState extends State<MessageTypeWidget> {
                       child: BlocBuilder<FontSizeBloc,FontSizeState>(
                         builder: (context, state) {
                           if(state is LoadedFontSizeState){
-                            return DefaultTextStyle.merge(
-                              style: theme(context).textTheme.labelLarge!.copyWith(fontSize: state.fontSize,color: theme(context).backgroundColor,),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Stack(
-                                  alignment:widget.isMine ? Alignment.bottomRight : Alignment.bottomLeft,
+                            return Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Stack(
+                                alignment:widget.isMine ? Alignment.bottomRight : Alignment.bottomLeft,
+                                children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                  Padding(
-                                    padding:widget.isMine ? const EdgeInsets.only(right: 10) : const EdgeInsets.only(left: 10),
-                                    child: Text(widget.data.messsage),
-                                  ),
-                                  Icon(Icons.check,size: 10,color: theme(context).backgroundColor,)  
-                                  ]),
-                              ),
+                                    isReply 
+                                      ? Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white10,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(widget.data.replyMessage!.messsage,style: theme(context).textTheme.bodySmall!.copyWith(
+                                          fontSize: sizeW(context)*0.015,
+                                        ),),
+                                      ),
+                                    )
+                                      : const SizedBox.shrink(),
+                                    Padding(
+                                      padding:widget.isMine ? const EdgeInsets.only(right: 10) : const EdgeInsets.only(left: 10),
+                                      child: Text(widget.data.messsage),
+                                    ),
+                                  ],
+                                ),
+                                Icon(Icons.check,size: 10,color: theme(context).backgroundColor,)  
+                                ]),
                             );
                           }
                           return Container(width: 100,height: 100,color: Colors.amber,);

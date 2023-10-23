@@ -7,7 +7,7 @@ abstract class GroupRepoHeader{
   Future<String> createGroup(String name,String bio,List<UserModel> users,XFile? file,UserModel mySelf);
   Future<List<CreateGroupModel>?> groupsModel();
   Stream<List<MessageModel>> getGroupMessages(String groupUid);
-  Future<void> sendGroupMessage(String message,String groupID);
+  Future<void> sendGroupMessage(String message,String groupID,MessageModel replyMessage);
   Future<List<CreateGroupModel>> getExistGroup();
   Future<String> deleteGroup(String groupUid);
   Future<String> leftGroup(String groupUid);

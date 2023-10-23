@@ -6,6 +6,7 @@
 
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:contacts_service/contacts_service.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -23,7 +24,7 @@ import '../../domain/repo/chat_repo_header.dart';
   
 class ChatRepoBody extends ChatRepoHeader{
   PermissionService permission = PermissionService();
-final SupabaseClient supabase = Supabase.instance.client;
+  final SupabaseClient supabase = Supabase.instance.client;
 
   @override
   Future<Map<String,List<MessageModel>>> getExistConversition() async {
@@ -45,6 +46,7 @@ final SupabaseClient supabase = Supabase.instance.client;
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return {e.toString() : []};}
     on SupabaseRealtimeError catch(e){log('in Group $e');return {e.toString() : []};}
+    on SocketException catch(e){log('in Group Created Metod $e');return {e.toString():[]};}
     on Exception catch(e){return { e.toString() : []};}
     catch(e){
       return { e.toString() : []};
@@ -69,13 +71,16 @@ final SupabaseClient supabase = Supabase.instance.client;
 
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return {e.toString():[]};}
+    on SocketException catch(e){log('in Group Created Metod $e');return {e.toString():[]};}
+    on Exception catch(e){return {e.toString():[]};}
+    on SupabaseRealtimeError catch(e){return {e.toString():[]};}
     catch(e){
       return {e.toString(): []}; 
     }
   }
 
   @override
-  Future<String> sendMessage(String message,String receiverID) async {
+  Future<String> sendMessage(String message,String receiverID,MessageModel? replyMessage) async {
     String curretnUserID = supabase.auth.currentUser!.id;
     try{
       List<String> ids = [curretnUserID,receiverID];
@@ -89,13 +94,16 @@ final SupabaseClient supabase = Supabase.instance.client;
         curretnUserID, 
         receiverID, 
         message,
-        chatRoomId ,);
+        chatRoomId ,
+        replyMessage);
       
       await supabase.from('chat').insert(messageModel.toMap());
       return 'ok';
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return e.toString();}
     on SupabaseRealtimeError catch(e){return e.toString();}
+    on SocketException catch(e){log('in Group Created Metod $e');return e.toString();}
+    on Exception catch(e){return e.toString();}
     catch(e){return e.toString();}
     
 
@@ -108,6 +116,8 @@ final SupabaseClient supabase = Supabase.instance.client;
       return 'ok';
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return e.toString();}
+    on SocketException catch(e){log('in Group Created Metod $e');return e.toString();}
+    on Exception catch(e){return e.toString();}
     on SupabaseRealtimeError catch(e){return e.toString();}
     catch(e){return e.toString();}
   }
@@ -127,11 +137,14 @@ final SupabaseClient supabase = Supabase.instance.client;
             .stream(primaryKey: ['id'])
             .order('timestamp')
             .eq('chatRoomId', chatRoomId)
-            .map((event) => event.map((e) => MessageModel.fromJson(e,curretnUserID)).toList());
+            .map((event) => event.map((e) => MessageModel.fromJson(e,curretnUserID)).toList())
+            .handleError((error){log(error);});
         
       return {'ok':messagesStream};
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return {e.toString():const Stream.empty()};}
+    on SocketException catch(e){log('in Group Created Metod $e');return {e.toString():const Stream.empty()};}
+    on Exception catch(e){return {e.toString():const Stream.empty()};}
     on SupabaseRealtimeError catch(e){return {e.toString():const Stream.empty()};}
     catch(e){return {e.toString() : const Stream.empty()};}
     
@@ -145,18 +158,17 @@ final SupabaseClient supabase = Supabase.instance.client;
   }
   
   @override
-  Stream<List<UserModel>>? getUserStatus(){
-    String currentUserId = supabase.auth.currentSession!.user.id;
+  Stream<List<UserModel>>? getUserStatus(String uid){
     return supabase
       .from('user')
       .stream(primaryKey: ['id'])
       .order('timestamp')
-      .eq('uid',currentUserId)
+      .eq('uid',uid)
       .map((event) => event.map((e) =>UserModel.fromJson(e)).toList());
   }
 
   @override
-  Future<String> sendLocationMessage(String message,String receiverID,)async{
+  Future<String> sendLocationMessage(String message,String receiverID,MessageModel? replyMessage)async{
     String curretnUserID = supabase.auth.currentUser!.id;
     try{
       List<String> ids = [curretnUserID,receiverID];
@@ -174,12 +186,15 @@ final SupabaseClient supabase = Supabase.instance.client;
         timestamp: DateFormat.yMMMEd().format(DateTime.now()), 
         fileType: 'location', 
         markAsRead: false, 
-        isMine: true,);
+        isMine: true,
+        replyMessage: replyMessage);
       
       await supabase.from('chat').insert(messageModel.toMap());
       return 'ok';
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return e.toString();}
+    on SocketException catch(e){log('in Group Created Metod $e');return e.toString();}
+    on Exception catch(e){return e.toString();}
     on SupabaseRealtimeError catch(e){return e.toString();}
     catch(e){return e.toString();}
     
@@ -221,6 +236,9 @@ final SupabaseClient supabase = Supabase.instance.client;
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return {e.toString():[]};}
     on SupabaseRealtimeError catch(e){return {e.toString():[]};}
+    on SocketException catch(e){log('in Group Created Metod $e');return {e.toString():[]};}
+    on Exception catch(e){return {e.toString():[]};}
+    
     catch(e){return {e.toString():[]};}
     
   }
@@ -246,6 +264,9 @@ final SupabaseClient supabase = Supabase.instance.client;
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return {e.toString():[]};}
     on SupabaseRealtimeError catch(e){return {e.toString():[]};}
+    on SocketException catch(e){log('in Group Created Metod $e');return {e.toString():[]};}
+    on Exception catch(e){return {e.toString():[]};}
+    
     catch(e){return {e.toString():[]};}
     
     
@@ -276,6 +297,8 @@ final SupabaseClient supabase = Supabase.instance.client;
     }
     on PostgrestException catch(e){return {e.toString():[]};}
     on SupabaseRealtimeError catch(e){return {e.toString():[]};}
+    on SocketException catch(e){return {e.toString():[]};}
+    on Exception catch(e){return {e.toString():[]};}
     catch(e){return {e.toString():[]};}
     
     
@@ -323,6 +346,8 @@ final SupabaseClient supabase = Supabase.instance.client;
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return e.toString();}
     on SupabaseRealtimeError catch(e){return e.toString();}
+    on SocketException catch(e){return e.toString();}
+    on Exception catch(e){return e.toString();}
     catch(e){return e.toString();}
   }
 

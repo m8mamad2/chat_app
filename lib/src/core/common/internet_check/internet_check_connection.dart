@@ -46,15 +46,19 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:meta/meta.dart';
+import 'package:p_4/src/core/common/bottom_shet_helper.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
 import 'package:p_4/src/core/common/internet_check/bloc/internet_bloc.dart';
+import 'package:p_4/src/core/common/sizes.dart';
 import 'package:p_4/src/core/widget/is_lock_screen.dart';
 import 'package:p_4/src/core/widget/not_internet_screen.dart';
 import 'package:p_4/src/view/data/model/message_model.dart';
 import 'package:p_4/src/view/data/model/user_model.dart';
 import 'package:p_4/src/view/domain/usecase/chat_usecase.dart';
 
+import '../../../config/theme/theme.dart';
 import '../../widget/loading.dart';
+import '../constance/lotties.dart';
 
 
 class InternetCheckerWidget extends StatefulWidget {
@@ -65,25 +69,62 @@ class InternetCheckerWidget extends StatefulWidget {
 }
 class _InternetCheckerWidgetState extends State<InternetCheckerWidget> {
   
+  bool isShowingOrNot= false;
+
   @override
   void initState() {
     context.read<InternetBloc>().add(ConnectionCheckEvent());
     super.initState();
   }
   
-  Future showing() async => await showDialog(
-    context: context, 
-    builder:(context) => AlertDialog(
-      actions: [
-        ElevatedButton(onPressed: ()async{
-          
-          bool isConnect =  await InternetConnectionChecker().hasConnection;
-          // ignore: use_build_context_synchronously
-          return isConnect ? context.navigationBack(context) : null;
-
-        }, child: Text('Check'))
-      ],
-    ));
+  bool aftherTry = false; 
+  
+  Future showing() async {
+    setState(() => isShowingOrNot = true);
+    await showModalBottomSheet(
+      enableDrag: false,  
+      context: context, 
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      builder: (context) => Container(
+        width: double.infinity,
+        decoration:const BoxDecoration(
+          color: Colors.white,
+          borderRadius:  BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30))
+    ),
+        child:  Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            errorLottie(context),
+            Text('Error',style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).primaryColor),),
+            sizeBoxH(sizeH(context)*0.05),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Center(
+                child: Text(
+                  aftherTry ? 'Not Connected yet ... one more time!' : 'Check Your Connection please...',
+                  textAlign: TextAlign.center,
+                  style: theme(context).textTheme.titleMedium!.copyWith(),),
+              )),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: ElevatedButton(
+                onPressed:()async {
+                  log(aftherTry.toString());
+                  await InternetConnectionChecker().hasConnection.then((value) => setState(()=> aftherTry = true),);
+                  log(aftherTry.toString());
+                } , 
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(MediaQuery.of(context).size.width * 0.8, sizeH(context)*0.13),
+                  backgroundColor: theme(context).primaryColor
+                ),
+                child: Text('ok',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor),)),
+            ),
+        ]),
+    ),);
+  }
+      
   
   @override
   Widget build(BuildContext context) {
@@ -93,11 +134,16 @@ class _InternetCheckerWidgetState extends State<InternetCheckerWidget> {
           listener: (context, state) async {
             log('--> In LIstenter$state');
             if(state is SuccessInternetState){
-              state.isConnected == true ? null : await showing();
+              if(isShowingOrNot){
+                state.isConnected == true ? context.navigationBack(context) : null;
+                setState(() => isShowingOrNot = false);
+              }
+              else {
+                state.isConnected == true ? null : await showing();
+              }
             }
           },
           builder: (context, state) {
-            // if(state is LoadingInternetState)return smallLoading(context);
             if(state is LoadingInternetState)return smallLoading(context);
             if(state is SuccessInternetState){
               return state.isConnected ? IsLockScreen() : NotInternetScreen();

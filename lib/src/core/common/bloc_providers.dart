@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:p_4/dsfsd.dart';
 import 'package:p_4/locator.dart';
 import 'package:p_4/src/config/theme/cubit/theme_cubit.dart';
 import 'package:p_4/src/view/presentaion/blocs/chat_bloc/chat_bloc.dart';
@@ -34,7 +33,6 @@ import 'internet_check/internet_check_connection.dart';
       BlocProvider<BorderRadiusBloc>(create:(_) => BorderRadiusBloc()),
       BlocProvider<ThemeBloc>(create:(_) => ThemeBloc()),
       BlocProvider<InternetBloc>(create:(_) => InternetBloc()),
-      BlocProvider<MMMBloc>(create:(_) => MMMBloc()),
     ], 
     child: child);
     

@@ -4,7 +4,7 @@ import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/constance/lotties.dart';
 import 'package:p_4/src/core/common/sizes.dart';
 
-Future errorBottomShetHelper(BuildContext context,String error,VoidCallback onTap)=> showModalBottomSheet(
+Future errorBottomShetHelper(BuildContext context,String error,void Function() onTap)=> showModalBottomSheet(
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
   context: context, 
   builder: (context) => Container(
@@ -32,7 +32,7 @@ Future errorBottomShetHelper(BuildContext context,String error,VoidCallback onTa
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: ElevatedButton(
-            onPressed: onTap, 
+            onPressed:onTap, 
             style: ElevatedButton.styleFrom(
               minimumSize: Size(MediaQuery.of(context).size.width * 0.8, sizeH(context)*0.13),
               backgroundColor: theme(context).primaryColor

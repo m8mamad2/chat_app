@@ -81,7 +81,7 @@ class _ChatAppBarState extends State<ChatAppBar> {
                 Text(widget.data.name!,style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).cardColor,fontSize: sizeW(context)*0.02,fontFamily: 'header'),),
                 sizeBoxW(sizeW(context)*0.013),
                 StreamBuilder(
-                stream: repo1.getUserStatus(),
+                stream: repo1.getUserStatus(widget.data.uid!),
                 builder: (context, snapshot) {
                   TextStyle texttheme = theme(context).textTheme.bodySmall!;
                   switch(snapshot.connectionState){

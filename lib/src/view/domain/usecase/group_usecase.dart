@@ -13,7 +13,7 @@ class GroupUsecase{
   Future<void> createGroup1(BuildContext context,String name,String bio,List<UserModel> users,XFile? file,UserModel mySelf) async => await repo.createGroup1(context,name,bio ,users, file,mySelf);
   Future<List<CreateGroupModel>?> groupsModel() async =>await repo.groupsModel();
   Stream<List<MessageModel>> getGroupMessages(String groupUid) => repo.getGroupMessages(groupUid);
-  Future<void> sendGroupMessage(String message,String groupID) async =>await repo.sendGroupMessage(message, groupID);
+  Future<void> sendGroupMessage(String message,String groupID,MessageModel replyMessage) async =>await repo.sendGroupMessage(message, groupID,replyMessage);
   Future<List<CreateGroupModel>> getExistGroup() async => await repo.getExistGroup();
   Future<void> deleteGroup(BuildContext context,String groupUid)async => await repo.deleteGroup(context, groupUid);
   Future<void> leftGroup(BuildContext context,String uid)async => await repo.leftGroup(context, uid);

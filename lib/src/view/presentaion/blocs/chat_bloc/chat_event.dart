@@ -15,13 +15,15 @@ class GetMessageEvent extends ChatEvent{
 class SendMessageEvent extends ChatEvent{
   final String message;
   final String receiverId;
-  SendMessageEvent({required this.receiverId,required this.message,});
+  final MessageModel? replyMessage;
+  SendMessageEvent({required this.receiverId,required this.message,required this.replyMessage});
 }
 
 class SendLocationMessageEvent extends ChatEvent{
   final String message;
   final String receiverId;
-  SendLocationMessageEvent({required this.receiverId,required this.message,});
+  final MessageModel? replyMessage;
+  SendLocationMessageEvent({required this.receiverId,required this.message,required this.replyMessage});
 }
 
 

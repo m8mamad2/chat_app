@@ -11,5 +11,6 @@ class AuthUseCase{
   Future<void> logout(BuildContext context) async => await repo.logOut(context);
   Future<void> addUserInfo(BuildContext context,XFile? image,String name) async => await repo.addUserInfo(context, image, name);
   bool isUserLogedIn()=> repo.isUserLogedIn();
+  Future<void> deleteAccount(BuildContext context) async => await repo.deleteAccount(context);
   // Future<String?> otpVerify(BuildContext context,String phone,String token)async => await repo.otpVerify(context,phone,token);
 }

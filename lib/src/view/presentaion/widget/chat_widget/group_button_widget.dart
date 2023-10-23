@@ -65,8 +65,8 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
     super.initState();
     isEmojiSelected = widget.isEmojiSelected;
     kBottomShetEvent = [
-     ()=> context.read<UploadBloc>().add(UploadMediaEvent(widget.groupUid, widget.groupUid)),
-     ()=> context.read<UploadBloc>().add(UploadFileEvent( widget.groupUid, widget.groupUid)),
+     ()=> context.read<UploadBloc>().add(UploadMediaEvent(widget.groupUid, widget.groupUid,null)),
+     ()=> context.read<UploadBloc>().add(UploadFileEvent( widget.groupUid, widget.groupUid,null)),
      ()=> context.navigation(context, LocationSendWidget(receiverId: widget.groupUid,)),
     ];
   }
@@ -138,7 +138,7 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
                 ? IconButton(onPressed: ()async{
                     GroupRepoBody repo = GroupRepoBody();
                     if(widget.controller.text.isNotEmpty) {
-                      await repo.sendGroupMessage(widget.controller.text, widget.groupUid);
+                      await repo.sendGroupMessage(widget.controller.text, widget.groupUid,null);
                       if(widget.scrollController.hasClients) widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
                       widget.controller.clear();
                     }
@@ -210,7 +210,7 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
       String? path = await audioRecord.stop();
       stop();
       // await repo.uploadVoice(receiverId, path!).then((value) => print('_____AFter uplaod VOice'));
-      context.read<UploadBloc>().add(UploadVoiceEvent(receiverId,path!,widget.groupUid));
+      context.read<UploadBloc>().add(UploadVoiceEvent(receiverId,path!,widget.groupUid,null));
     }
     catch(e){ print('in Stop VOice Error = $e');}
   }

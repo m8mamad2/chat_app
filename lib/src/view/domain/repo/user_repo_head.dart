@@ -9,4 +9,5 @@ abstract class UserRepoHead{
    Stream<UserModel> getUserInfo();
    Future<UserModel> getUserData();
    Future<Map<String,UserModel?>> isInApp(String phone);
+   
 }

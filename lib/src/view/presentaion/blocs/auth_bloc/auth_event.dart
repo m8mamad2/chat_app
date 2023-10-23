@@ -25,6 +25,11 @@ class AuthLogoutEvent extends AuthEvent{
   const AuthLogoutEvent({required this.context});
 }
 
+class AuthDeleteAccout extends AuthEvent{
+  final BuildContext context;
+  const AuthDeleteAccout({required this.context});
+}
+
 class IsUserLogedIn extends AuthEvent{}
 
 class AuthInfoEvent extends AuthEvent{

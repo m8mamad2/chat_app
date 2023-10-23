@@ -13,7 +13,7 @@ Widget cachedImageWidget( BuildContext context, String imageUrl, double? width, 
     // width: width,
     // height: height,
     placeholder: (context, url) => Shimmer.fromColors(
-      baseColor: theme(context).primaryColor.withOpacity(0.4),
+      baseColor: theme(context).primaryColor.withOpacity(0.8),
       highlightColor: theme(context).primaryColor,
       child: Container(color: Colors.white10,),
     ),

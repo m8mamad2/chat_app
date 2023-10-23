@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/constance/lotties.dart';
+import 'package:p_4/src/core/common/extension/navigation.dart';
+import 'package:swipe_to/swipe_to.dart';
 import 'package:p_4/src/core/common/sizes.dart';
 import 'package:p_4/src/core/widget/fail_bloc_widget.dart';
 import 'package:p_4/src/core/widget/loading.dart';
@@ -36,8 +38,10 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver{
   late bool isSearch;
   late ScrollController scrollController;
   late ListObserverController observerController;
+  late FocusNode focusNode;
   late String chatRoomId;
   int searchIndex = 0;
+  MessageModel? replyMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -63,33 +67,63 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver{
                     body: Column(
                       children: [
                         //* chat
-                        Expanded(
-                          child: StreamBuilder(
-                            stream: state.messages,
-                            builder: (context, snapshot) {
-                              switch(snapshot.connectionState){
-                                case ConnectionState.none:
-                                case ConnectionState.waiting:return loading(context);
-                                case ConnectionState.active:
-                                default:
-                                  if(snapshot.data == null){return startConversitionLottie(context);}
-                                  else{
-                                    List<MessageModel> messages = snapshot.data!.reversed.toList();
-                                    return ListViewObserver(
-                                      controller: observerController,
-                                      child: ListView.builder(
-                                        controller: scrollController,
-                                        shrinkWrap: true,
-                                        reverse: true,
-                                        itemCount: messages.length,
-                                        itemBuilder: (context, index){
-                                          return GestureDetector(
-                                            onDoubleTap: ()async => context.read<ChatBloc>().add(DeleteMessageEvent(messages[index].uid)),
-                                            child: messageItemWidget(context, messages[index],));}),
-                                    );}
-                              }
-                            },
-                          )),
+                        // Expanded(
+                        //   child: StreamBuilder(
+                        //     stream: state.messages,
+                        //     builder: (context, snapshot) {
+                        //       switch(snapshot.connectionState){
+                        //         case ConnectionState.none:
+                        //         case ConnectionState.waiting:return loading(context);
+                        //         case ConnectionState.active:
+                        //         default:
+                        //           if(snapshot.data == null){return startConversitionLottie(context);}
+                        //           else{
+                        //             List<MessageModel> messages = snapshot.data!.reversed.toList();
+                        //             return ListViewObserver(
+                        //               controller: observerController,
+                        //               child: ListView.builder(
+                        //                 controller: scrollController,
+                        //                 shrinkWrap: true,
+                        //                 reverse: true,
+                        //                 itemCount: messages.length,
+                        //                 itemBuilder: (context, index){
+                        //                   return GestureDetector(
+                        //                     onDoubleTap: ()async => showDeleteDialg(messages[index].uid),
+                        //                     child: messageItemWidget(context, messages[index],));}),
+                        //             );}
+                        //       }
+                        //     },
+                        //   )),
+
+                        //! second 
+                        BlocBuilder<MessagesBloc,MessagesState>(
+                          builder: (context, state) {
+                            if(state is LoadingMessagesState)return smallLoading(context);
+                            if(state is LoadedMessagesState){
+                              List<MessageModel>? messages = state.model;
+                              if(messages == null ||messages.isEmpty )return const Center(child: Text('Null'),);
+                              return Expanded(
+                                child: ListViewObserver(
+                                  controller: observerController,
+                                  child: ListView.builder(
+                                    controller: scrollController,
+                                    shrinkWrap: true,
+                                    reverse: true,
+                                    itemCount: messages.length,
+                                    itemBuilder: (context, index){
+                                      return SwipeTo(
+                                        onRightSwipe: () => reply(messages[index]),
+                                        child: GestureDetector(
+                                          onDoubleTap: ()async => showDeleteDialg(messages[index].uid),
+                                          child: messageItemWidget(context, messages[index],)),
+                                      );}),
+                                )
+                              );
+                            }
+                            if(state is FailMessagesState)return Expanded(child: Text(state.error));
+                            return Container(width: 100,height: 100,color:Colors.amber);
+                          },
+                        ),
 
                         // ! hydrate
                         // BlocBuilder<MessagesBloc,MessagesState>(
@@ -159,7 +193,10 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver{
                             receiverId: widget.data.uid!, 
                             chatRoomId: chatRoomId, 
                             isEmojiSelected: isEmojiSelected, 
-                            controller: _controller),
+                            controller: _controller,
+                            focusNode:focusNode ,
+                            onCancelReply: replyCancel,
+                            replayMessage: replyMessage),
 
                       ],
                     )
@@ -189,7 +226,8 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver{
     _controller =  TextEditingController();
     _searchController =  TextEditingController();
     isEmojiSelected = false;
-
+    focusNode = FocusNode();
+    
     isSearch = false;
     searchingComingData = [];
     repo = ChatRepoBody();
@@ -252,4 +290,47 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver{
         },
       ),
     );
+
+  showDeleteDialg(String uid)async{
+    await showDialog(
+      context: context, 
+      builder:(context)=> AlertDialog(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+              title: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Text('Delte Message',style:theme(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),),
+              ),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: [
+                    Padding(
+                      padding:const EdgeInsets.only(bottom: 10),
+                      child: Text('Are you sure you want to delete this message?',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body'),)),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: ()=>context.navigationBack(context), 
+                          child: Text('cancel',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColor),)),
+                        TextButton(
+                          onPressed: ()async{
+                            log('Delete');
+                            context.read<ChatBloc>().add(DeleteMessageEvent(uid));
+                            context.navigationBack(context);
+                          }, 
+                          child: Text('Delete',style: theme(context).textTheme.titleSmall!.copyWith(color: Colors.red),)),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ));
+  }
+
+
+  reply(MessageModel message)async{
+    replyMessage = message;
+    log(message.messsage);
+    focusNode.requestFocus();
+  }
+  replyCancel()=>setState(() => replyMessage = null);
 }
