@@ -325,8 +325,8 @@ class _VoiceTypeWidgetState extends State<VoiceTypeWidget> {
             borderRadius: BorderRadius.circular(16),
             child: BubbleBackground(
               colors: [
-                  if (widget.isMine) ...[theme(context).primaryColor , theme(context).primaryColor.withOpacity(0.5),] 
-                  else ...[theme(context).primaryColor , theme(context).primaryColor.withOpacity(0.5),],
+                  if (widget.isMine) ...[theme(context).primaryColorDark , theme(context).primaryColorDark.withOpacity(0.5),] 
+                  else ...[theme(context).primaryColorDark , theme(context).primaryColorDark.withOpacity(0.5),],
                 
               ],
               child: Container(
@@ -345,7 +345,7 @@ class _VoiceTypeWidgetState extends State<VoiceTypeWidget> {
                             child: CircleAvatar(
                               radius: (sizeW(context)*0.035).toDouble(),
                               backgroundColor: theme(context).backgroundColor,
-                              child: Icon(icon,color: theme(context).primaryColor,),
+                              child: Icon(icon,color: theme(context).primaryColorDark,),
                             ),
                           ),
                         const SizedBox(width: 4,),
@@ -476,8 +476,8 @@ class _VoiceLoadingTypeWidgetState extends State<VoiceLoadingTypeWidget> {
             borderRadius: BorderRadius.circular(16),
             child: BubbleBackground(
               colors: [
-                if (widget.isMine) ...[theme(context).primaryColor , theme(context).primaryColor.withOpacity(0.5),] 
-                else ...[theme(context).primaryColor , theme(context).primaryColor.withOpacity(0.5),],
+                if (widget.isMine) ...[theme(context).primaryColorDark , theme(context).primaryColorDark.withOpacity(0.5),] 
+                else ...[theme(context).primaryColorDark , theme(context).primaryColorDark.withOpacity(0.5),],
               ],
               child: Container(
                 decoration:BoxDecoration(borderRadius: BorderRadius.circular(16)),
@@ -491,7 +491,7 @@ class _VoiceLoadingTypeWidgetState extends State<VoiceLoadingTypeWidget> {
                         child: SizedBox(
                           width: sizeW(context)*0.055,
                           height: sizeH(context)*0.11,
-                          child: CircularProgressIndicator(color: theme(context).primaryColor,strokeWidth: 1,)),
+                          child: CircularProgressIndicator(color: theme(context).primaryColorDark,strokeWidth: 1,)),
                     ),
                     const SizedBox(width: 4,),
                     Column(

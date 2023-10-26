@@ -19,12 +19,22 @@ class ChatHelperRepoBody extends ChatHelperRepoHeader{
   Stream<List<UserModel>>? getUserStatus(String uid)=> repo.getUserStatus(uid);
   
   @override
-  Stream<List<MessageModel>>? getMessage(BuildContext context,String receiverID) {
-    final data = repo.getMessage(receiverID);
+  Future<int> lenghtOfData(String receiverID)async => await repo.lenghtOfData(receiverID);
+
+  @override
+  Stream<List<MessageModel>>? getMessage(BuildContext context,String receiverID,int limit)async* {
+    final data = repo.getMessage(receiverID,limit);
     String isOk = data.keys.last;
-    if (isOk == 'ok'){return repo.getMessage(receiverID).values.last;}
-    else {errorBottomShetHelper(context, isOk, () {context.navigationBack(context);
-  });}
+    
+    int lenghtOfData = await repo.lenghtOfData(receiverID);
+    int finalLenght = lenghtOfData <= 15 ? lenghtOfData : limit ;
+
+    if (isOk == 'ok'){
+      yield* repo.getMessage(receiverID,limit).values.last;}
+    
+    else {
+    // ignore: use_build_context_synchronously
+      errorBottomShetHelper(context, isOk, () {context.navigationBack(context);}); }
   }
 
   @override

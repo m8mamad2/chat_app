@@ -22,11 +22,11 @@ class _SettingChangeLanguageState extends State<SettingChangeLanguage> {
         bottom: PreferredSize(
                     preferredSize: const Size.fromHeight(0.0),
                     child: Container(
-                      color: theme(context).primaryColor,
+                      color: theme(context).primaryColorDark,
                       height: sizeH(context)*0.001,
                     ),
                   ),
-        title: Text('Change Language',style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
+        title: Text('Change Language'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
         backgroundColor: theme(context).backgroundColor, 
         elevation: 0,
         leading: IconButton(icon: const Icon(Icons.arrow_back),onPressed: () => context.navigationBack(context),),
@@ -36,13 +36,13 @@ class _SettingChangeLanguageState extends State<SettingChangeLanguage> {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.021  ,vertical: sizeH(context)*0.05),
-            child: Text('Languages',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColor),),
+            child: Text('Languages',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColorDark),),
           ),
           ListView(
             shrinkWrap: true,
             children: [
-              oneItam('Persian', context, 'fa', 'IR',),
-              oneItam('English', context, 'en', 'US',)
+              oneItam('Persian'.tr(), context, 'fa', 'IR',),
+              oneItam('English'.tr(), context, 'en', 'US',)
             ],
             )
         ],
@@ -53,7 +53,7 @@ class _SettingChangeLanguageState extends State<SettingChangeLanguage> {
     bool isActive =  context.locale.toString().contains('${languageCode}_$counrtyCode') ? true : false ;
     return ListTile(
       onTap: () { context.setLocale(Locale(languageCode,counrtyCode)); setState((){});},
-      trailing: isActive ? Icon(Icons.check,color: theme(context).primaryColor,) : null,
+      trailing: isActive ? Icon(Icons.check,color: theme(context).primaryColorDark,) : null,
       title: Text(title,style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body'),),
     );
    }

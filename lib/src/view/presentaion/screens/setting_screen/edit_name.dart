@@ -37,7 +37,7 @@ class _EditNameScreenState extends State<EditNameScreen> {
           child: Container(
             height :sizeH(context)*0.001,
             width: sizeW(context),
-            color: theme(context).primaryColor,
+            color: theme(context).primaryColorDark,
           ),
         ),
           title: Text('Edit name',style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
@@ -52,7 +52,7 @@ class _EditNameScreenState extends State<EditNameScreen> {
                       if(key.currentState!.validate()){ context.read<UserBloc>().add(UpdateUserInfoEvent(context,{'name':_controller.text.trim()})); }
                       else {log('Not Valid');}
                     }, 
-                    icon: Icon(Icons.check,color: theme(context).primaryColor,));
+                    icon: Icon(Icons.check,color: theme(context).primaryColorDark,));
                 }
                 if(state is UserFailState)return FailBlocWidget(state.fail.toString());
                 return Container();

@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
+import 'package:p_4/src/core/common/is_english.dart';
 import 'package:p_4/src/core/common/sizes.dart';
 import 'package:p_4/src/core/widget/cache_image.dart';
 import 'package:p_4/src/core/widget/fail_bloc_widget.dart';
@@ -50,7 +52,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                   width: sizeW(context),
                   height: sizeH(context)*0.27,
                   decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.0015)),
+                    border: Border(bottom: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.0015)),
                     color: theme(context).backgroundColor,
                   ),
                   child: Padding(
@@ -61,12 +63,12 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                           widget.data.image != null && widget.data.image!.isNotEmpty 
                             ? CircleAvatar(
                                 radius: sizeW(context)*0.045,
-                                backgroundColor: theme(context).primaryColor,
+                                backgroundColor: theme(context).primaryColorDark,
                                 backgroundImage: NetworkImage(widget.data.image!),
                               )
                             : CircleAvatar(
                                 radius: sizeW(context)*0.045,
-                                backgroundColor: theme(context).primaryColor,
+                                backgroundColor: theme(context).primaryColorDark,
                                 child: Text(widget.data.name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor)),
                               ),
                           sizeBoxW(sizeW(context)*0.02),
@@ -81,30 +83,33 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ListTile(title: Text('info',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColor),),),
+                      ListTile(title: Text('Info'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColorDark),),),
                       ListTile(
                         title: Text(widget.data.phone!),
-                        subtitle: const Text('Mobile'),
+                        subtitle: Text('Mobile'.tr()),
                       ),
                       ListTile(
-                        title: Text(widget.data.info ?? 'nothing'),
-                        subtitle: const Text('Bio'),
+                        title: Text(widget.data.info ?? 'Nothing'.tr()),
+                        subtitle: Text('Bio'.tr()),
                       ),
-                      Container(color: theme(context).primaryColor,height: sizeW(context)*0.0015,width: sizeW(context),)
+                      Container(color: theme(context).primaryColorDark,height: sizeW(context)*0.0015,width: sizeW(context),)
                     ],
                   ),
                 )
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only( right: sizeW(context)*0.03,bottom: sizeH(context)*0.25),
+                padding: EdgeInsets.only( 
+                  right:isEnglish(context) ? sizeW(context)*0.03 : 0,
+                  left:isEnglish(context) ? 0 : sizeW(context)*0.03,
+                  bottom: sizeH(context)*0.25),
                 child: Align(
-                  alignment: Alignment.centerRight,
+                  alignment:isEnglish(context) ? Alignment.centerRight : Alignment.centerLeft,
                   child: InkWell(
                     onTap: () => context.navigationBack(context),
                     child: CircleAvatar(
                       radius: sizeW(context)*0.04,
-                      backgroundColor: theme(context).primaryColor,
+                      backgroundColor: theme(context).primaryColorDark,
                       child: Icon(Icons.chat,color: theme(context).backgroundColor,),
                     ),
                   ),
@@ -122,7 +127,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(sizeH(context)*0.3),
                 child: TabBar(
-                  indicatorColor: theme(context).primaryColor,
+                  indicatorColor: theme(context).primaryColorDark,
                   indicatorWeight: sizeW(context)*0.002,
                   tabs: [
                     Tab(icon: Icon(Icons.chat,color: theme(context).cardColor,),),
@@ -139,7 +144,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                             case ConnectionState.none:
                             case ConnectionState.waiting:return smallLoading(context);
                             default:
-                              if(snapshot.data == null || snapshot.data!.isEmpty) return const Center(child: Text('Empty'),);
+                              if(snapshot.data == null || snapshot.data!.isEmpty) return Center(child: Text('Empty'.tr()),);
                               return GridView.builder(
                                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
                                 itemCount: snapshot.data!.length,
@@ -160,7 +165,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                             case ConnectionState.none:
                             case ConnectionState.waiting:return smallLoading(context);
                             default:
-                              if(snapshot.data == null || snapshot.data!.isEmpty) return const Center(child: Text('Empty'),);
+                              if(snapshot.data == null || snapshot.data!.isEmpty) return Center(child: Text('Empty'.tr()),);
                               return ListView.separated(
                                 separatorBuilder: (context, index) => Divider(
                                   thickness: 0.4,
@@ -168,7 +173,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                                 ),
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) => ListTile(
-                                  leading: CircleAvatar(radius: sizeW(context)*0.04,backgroundColor: theme(context).primaryColor,child: Icon(Icons.insert_drive_file_outlined,color: theme(context).backgroundColor,),),
+                                  leading: CircleAvatar(radius: sizeW(context)*0.04,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.insert_drive_file_outlined,color: theme(context).backgroundColor,),),
                                   onTap: ()=>context.read<UploadBloc>().add(DownloadFileEvent(snapshot.data![index]!.messsage,snapshot.data![index]!.fileType!,snapshot.data![index]!.uid)),
                                   title:BlocBuilder<UploadBloc,UploadState>(
                                     builder: (context, state) {

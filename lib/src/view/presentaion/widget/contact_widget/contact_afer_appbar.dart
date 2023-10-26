@@ -3,6 +3,7 @@
 
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -89,7 +90,7 @@ class ContactAfterAppbar extends StatelessWidget {
                           decoration: InputDecoration(
                             labelText: 'phone number',
                             labelStyle: theme(context).textTheme.bodySmall,
-                            prefixIcon:Icon(Icons.phone,color: theme(context).primaryColor,) ,
+                            prefixIcon:Icon(Icons.phone,color: theme(context).primaryColorDark,) ,
                             fillColor: theme(context).canvasColor,
                             filled: true,
                             errorStyle: theme(context).textTheme.labelSmall!.copyWith(
@@ -99,9 +100,9 @@ class ContactAfterAppbar extends StatelessWidget {
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(vertical: sizeW(context)*0.021),
                             focusedErrorBorder: border(Colors.red),
-                            enabledBorder: border(theme(context).primaryColor),
+                            enabledBorder: border(theme(context).primaryColorDark),
                             errorBorder: border(Colors.red),
-                            focusedBorder: border(theme(context).primaryColor),
+                            focusedBorder: border(theme(context).primaryColorDark),
                           ),
                         ),
                         sizeBoxH(sizeH(context)*0.1),
@@ -110,7 +111,7 @@ class ContactAfterAppbar extends StatelessWidget {
                             if(addMemberKey.currentState!.validate()) context.read<UserBloc>().add(UserIsInAppEvent(context, _addMemberController.text.trim(), _addMemberController));
                           }, 
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: theme(context).primaryColor,
+                            backgroundColor: theme(context).primaryColorDark,
                             minimumSize: Size(sizeW(context), sizeH(context)*0.13),
                             shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15) )
                           ),
@@ -133,19 +134,19 @@ class ContactAfterAppbar extends StatelessWidget {
     children: [
       ListTile(
         minLeadingWidth: sizeW(context)*0.01,
-        title: Text('Invite Friends',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body',fontWeight: FontWeight.w300),),
+        title: Text('Invite Friends'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body',fontWeight: FontWeight.w300),),
         leading: Padding(
           padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.015),
-          child: Icon(Icons.person_add_alt_outlined,color: theme(context).primaryColor,),
+          child: Icon(Icons.person_add_alt_outlined,color: theme(context).primaryColorDark,),
         ),
         onTap: ()async => await addMember(),
       ),
       ListTile(
         minLeadingWidth: sizeW(context)*0.01,
-        title: Text('Create Group',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body',fontWeight: FontWeight.w300),),
+        title: Text('Create Group'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body',fontWeight: FontWeight.w300),),
         leading: Padding(
           padding:  EdgeInsets.symmetric(horizontal: sizeW(context)*0.015),
-          child: Icon(Icons.group_outlined,color: theme(context).primaryColor,),
+          child: Icon(Icons.group_outlined,color: theme(context).primaryColorDark,),
         ),
         onTap: () => context.navigation(context, const CreateGroupScreen()),
       ),
@@ -155,7 +156,7 @@ class ContactAfterAppbar extends StatelessWidget {
           margin: EdgeInsets.only(bottom: 10),
           width: sizeW(context),
           height: sizeH(context)*0.063,
-          color: theme(context).primaryColor,
+          color: theme(context).primaryColorDark,
           
           child: Text('your contacts',style:theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor,fontWeight: FontWeight.w500) ,),
         ),

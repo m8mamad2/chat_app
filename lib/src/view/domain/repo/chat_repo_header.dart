@@ -5,7 +5,7 @@ import '../../data/model/user_model.dart';
 abstract class ChatRepoHeader{
   
   Future<void> sendMessage(String message,String receiverID,MessageModel? replyMessage);
-  Map<String,Stream<List<MessageModel>>> getMessage(String receiverID);
+  Map<String,Stream<List<MessageModel>>> getMessage(String receiverID,int limit);
   Future<void> deleteMessagee(String uid);
   Future<Map<String,List<MessageModel>>> getExistConversition();
   Future<Map<String,List<UserModel>>> getExistConversitonImage();
@@ -18,4 +18,5 @@ abstract class ChatRepoHeader{
   Future<Map<String,List<MessageModel?>>> getFileMessage(String receiverID);
   Future<Map<List<MessageModel>,List<int>>> searching(String receiverID,String search,);
   Future<String> deleteGroup(String groupUid);
+  Future<int> lenghtOfData(String receiverID);
 }

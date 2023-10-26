@@ -25,7 +25,7 @@ class ImageTypeWidget extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: theme(context).primaryColor,
+                color: theme(context).primaryColorDark,
                 width: 2
               )
             ),
@@ -70,7 +70,7 @@ class ImageLoadingTypeWidget extends StatelessWidget {
             height: sizeH(context)*0.8,
             width: sizeW(context)*0.3,
             decoration: BoxDecoration(
-              color: theme(context).primaryColor,
+              color: theme(context).primaryColorDark,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: theme(context).backgroundColor,

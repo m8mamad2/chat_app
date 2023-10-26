@@ -39,16 +39,3 @@ class _IsLockScreenState extends State<IsLockScreen> {
     );
   }
 }
-
-class BeforLockScreenINternet extends StatefulWidget {
-  const BeforLockScreenINternet({super.key});
-
-  @override
-  State<BeforLockScreenINternet> createState() => _BeforLockScreenINternetState();
-}
-class _BeforLockScreenINternetState extends State<BeforLockScreenINternet> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}

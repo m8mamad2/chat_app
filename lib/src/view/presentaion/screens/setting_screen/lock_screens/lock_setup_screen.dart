@@ -1,6 +1,7 @@
 
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -34,7 +35,7 @@ class _LockScreenState extends State<LockScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [ canGo ? IconButton(onPressed: (){}, icon:  Icon(Icons.check,color: theme(context).primaryColor,)) : const SizedBox.shrink(),],
+        actions: [ canGo ? IconButton(onPressed: (){}, icon:  Icon(Icons.check,color: theme(context).primaryColorDark,)) : const SizedBox.shrink(),],
         leading: IconButton(icon: const Icon(Icons.arrow_back),onPressed: ()=>context.navigationBack(context),),),
       body: BlocBuilder<LockBloc,LockState>(
         builder: (context, state) {
@@ -48,7 +49,7 @@ class _LockScreenState extends State<LockScreen> {
                   children: [
                     kLockLottier(context),
                     sizeBoxH(sizeH(context)*0.037),
-                    Text(isLock ? 'enter your passcode' : 'Enter Passcode and remeber it',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',fontSize: sizeW(context)*0.023),),
+                    Text(isLock ? 'Enter Your Passcode'.tr() : 'Enter Passcode and Remeber it'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',fontSize: sizeW(context)*0.023),),
                     SizedBox(
                       height: sizeH(context)*0.2,
                       child: Row(
@@ -134,12 +135,12 @@ class _LockScreenState extends State<LockScreen> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              color:  theme(context).primaryColor ,
+                              color:  theme(context).primaryColorDark ,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(child: index == 11 
                               ? Icon(Icons.backspace,color: theme(context).backgroundColor,) 
-                              : Text(numbers[index == 10 ? index - 1 : index],style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor),)),
+                              : Text(numbers[index == 10 ? index - 1 : index].tr(),style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor),)),
                             ),
                         );
                     },
@@ -192,7 +193,7 @@ class _AnimatedBoxItemState extends State<AnimatedBoxItem> with TickerProviderSt
       animation: animationController,
       builder: (context, child) => Container(
         margin: const EdgeInsets.all(10),
-        color: Colors.white,
+        color: theme(context).backgroundColor,
         child: Stack(
           children: [
             Container(),
@@ -203,10 +204,10 @@ class _AnimatedBoxItemState extends State<AnimatedBoxItem> with TickerProviderSt
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.white,
-                border: Border.all( color: widget.active ? theme(context).primaryColor:Colors.black,)
+                border: Border.all( color: widget.active ? theme(context).primaryColorDark:Colors.black,)
               ),
               child: widget.active 
-                ? Padding(padding: const EdgeInsets.all(15.0),child: CircleAvatar(backgroundColor: theme(context).primaryColor,)) 
+                ? Padding(padding: const EdgeInsets.all(15.0),child: CircleAvatar(backgroundColor: theme(context).primaryColorDark,)) 
                 : const SizedBox.shrink(),
             ),
           ],

@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
@@ -62,11 +63,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   bottom: PreferredSize(
                     preferredSize: const Size.fromHeight(0.0),
                     child: Container(
-                      color: theme(context).primaryColor,
+                      color: theme(context).primaryColorDark,
                       height: sizeH(context)*0.001,
                     ),
                   ),
-                  title: Text('Contacts',style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
+                  title: Text('Contacts'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
                   leading: IconButton(icon:const Icon(Icons.arrow_back),onPressed: ()=>context.navigationBack(context),),
                   actions: [ IconButton(onPressed: ()=>onPressed(), icon: const Icon(Icons.search))],
                 ),
@@ -74,7 +75,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                 children: [
                   isSearch ?  const SizedBox.shrink() : const ContactAfterAppbar(),
                   data == null || data.isEmpty
-                    ? const Center(child: Text('no contact'))
+                    ? Center(child: Text('No contact'.tr()))
                     : isSearch
                       ? ListView.builder(
                           shrinkWrap: true,
@@ -112,7 +113,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                         ? Container(
                                           width: sizeW(context)*0.066,
                                           decoration: BoxDecoration(
-                                            color: theme(context).primaryColor,
+                                            color: theme(context).primaryColorDark,
                                             shape: BoxShape.circle,
                                             image: DecorationImage(
                                               fit: BoxFit.cover,
@@ -121,7 +122,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                           ),
                                         )
                                         : CircleAvatar( 
-                                        backgroundColor: theme(context).primaryColor,
+                                        backgroundColor: theme(context).primaryColorDark,
                                         radius: sizeW(context)*0.034, 
                                         child: Text(data[index].name?[0].toUpperCase() ?? data[index].uid![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),),
                                   
@@ -131,7 +132,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                 ],
               ),
               floatingActionButton: FloatingActionButton(
-                backgroundColor: theme(context).primaryColor,
+                backgroundColor: theme(context).primaryColorDark,
                 child: Icon(Icons.person_add_alt_1_sharp,color: theme(context).backgroundColor,),
                 onPressed: ()async{
                   // context.read<UserBloc>().add();
@@ -194,18 +195,18 @@ class _ContactsScreenState extends State<ContactsScreen> {
                         sizeBoxH(sizeH(context)*0.04),
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: sizeH(context)*0.02),
-                          child: Text('New Contact',style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header'),),
+                          child: Text('New Contact'.tr(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header'),),
                         ),
                         TextFormField(
                           controller: _addMemberController,
                           autofocus: true,
                           textInputAction: TextInputAction.next,
                           style: theme(context).textTheme.bodyMedium!.copyWith(fontFamily: 'body'),
-                          validator: (value) => value!.isEmpty ? 'enter Something' : null,
+                          validator: (value) => value!.isEmpty ? 'Enter Something'.tr() : null,
                           decoration: InputDecoration(
-                            labelText: 'phone number',
+                            labelText: 'Phone number'.tr(),
                             labelStyle: theme(context).textTheme.bodySmall,
-                            prefixIcon:Icon(Icons.phone,color: theme(context).primaryColor,) ,
+                            prefixIcon:Icon(Icons.phone,color: theme(context).primaryColorDark,) ,
                             fillColor: theme(context).canvasColor,
                             filled: true,
                             errorStyle: theme(context).textTheme.labelSmall!.copyWith(
@@ -215,9 +216,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(vertical: sizeW(context)*0.021),
                             focusedErrorBorder: border(Colors.red),
-                            enabledBorder: border(theme(context).primaryColor),
+                            enabledBorder: border(theme(context).primaryColorDark),
                             errorBorder: border(Colors.red),
-                            focusedBorder: border(theme(context).primaryColor),
+                            focusedBorder: border(theme(context).primaryColorDark),
                           ),
                         ),
                         sizeBoxH(sizeH(context)*0.1),
@@ -226,11 +227,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
                             if(addMemberKey.currentState!.validate()) context.read<UserBloc>().add(UserIsInAppEvent(context, _addMemberController.text.trim(), _addMemberController));
                           }, 
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: theme(context).primaryColor,
+                            backgroundColor: theme(context).primaryColorDark,
                             minimumSize: Size(sizeW(context), sizeH(context)*0.13),
                             shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15) )
                           ),
-                          child: Text('Craete Contanst',style:theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor))),
+                          child: Text('Craete Contanst'.tr(),style:theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor))),
                       ],
                     ),
                   ),

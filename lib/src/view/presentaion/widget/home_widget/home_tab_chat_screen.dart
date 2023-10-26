@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/core/common/constance/lotties.dart';
@@ -58,10 +61,10 @@ class TabChatScreenState extends State<TabChatScreen> {
                     child: data[index].uid == supabase.auth.currentSession?.user.id
                       ? ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: theme(context).primaryColor,
+                          backgroundColor: theme(context).primaryColorDark,
                           radius: sizeW(context)*0.034,
                           child: Icon(Icons.save,color: theme(context).backgroundColor),),
-                        title: Text('Save Message',style: theme(context).textTheme.titleSmall!.copyWith(fontFamily: 'body',fontWeight: FontWeight.w500),),
+                        title: Text('Save Message'.tr(),style: theme(context).textTheme.titleSmall!.copyWith(fontFamily: 'body',fontWeight: FontWeight.w500),),
                         onTap: ()=> context.navigation(context, const SaveMessageScreen()),
                       )
                       : ListTile(
@@ -82,7 +85,7 @@ class TabChatScreenState extends State<TabChatScreen> {
                           )
                           : Container(
                             decoration: BoxDecoration(
-                              color: theme(context).primaryColor,
+                              color: theme(context).primaryColorDark,
                               shape: BoxShape.circle,
                             ),
                             height: sizeH(context)*0.2,
@@ -91,7 +94,7 @@ class TabChatScreenState extends State<TabChatScreen> {
                           )
                           
                           // : CircleAvatar( 
-                          //     backgroundColor: theme(context).primaryColor,
+                          //     backgroundColor: theme(context).primaryColorDark,
                           //     radius: sizeW(context)*0.034, 
                               // child: Text(data[index].name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),),),
                       ),
@@ -101,7 +104,7 @@ class TabChatScreenState extends State<TabChatScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: theme(context).primaryColor,
+        backgroundColor: theme(context).primaryColorDark,
         heroTag: 'contactsAdd',
         onPressed: () => context.navigation(context, const ContactsScreen()),
         child: Icon(Icons.add,color: theme(context).backgroundColor),),
@@ -174,7 +177,7 @@ class TabChatScreenState extends State<TabChatScreen> {
 //                   //   child: data[index].image != null && data[index].image!.isNotEmpty
 //                   //     ? Container(
 //                   //       decoration: BoxDecoration(
-//                   //         color: theme(context).primaryColor,
+//                   //         color: theme(context).primaryColorDark,
 //                   //         shape: BoxShape.circle,
 //                   //         image: DecorationImage(
 //                   //           onError: (exception, stackTrace) => setState(() => AssetImage(kLogoImage)),
@@ -184,7 +187,7 @@ class TabChatScreenState extends State<TabChatScreen> {
 //                   //     : Container(
 //                   //       width: sizeW(context)*0.6,
 //                   //       decoration: BoxDecoration(
-//                   //         color: theme(context).primaryColor,
+//                   //         color: theme(context).primaryColorDark,
 //                   //         shape: BoxShape.circle,
 //                   //       ),
 //                   //       child: Text(data[index].name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),
@@ -196,7 +199,7 @@ class TabChatScreenState extends State<TabChatScreen> {
 //         },
 //       ),
 //       floatingActionButton: FloatingActionButton(
-//         backgroundColor: theme(context).primaryColor,
+//         backgroundColor: theme(context).primaryColorDark,
 //         heroTag: 'contactsAdd',
 //         onPressed: () => context.navigation(context, const ContactsScreen()),
 //         child: Icon(Icons.add,color: theme(context).backgroundColor),),

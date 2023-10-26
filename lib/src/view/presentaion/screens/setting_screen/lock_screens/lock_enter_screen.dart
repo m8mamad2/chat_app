@@ -1,6 +1,7 @@
 
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
@@ -11,6 +12,8 @@ import 'package:p_4/src/view/data/repo/lock_repo_body.dart';
 import 'package:p_4/src/view/presentaion/blocs/lock_bloc/lock_bloc.dart';
 
 import '../../../../../config/theme/theme.dart';
+import '../../../../../core/common/constance/lotties.dart';
+import '../../../../../core/common/is_english.dart';
 import '../../../../../core/common/sizes.dart';
 import 'lock_setting_screen.dart';
 
@@ -44,10 +47,9 @@ class _LockEnteringScreenState extends State<LockEnteringScreen> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.lock_open_sharp ,color: theme(context).primaryColor,size: sizeW(context)*0.1,),
-                    sizeBoxH(sizeH(context)*0.04),
-                    Text('enter your passcode' ,style: theme(context).textTheme.labelLarge,),
-                    sizeBoxH(sizeH(context)*0.1),
+                    kLockLottier(context),
+                    Text('Enter Your Passcode'.tr() ,style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',fontSize: sizeW(context)*0.023),),
+                    sizeBoxH(sizeH(context)*0.03),
                     SizedBox(
                       height: sizeH(context)*0.2,
                       child: Row(
@@ -57,10 +59,13 @@ class _LockEnteringScreenState extends State<LockEnteringScreen> {
                         ],
                       ),
                     ),
-                    Text(message),
                   ],
                 ),
-                const Spacer(),
+                Padding(
+                  padding:  EdgeInsets.symmetric(vertical: sizeH(context)*0.03),
+                  child: Text(message,style: theme(context).textTheme.titleMedium!.copyWith(color: Colors.red,fontWeight: FontWeight.w600),),
+                ),
+                sizeBoxH(sizeH(context)*0.45),
                 Expanded(
                   flex: 1,
                   child: GridView.builder(
@@ -128,10 +133,16 @@ class _LockEnteringScreenState extends State<LockEnteringScreen> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              color:  theme(context).primaryColor ,
+                              color:  theme(context).primaryColorDark ,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Center(child: index == 11 ? const Icon(Icons.backspace) : Text(numbers[index == 10 ? index - 1 : index])),
+                            child: Center(child: index == 11 
+                              ? Icon(Icons.backspace,color: theme(context).backgroundColor,) 
+                              : Text(
+                                numbers[index == 10 ? index - 1 : index].tr(),
+                                style: theme(context).textTheme.titleSmall!.copyWith(
+                                  fontSize: isEnglish(context) ? sizeW(context)*0.021 : sizeW(context)*0.028,
+                                  color: theme(context).backgroundColor),)),
                             ),
                         );
                     },
@@ -184,7 +195,7 @@ class _AnimatedBoxItemState extends State<AnimatedBoxItem> with TickerProviderSt
       animation: animationController,
       builder: (context, child) => Container(
         margin: const EdgeInsets.all(10),
-        color: Colors.white,
+        color: theme(context).backgroundColor,
         child: Stack(
           children: [
             Container(),
@@ -195,10 +206,10 @@ class _AnimatedBoxItemState extends State<AnimatedBoxItem> with TickerProviderSt
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.white,
-                border: Border.all( color: widget.active ? theme(context).primaryColor:Colors.black,)
+                border: Border.all( color: widget.active ? theme(context).primaryColorDark:Colors.black,)
               ),
               child: widget.active 
-                ? Padding(padding: const EdgeInsets.all(15.0),child: CircleAvatar(backgroundColor: theme(context).primaryColor,)) 
+                ? Padding(padding: const EdgeInsets.all(15.0),child: CircleAvatar(backgroundColor: theme(context).primaryColorDark,)) 
                 : const SizedBox.shrink(),
             ),
           ],

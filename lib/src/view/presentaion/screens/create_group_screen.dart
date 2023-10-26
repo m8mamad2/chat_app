@@ -3,6 +3,7 @@
 
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/retry.dart';
@@ -46,21 +47,22 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(0.0),
           child: Container(
-            color: theme(context).primaryColor,
+            color: theme(context).primaryColorDark,
             height: sizeH(context)*0.001,
           ),
         ),
-        title: Text('New Group',
+        title: Text('New Group'.tr(),
         style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
         leading: IconButton(icon:const Icon(Icons.arrow_back),onPressed: ()=>context.navigationBack(context),),
       ),
       body: Column(
         children: [
+            sizeBoxH(sizeH(context)*0.03),
             Wrap(
               spacing: 10,
               runSpacing: 6,
-              children: chips.isEmpty ? [emptyChipsWidget(context)] : chips.map((e) => buildChip(e, theme(context).primaryColor ,true)).toList(),),
-            sizeBoxH(sizeH(context)*0.02),
+              children: chips.isEmpty ? [emptyChipsWidget(context)] : chips.map((e) => buildChip(e, theme(context).primaryColorDark ,true)).toList(),),
+            sizeBoxH(sizeH(context)*0.05),
             BlocBuilder<AllUserBloc,AllUserState>(
               builder: (context, state) {
                 log('$state');
@@ -70,7 +72,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
 
                   return data != null  
                     ? ListView.separated(
-                        separatorBuilder: (context, index) => Divider( thickness: 0.4, color: theme(context).primaryColor, indent: sizeW(context)*0.1,),
+                        separatorBuilder: (context, index) => Divider( thickness: 0.4, color: theme(context).primaryColorDark, indent: sizeW(context)*0.1,),
                         shrinkWrap: true,
                         itemCount: data.length ,
                         itemBuilder:(context, index) {
@@ -90,7 +92,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
                                   ? Container(
                                     width: sizeW(context)*0.06,
                                     decoration: BoxDecoration(
-                                      color: theme(context).primaryColor,
+                                      color: theme(context).primaryColorDark,
                                       shape: BoxShape.circle,
                                       image: DecorationImage(
                                         fit: BoxFit.cover,
@@ -99,7 +101,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
                                     ),
                                   )
                                   : CircleAvatar( 
-                                    backgroundColor: theme(context).primaryColor,
+                                    backgroundColor: theme(context).primaryColorDark,
                                     radius: sizeW(context)*0.029, 
                                     child: Text(data[index].name?[0].toUpperCase() ?? data[index].uid![0].toUpperCase(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),),
                                   
@@ -119,7 +121,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
           if(state is LoadedUserDataState){
             UserModel? mySelf = state.model;
             return FloatingActionButton(
-              backgroundColor: theme(context).primaryColor,
+              backgroundColor: theme(context).primaryColorDark,
               child: Icon(Icons.check,color: theme(context).backgroundColor,),
               onPressed: ()async{
                 chips.isNotEmpty 
@@ -138,7 +140,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
     return SizedBox(width: sizeW(context),height: sizeH(context)*0.12,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.03,vertical: sizeH(context)*0.03),
-                child: const Text('Who would you like to add?'),
+                child:  Text('Who would you like to add?'.tr()),
               ));
   }
 

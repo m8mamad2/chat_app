@@ -5,11 +5,17 @@ part of 'chat_bloc.dart';
 @immutable
 abstract class ChatEvent {}
 
-
 class GetMessageEvent extends ChatEvent{
   final BuildContext context;
   final String receiverId;
-  GetMessageEvent({required this.context,required this.receiverId});
+  final int limit;
+  GetMessageEvent({required this.context,required this.receiverId,required this.limit});
+}
+
+class GetInitialMessageeEvent extends ChatEvent{
+  final BuildContext context;
+  final String receiverId;
+  GetInitialMessageeEvent({required this.context,required this.receiverId});
 }
 
 class SendMessageEvent extends ChatEvent{
@@ -46,3 +52,24 @@ class GetExistConversition extends ChatEvent{
   final BuildContext context;
   GetExistConversition(this.context);
 }
+
+
+// @immutable
+// abstract class MessageEvent {}
+// class InitialMessageEvent extends MessageEvent{}
+
+// class GetMessageeEvent extends InitialMessageEvent{
+//   final BuildContext context;
+//   final String receiverId;
+//   final int limit;
+//   GetMessageeEvent({required this.context,required this.receiverId,required this.limit});
+// }
+
+// class GetInitialMessageeEvent extends InitialMessageEvent{
+//   final BuildContext context;
+//   final String receiverId;
+//   final int limit;
+//   GetInitialMessageeEvent({required this.context,required this.receiverId,required this.limit});
+// }
+
+// class DisposeGetMessageEvent extends InitialMessageEvent{}

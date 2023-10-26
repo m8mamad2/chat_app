@@ -11,7 +11,7 @@ Widget authElevatedButton(BuildContext context,String text,VoidCallback onPress)
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(sizeW(context)*0.1)
         ),
-        backgroundColor: theme(context).primaryColor
+        backgroundColor: theme(context).primaryColorDark
       ), 
       child:  Text(text,style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor),),
       );

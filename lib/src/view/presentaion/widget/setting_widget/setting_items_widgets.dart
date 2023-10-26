@@ -1,6 +1,7 @@
 
 
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
@@ -13,11 +14,11 @@ import 'package:p_4/src/view/presentaion/screens/setting_screen/setting_privacy_
 Widget settingOneItem(BuildContext context,String title,IconData icon,Widget widget) {
  return ListTile(
     onTap:()=> context.navigation(context, widget) ,
-    title: Text(title,style: theme(context).textTheme.titleMedium!.copyWith(),),
-    leading: Icon(icon,color:theme(context).primaryColor)
+    title: Text(title.tr(),style: theme(context).textTheme.titleMedium!.copyWith(),),
+    leading: Icon(icon,color:theme(context).primaryColorDark)
 );
 }
-List<String> kSettingTitle = ['Chat Setting','privacy security','language'];
+List<String> kSettingTitle = ['Chat Setting','Privacy Security'.tr(),'Language'.tr()];
 List<IconData> kSettingIcon = [Icons.chat_sharp,Icons.privacy_tip,Icons.language];
 List kSettingOnTap = const[
   SettingChatSetting(),
@@ -43,11 +44,11 @@ class SettingImtesWidget extends StatelessWidget {
             Container(
               width: sizeW(context),
               height: sizeH(context)*0.003,
-              color: theme(context).primaryColor,
+              color: theme(context).primaryColorDark,
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.023,vertical: sizeH(context)*0.05),
-              child: Text('Setting',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).primaryColor),),
+              child: Text('Setting'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).primaryColorDark),),
             ),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),

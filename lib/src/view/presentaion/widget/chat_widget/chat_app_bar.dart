@@ -45,7 +45,7 @@ class _ChatAppBarState extends State<ChatAppBar> {
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Container(
-          color: theme(context).primaryColor,
+          color: theme(context).primaryColorDark,
           height: sizeH(context)*0.002,
         ),
       ),
@@ -73,8 +73,8 @@ class _ChatAppBarState extends State<ChatAppBar> {
         child: Row(
           children: [
             widget.data.image != null 
-              ? CircleAvatar( radius: sizeW(context)*0.03, backgroundColor: theme(context).primaryColor ,backgroundImage: NetworkImage(widget.data.image!),)
-              : CircleAvatar( radius: sizeW(context)*0.03, backgroundColor: theme(context).primaryColor ,child: Center(child: Text(widget.data.name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor) ,)),),
+              ? CircleAvatar( radius: sizeW(context)*0.03, backgroundColor: theme(context).primaryColorDark ,backgroundImage: NetworkImage(widget.data.image!),)
+              : CircleAvatar( radius: sizeW(context)*0.03, backgroundColor: theme(context).primaryColorDark ,child: Center(child: Text(widget.data.name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor) ,)),),
             sizeBoxW(sizeW(context)*0.013),
             Column(
               children: [

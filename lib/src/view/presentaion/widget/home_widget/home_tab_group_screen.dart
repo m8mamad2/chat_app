@@ -58,7 +58,7 @@ class _TabGroupScreenState extends State<TabGroupScreen> {
                         ? Container(
                           width: sizeW(context)*0.07,
                           decoration: BoxDecoration(
-                            color: theme(context).primaryColor,
+                            color: theme(context).primaryColorDark,
                             shape: BoxShape.circle,
                           ),
                           child: ClipRRect(
@@ -67,8 +67,8 @@ class _TabGroupScreenState extends State<TabGroupScreen> {
                             ),
                         )
                         : CircleAvatar( 
-                          // backgroundColor: theme(context).primaryColor,
-                          backgroundColor: theme(context).primaryColor,
+                          // backgroundColor: theme(context).primaryColorDark,
+                          backgroundColor: theme(context).primaryColorDark,
                           radius: sizeW(context)*0.034, 
                           child: Text(data[index].name[0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),),
                       ),
@@ -79,7 +79,7 @@ class _TabGroupScreenState extends State<TabGroupScreen> {
         }
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: theme(context).primaryColor,
+        backgroundColor: theme(context).primaryColorDark,
         onPressed: ()=> context.navigation(context, const CreateGroupScreen()),
         child: Icon(Icons.add,color: theme(context).backgroundColor),
       ),

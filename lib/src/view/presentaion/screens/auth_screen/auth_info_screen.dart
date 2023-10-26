@@ -98,7 +98,9 @@ class _AuthInfoScreenState extends State<AuthInfoScreen> {
               onPressed: (){
                 if(key.currentState!.validate()){
                   context.read<AuthBloc>().add(AuthInfoEvent(context, image, controller.text.trim()));
-                  context.navigation(context, const AuthCheckWidget());
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const AuthCheckWidget(),));
+                  
+                  // context.navigation(context, const AuthCheckWidget());
                 }
               },
               );

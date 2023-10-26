@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -13,12 +14,12 @@ SizedBox kLockLottier(BuildContext context) => SizedBox(
     delegates: LottieDelegates(
       text: (initialText) => '**$initialText**',
       values: [
-        ValueDelegate.colorFilter(['**','Shape Layer 2','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
-        ValueDelegate.colorFilter(['**','Shape Layer 6','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
-        ValueDelegate.colorFilter(['**','Shape Layer 5','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
-        ValueDelegate.colorFilter(['**','Shape Layer 4','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
+        ValueDelegate.colorFilter(['**','Shape Layer 2','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
+        ValueDelegate.colorFilter(['**','Shape Layer 6','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
+        ValueDelegate.colorFilter(['**','Shape Layer 5','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
+        ValueDelegate.colorFilter(['**','Shape Layer 4','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
         ValueDelegate.colorFilter(['**','Artwork 26 Outlines','**'],value: ColorFilter.mode(theme(context).backgroundColor, BlendMode.src)),
-        ValueDelegate.colorFilter(['**','Artwork 25 Outlines','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
+        ValueDelegate.colorFilter(['**','Artwork 25 Outlines','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
       ]
     ),
     fit: BoxFit.contain,
@@ -38,10 +39,10 @@ Widget startConversitionLottie(BuildContext context)=> Center(
            delegates: LottieDelegates(
             text: (initialText) => '**$initialText**',
             values: [
-              ValueDelegate.colorFilter(['**','路径 14442','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
-              ValueDelegate.colorFilter(['**','路径 14441','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
+              ValueDelegate.colorFilter(['**','路径 14442','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
+              ValueDelegate.colorFilter(['**','路径 14441','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
               ValueDelegate.colorFilter(['**','椭圆 1320','**'],value: ColorFilter.mode(theme(context).backgroundColor, BlendMode.src)),
-              ValueDelegate.colorFilter(['**','减去 16','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
+              ValueDelegate.colorFilter(['**','减去 16','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
               ValueDelegate.colorFilter(['**','路径 14443','**'],value: ColorFilter.mode(theme(context).cardColor, BlendMode.src)),
               ValueDelegate.colorFilter(['**','矩形 4626','**'],value: ColorFilter.mode(theme(context).cardColor, BlendMode.src)),
               ValueDelegate.colorFilter(['**','椭圆 1322','**'],value: ColorFilter.mode(theme(context).cardColor, BlendMode.src)),
@@ -50,7 +51,7 @@ Widget startConversitionLottie(BuildContext context)=> Center(
            ),
            ),
       ),
-       Text('Start Conversition Right Now! ',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header'),)
+       Text('Start Conversition Right Now!'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header'),)
     ],
   ),
 );
@@ -65,9 +66,9 @@ Widget errorLottie(BuildContext context)=> Center(
         text: (initialText) => '**$initialText**',
         values: [
           ValueDelegate.colorFilter(['**','exclamation','**'],value: ColorFilter.mode(theme(context).backgroundColor, BlendMode.src)),
-          ValueDelegate.colorFilter(['**','stroke circle','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
+          ValueDelegate.colorFilter(['**','stroke circle','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
           ValueDelegate.colorFilter(['**','stroke circle 2','**'],value: ColorFilter.mode(theme(context).backgroundColor, BlendMode.src)),
-          ValueDelegate.colorFilter(['**','circle','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
+          ValueDelegate.colorFilter(['**','circle','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
         ]
        ),
        ),
@@ -82,7 +83,8 @@ Widget logoLottie(BuildContext context)=> SizedBox(
         text: (initialText) => '**$initialText**',
         values: [
           ValueDelegate.colorFilter(['**','first','**'],value: ColorFilter.mode(theme(context).cardColor, BlendMode.src)),
-          ValueDelegate.colorFilter(['**','second','**'],value: ColorFilter.mode(theme(context).primaryColor, BlendMode.src)),
+          ValueDelegate.colorFilter(['**','bg','**'],value: ColorFilter.mode(theme(context).backgroundColor, BlendMode.src)),
+          ValueDelegate.colorFilter(['**','second','**'],value: ColorFilter.mode(theme(context).primaryColorDark, BlendMode.src)),
         ]
        ),  ),
 );

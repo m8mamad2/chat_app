@@ -31,12 +31,12 @@ dependencies:
   bloc: ^8.1.2
   get_it: ^7.6.0
   easy_localization: ^3.0.3
-  loading_animation_widget: ^1.2.0+4
+  # loading_animation_widget: ^1.2.0+4
   supabase_flutter: ^1.10.10
   intl: ^0.17.0
   emoji_picker_flutter: ^1.6.1
   # video_player: ^2.4.0
-  flutter_typeahead: ^3.2.7
+  # flutter_typeahead: ^3.2.7
   flick_video_player: ^0.4.0
   videosdk: ^1.1.3
   # flutter_ringtone_player: ^3.2.0
@@ -49,14 +49,14 @@ dependencies:
   # geocoder_buddy: ^1.0.1
   geocode: ^1.0.3
   lottie: ^2.3.2
-  photo_manager: ^2.7.1
-  image_painter: ^0.5.0
+  photo_manager: ^2.7.0
+  # image_painter: ^0.5.0
   photo_view: ^0.14.0
   url_launcher: ^6.1.11
   contacts_service: ^0.6.3
   shared_preferences: ^2.2.0
-  flutter_screen_lock: ^9.0.1
-  local_auth: ^2.1.6
+  # flutter_screen_lock: ^9.0.1
+  # local_auth: ^2.1.6
   scrollview_observer: ^1.16.5
   shimmer: ^3.0.0
   cached_network_image: ^3.2.3
@@ -76,7 +76,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/audios/
     - assets/lottie/
     - assets/localization/
     - assets/localization/en-US.json
@@ -85,7 +84,6 @@ flutter:
     - assets/image/
     - assets/lottie/lock.json
     - assets/lottie/start_conversition.json
-    - assets/audio_wave_forms/test.json
 
   fonts:
     - family: header

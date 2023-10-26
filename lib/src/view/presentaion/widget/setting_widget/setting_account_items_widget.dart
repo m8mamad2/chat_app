@@ -2,6 +2,7 @@
 
 
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
@@ -32,7 +33,7 @@ class SettingAccountItemsWidget extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.023,vertical: sizeH(context)*0.05),
-              child: Text('Account',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).primaryColor),),
+              child: Text('Account'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).primaryColorDark),),
             ),
             BlocBuilder<GetUserData,GetUserDataState>(
                 builder: (context, state) {
@@ -62,8 +63,8 @@ Widget oneAccountWidget(BuildContext context,String title,String subtitle,VoidCa
   padding: EdgeInsets.zero,
   child: ListTile(
     onTap: onTap,
-    title: Text(title,style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body',fontWeight: FontWeight.bold,fontSize: sizeW(context)*0.02),),
-    subtitle: Text(subtitle,style: theme(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400,fontSize: sizeW(context)*0.015),),
+    title: Text(title.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'body',fontWeight: FontWeight.bold,fontSize: sizeW(context)*0.02),),
+    subtitle: Text(subtitle.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400,fontSize: sizeW(context)*0.015),),
   ),
 );
 

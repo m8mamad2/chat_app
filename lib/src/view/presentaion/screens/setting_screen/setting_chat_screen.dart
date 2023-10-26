@@ -1,4 +1,7 @@
 
+import 'dart:developer';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/cubit/theme_cubit.dart';
@@ -28,7 +31,7 @@ class SettingChatSettingState extends State<SettingChatSetting> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Setting',style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
+        title: Text('Chat Setting'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
         leading: IconButton(icon:const Icon(Icons.arrow_back),onPressed:() => context.navigationBack(context),),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(sizeH(context)*0.001),
@@ -59,7 +62,7 @@ Container oneLIneWidget(BuildContext context)=> Container(
       margin: const EdgeInsets.only(top: 1),
       width: sizeW(context),
       height: sizeH(context)*0.005,
-      color: theme(context).primaryColor,
+      color: theme(context).primaryColorDark,
     );
 
 Container fontSizeChangerWidget(BuildContext context)=> Container(
@@ -72,7 +75,7 @@ Container fontSizeChangerWidget(BuildContext context)=> Container(
       Padding(
         padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.04,vertical: sizeH(context)*0.02),
         // child: Text('Message Text Size',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColor,fontWeight: FontWeight.w400),),
-        child: Text('Message Text Size',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColor,fontWeight: FontWeight.w400),),
+        child: Text('Message Text Size'.tr(),style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).sliderTheme.overlayColor,fontWeight: FontWeight.w400),),
       ),
       BlocBuilder<FontSizeBloc,FontSizeState>(
         builder: (context, state) {
@@ -89,7 +92,7 @@ Container fontSizeChangerWidget(BuildContext context)=> Container(
                     divisions:11,
                     onChanged: (value) => context.read<FontSizeBloc>().add(ChangeFontSizeEvent(value)),),
                 ),
-                Text('${state.fontSize.toInt()}',style: theme(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400),),
+                Text('${state.fontSize.toInt()}'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400),),
               ],
             );}
           return Container(width: 100,height: 100,color: Colors.amber,);
@@ -114,8 +117,8 @@ Container fontSizeChangerWidget(BuildContext context)=> Container(
   
 );
 List<MessageModel> models = [
-  MessageModel.create('uid', 'senderID', 'receiverID', 'Hi Man ! Whats up?', 'chatRoomID',null),
-  MessageModel.create('uid', 'senderID', 'receiverID', 'Its AllWrith', 'chatRoomID',null)
+  MessageModel.create('uid', 'senderID', 'receiverID', 'Hi Man ! Whats up?'.tr(), 'chatRoomID',null),
+  MessageModel.create('uid', 'senderID', 'receiverID', 'It\'s All Wright'.tr(), 'chatRoomID',null)
 ];
 
 Container changeColorTheme(BuildContext context)=> Container(
@@ -128,7 +131,7 @@ Container changeColorTheme(BuildContext context)=> Container(
       sizeBoxH(sizeH(context)*0.02),
       Padding(
         padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.02,vertical: sizeH(context)*0.04),
-        child: Text('Change Color Theme',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColor,fontWeight: FontWeight.w400),),
+        child: Text('Change Color Theme'.tr(),style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColorDark,fontWeight: FontWeight.w400),),
       ),
       Container(
         decoration: BoxDecoration(
@@ -152,8 +155,8 @@ Container changeColorTheme(BuildContext context)=> Container(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: ListTile(
           onTap: () => context.read<ThemeBloc>().add(ChangeLightDarkThemeEvent()),
-          leading: Icon(Icons.color_lens,color: theme(context).primaryColor,),
-          title: const Text('Switch Dark Light '),
+          leading: Icon(Icons.color_lens,color: theme(context).primaryColorDark,),
+          title: Text('Switch Dark Light'.tr()),
         ),
       ),
     ],
@@ -179,7 +182,7 @@ Container borderRadiusChangerWidget(BuildContext context)=> Container(
       sizeBoxH(sizeH(context)*0.02),
       Padding(
         padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.04,vertical: sizeH(context)*0.02),
-        child: const Text('Messages Corners'),
+        child: Text('Messages Corners'.tr()),
       ),
       BlocBuilder<BorderRadiusBloc,BorderRadiusState>(
         builder: (context, state) {
@@ -196,7 +199,7 @@ Container borderRadiusChangerWidget(BuildContext context)=> Container(
                     divisions:11,
                     onChanged: (value) => context.read<BorderRadiusBloc>().add(ChangeBorderRadiusEvent(value)),),
                 ),
-                Text('${state.borderRadius.toInt()}'),
+                Text('${state.borderRadius.toInt()}'.tr()),
               ],
             );}
           return Container(width: 100,height: 100,color: Colors.amber,);

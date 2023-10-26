@@ -109,7 +109,7 @@ class _GroupScreenState extends State<GroupScreen> with WidgetsBindingObserver{
                             width: sizeW(context),
                             height: sizeH(context)*0.15,
                             decoration:BoxDecoration(
-                              border: Border( top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.001)),),
+                              border: Border( top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),),
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.04),
                               child: Row(
@@ -197,7 +197,7 @@ class _GroupScreenState extends State<GroupScreen> with WidgetsBindingObserver{
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Container(
-          color: theme(context).primaryColor,
+          color: theme(context).primaryColorDark,
           height: sizeH(context)*0.002,
         ),
       ),
@@ -240,7 +240,7 @@ class _GroupScreenState extends State<GroupScreen> with WidgetsBindingObserver{
                       children: [
                         TextButton(
                           onPressed: ()=>context.navigationBack(context), 
-                          child: Text('cancel',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColor),)),
+                          child: Text('cancel',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColorDark),)),
                         TextButton(
                           onPressed: ()async{
                             log('Delete');

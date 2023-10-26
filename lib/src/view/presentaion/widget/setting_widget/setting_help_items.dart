@@ -1,6 +1,7 @@
 
 
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
@@ -15,11 +16,11 @@ Widget settingOneItem(BuildContext context,String title,IconData icon,String url
       if ( await launchUrl(data)) { await launchUrl(data); } 
       else { throw 'Could not open the map.'; }
     } ,
-    title: Text(title,style: theme(context).textTheme.titleMedium!.copyWith(),),
-    leading: Icon(icon,color:theme(context).primaryColor)
+    title: Text(title.tr(),style: theme(context).textTheme.titleMedium!.copyWith(),),
+    leading: Icon(icon,color:theme(context).primaryColorDark)
 );
 }
-List<String> kSettingTitle = ['FQA','privacy Policy'];
+List<String> kSettingTitle = ['FQA','Privacy Policy'];
 List<IconData> kSettingIcon = [Icons.question_mark,Icons.policy];
 List<String> kSettingUrl = const['https://customers.ai/blog/how-to-make-q-and-a-chatbot','https://customers.ai/blog/how-to-make-q-and-a-chatbot',];
 
@@ -40,11 +41,11 @@ class SettingHelpWidget extends StatelessWidget {
             Container(
               width: sizeW(context),
               height: sizeH(context)*0.003,
-              color: theme(context).primaryColor,
+              color: theme(context).primaryColorDark,
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.023,vertical: sizeH(context)*0.05),
-              child: Text('Help',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).primaryColor),),
+              child: Text('Help'.tr().tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).primaryColorDark),),
             ),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),

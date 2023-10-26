@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,18 +34,18 @@ class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
   @override
   Widget build(BuildContext context) {
 
-  UnderlineInputBorder border()=>UnderlineInputBorder(borderSide: BorderSide(color: theme(context).primaryColor,));
+  UnderlineInputBorder border()=>UnderlineInputBorder(borderSide: BorderSide(color: theme(context).primaryColorDark,));
              
   return Scaffold(
       appBar: AppBar(
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(0.0),
           child: Container(
-            color: theme(context).primaryColor,
+            color: theme(context).primaryColorDark,
             height: sizeH(context)*0.001,
           ),
         ),
-        title: Text('New Group',style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
+        title: Text('New Group'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
         leading: IconButton(icon:const Icon(Icons.arrow_back),onPressed: ()=>context.navigationBack(context),),
       ),
       body: SingleChildScrollView(
@@ -62,7 +63,7 @@ class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
                       setState(() => file != null ? image = file : log('Choese Image null'),);
                     },
                     child: CircleAvatar(
-                      backgroundColor: theme(context).primaryColor,
+                      backgroundColor: theme(context).primaryColorDark,
                       radius: sizeW(context)*0.052,
                       backgroundImage: image != null ? FileImage(File(image!.path)) : null,
                       child: Center(child: image != null ? null : Icon(Icons.add_a_photo,size: sizeW(context)*0.04,color: Colors.white,)),
@@ -77,14 +78,14 @@ class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
                           decoration: InputDecoration(
                             border: border(),
                             focusedBorder: border(),
-                            hintText: 'Enter group Name',),
+                            hintText: 'Enter group Name'.tr(),),
                         ),
                         TextField(
                           controller: biocontroller,
                           decoration: InputDecoration(
                             border: border(),
                             focusedBorder: border(),
-                            hintText: 'Enter bio Name',),
+                            hintText: 'Enter Bio',),
                         ),
                       ],
                     ))
@@ -96,7 +97,7 @@ class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
               width: sizeW(context),
               height: sizeH(context)*0.08,
               color: theme(context).primaryColor,
-              child: Text('${widget.data?.length} members',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor),),
+              child: Text('${widget.data?.length} memebers',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).primaryColorDark),),
             ),
             sizeBoxH(sizeH(context)*0.02),
             ListView.separated(
@@ -110,7 +111,7 @@ class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
                     ? Container(
                         width: sizeW(context)*0.066,
                         decoration: BoxDecoration(
-                          color: theme(context).primaryColor,
+                          color: theme(context).primaryColorDark,
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             fit: BoxFit.cover,
@@ -119,7 +120,7 @@ class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
                         ),
                       )
                     : CircleAvatar(
-                      backgroundColor: theme(context).primaryColor,
+                      backgroundColor: theme(context).primaryColorDark,
                       radius: sizeW(context)*0.034,
                       child: Text(widget.data![index].name?[0].toUpperCase() ?? widget.data![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),)),
                   title: Text(widget.data?[index].name ?? widget.data![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleSmall!.copyWith(fontSize: sizeW(context)*0.018,fontFamily: 'body',fontWeight: FontWeight.w500)),
@@ -129,7 +130,7 @@ class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: theme(context).primaryColor,
+        backgroundColor: theme(context).primaryColorDark,
         onPressed: ()async {
           context.read<GroupBloc>().add(CreateGroupEvent1(context: context,name: controller.text.trim(),bio: biocontroller.text.trim() ,users: widget.data!, file: image,mySelf: widget.myself));
         },

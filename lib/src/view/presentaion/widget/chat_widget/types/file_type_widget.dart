@@ -39,8 +39,8 @@ class _FileTypeWidgetState extends State<FileTypeWidget> {
                 colors: [
                     // if (widget.isMine) ...const [Color(0xFF6C7689),Color(0xFF3A364B),] 
                     // else ...const [Color(0xFF19B7FF),Color(0xFF491CCB),],
-                    if (widget.isMine) ...[theme(context).primaryColor , theme(context).primaryColor.withOpacity(0.5),] 
-                    else ... [theme(context).primaryColor , theme(context).primaryColor.withOpacity(0.5),],
+                    if (widget.isMine) ...[theme(context).primaryColorDark , theme(context).primaryColorDark.withOpacity(0.5),] 
+                    else ... [theme(context).primaryColorDark , theme(context).primaryColorDark.withOpacity(0.5),],
                 ],
                 child: SizedBox(
                   height: sizeH(context)*0.18,
@@ -54,7 +54,7 @@ class _FileTypeWidgetState extends State<FileTypeWidget> {
                           CircleAvatar(
                             radius: (sizeW(context)*0.035).toDouble(),
                             backgroundColor: theme(context).backgroundColor,
-                            child: Icon(Icons.file_copy,color: theme(context).primaryColor),
+                            child: Icon(Icons.file_copy,color: theme(context).primaryColorDark),
                             ),
                           sizeBoxW(sizeW(context)*0.01),
                           BlocBuilder<UploadBloc,UploadState>(
@@ -117,7 +117,7 @@ class FileLoaingTypeWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             child: BubbleBackground(
               colors: [
-                if (isMine) ...[theme(context).primaryColor , theme(context).primaryColor.withOpacity(0.5),] 
+                if (isMine) ...[theme(context).primaryColorDark , theme(context).primaryColorDark.withOpacity(0.5),] 
                 else ...const [Color(0xFF19B7FF),Color(0xFF491CCB),],
               ],
               child:Stack(

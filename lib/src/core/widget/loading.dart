@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 
@@ -13,18 +12,18 @@ Widget loading(BuildContext contex)=> Center(
     delegates:LottieDelegates(
       text: (initialText) => '**$initialText**',
       values: [
-        ValueDelegate.color(['Index_finger','**'], value: theme(contex).primaryColor),
-        ValueDelegate.color(['Middle_finger','**'],value: theme(contex).primaryColor),
-        ValueDelegate.color(['Ring_finger','**'],  value: theme(contex).primaryColor),
-        ValueDelegate.color(['little_finger','**'],value: theme(contex).primaryColor),
-        ValueDelegate.color(['Hand/Thump','**'],   value: theme(contex).primaryColor),
+        ValueDelegate.color(['Index_finger','**'], value: theme(contex).primaryColorDark),
+        ValueDelegate.color(['Middle_finger','**'],value: theme(contex).primaryColorDark),
+        ValueDelegate.color(['Ring_finger','**'],  value: theme(contex).primaryColorDark),
+        ValueDelegate.color(['little_finger','**'],value: theme(contex).primaryColorDark),
+        ValueDelegate.color(['Hand/Thump','**'],   value: theme(contex).primaryColorDark),
       ]
     ),
   )
 );
 
 Widget smallLoading(BuildContext context,{Color? color}) => Center(
-  child: CircularProgressIndicator(color: color ?? theme(context).primaryColor,)
+  child: CircularProgressIndicator(color: color ?? theme(context).primaryColorDark,)
   // LottieBuilder.asset(
   //   'assets/lottie/small_animation.json',
   //   delegates:LottieDelegates(

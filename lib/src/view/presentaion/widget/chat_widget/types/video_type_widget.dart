@@ -42,7 +42,7 @@ class VideoTypeWidgetState extends State<VideoTypeWidget> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: theme(context).primaryColor,
+                color: theme(context).primaryColorDark,
                 width: 1
               )
             ),
@@ -112,7 +112,7 @@ class VideoLoadingTypeWidget extends StatelessWidget {
             height: sizeH(context)*0.8,
             width: sizeW(context)*0.3,
             decoration: BoxDecoration(
-              color: theme(context).primaryColor,
+              color: theme(context).primaryColorDark,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: theme(context).backgroundColor,

@@ -126,23 +126,17 @@
 
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:lottie/lottie.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/constance/lotties.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
 import 'package:p_4/src/core/common/sizes.dart';
-import 'package:p_4/src/core/widget/fail_bloc_widget.dart';
 import 'package:p_4/src/core/widget/loading.dart';
 import 'package:p_4/src/view/data/model/user_model.dart';
-import 'package:p_4/src/view/data/repo/user_repo_body.dart';
 import 'package:p_4/src/view/presentaion/blocs/auth_bloc/auth_bloc.dart';
 import 'package:p_4/src/view/presentaion/blocs/user_bloc/user_bloc.dart';
-import 'package:p_4/src/view/presentaion/screens/setting_screen/edit_bio_screen.dart';
 import 'package:p_4/src/view/presentaion/widget/setting_widget/setting_items_widgets.dart';
 import 'package:p_4/src/view/presentaion/screens/setting_screen/edit_name.dart';
 import 'package:p_4/src/view/presentaion/widget/setting_widget/select_image_profile.dart';
@@ -168,7 +162,7 @@ class _SettingScreenState extends State<SettingScreen> {
           SliverAppBar(
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(sizeH(context)*0.002),
-              child: Container(width: sizeW(context),height: sizeH(context)*0.002,color: theme(context).primaryColor,)),
+              child: Container(width: sizeW(context),height: sizeH(context)*0.002,color: theme(context).primaryColorDark,)),
             backgroundColor: theme(context).scaffoldBackgroundColor,
             pinned: true,
             expandedHeight: sizeH(context)*0.3,
@@ -179,12 +173,12 @@ class _SettingScreenState extends State<SettingScreen> {
                 color: theme(context).backgroundColor,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5),side: BorderSide(color: theme(context).cardColor,width: sizeW(context)*0.0002)),
                 itemBuilder: (context) => [
-                  popupItem(context, ()=> context.navigation(context, const EditNameScreen()) , 'edit Name', Icons.edit_outlined),
+                  popupItem(context, ()=> context.navigation(context, const EditNameScreen()) , 'Edit Name', Icons.edit_outlined),
                   popupItem(context, ()=> showModalBottomSheet(
                     shape:const RoundedRectangleBorder( borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),)),
                     context: context,
                     builder: (context) => const BottomShetImagesWidget(),), 'Set Profile Image', Icons.image_outlined),
-                  popupItem(context, ()=> context.read<AuthBloc>().add(AuthLogoutEvent(context: context)) , 'logout', Icons.logout_outlined),
+                  popupItem(context, ()=> context.read<AuthBloc>().add(AuthLogoutEvent(context: context)) , ' ', Icons.logout_outlined),
                 ]
               )
             ],
@@ -207,7 +201,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             height: sizeH(context)*0.1,
                             width: sizeW(context)*0.05,
                             decoration: BoxDecoration(
-                              color: theme(context).primaryColor,
+                              color: theme(context).primaryColorDark,
                               shape: BoxShape.circle,
                             ),
                             child: ClipRRect(
@@ -218,8 +212,8 @@ class _SettingScreenState extends State<SettingScreen> {
                           : CircleAvatar(child: kUserPersonLottie,),
                         sizeBoxW(sizeW(context)*0.01),
                         data?.name != null  
-                          ? Text(data?.name ?? 'nothing',style: theme(context).textTheme.labelLarge!.copyWith(fontFamily: 'header',fontSize: sizeW(context)*0.016),)
-                          : const Text('no name'),
+                          ? Text(data?.name ?? 'Nothing'.tr(),style: theme(context).textTheme.labelLarge!.copyWith(fontFamily: 'header',fontSize: sizeW(context)*0.016),)
+                          : const Text('No Name'),
                         sizeBoxH(sizeH(context)*0.01)
                       ],
                     );}
@@ -250,9 +244,9 @@ PopupMenuItem popupItem(BuildContext context,VoidCallback onTap,String title,Ico
     child: SizedBox(
       child: Row(
         children: [
-         Icon(icon,color: theme(context).primaryColor,),
+         Icon(icon,color: theme(context).primaryColorDark,),
          sizeBoxW(sizeW(context)*0.01),
-         Text(title,style: theme(context).textTheme.bodyMedium!.copyWith(fontFamily: 'body'),),
+         Text(title.tr(),style: theme(context).textTheme.bodyMedium!.copyWith(fontFamily: 'body'),),
         ],
       ),
     )

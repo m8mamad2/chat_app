@@ -56,8 +56,8 @@ class _MessageTypeWidgetState extends State<MessageTypeWidget> {
                   borderRadius: BorderRadius.all(Radius.circular(state.borderRadius)),
                   child: BubbleBackground(
                       colors: [
-                        if (widget.isMine) ...[theme(context).primaryColor , theme(context).primaryColor.withOpacity(0.5),] 
-                        else ...[theme(context).primaryColor , theme(context).primaryColor.withOpacity(0.5),],
+                        if (widget.isMine) ...[theme(context).primaryColorDark , theme(context).primaryColorDark.withOpacity(0.5),] 
+                        else ...[theme(context).primaryColorDark , theme(context).primaryColorDark.withOpacity(0.5),],
                       ],
                       child: BlocBuilder<FontSizeBloc,FontSizeState>(
                         builder: (context, state) {
@@ -86,7 +86,10 @@ class _MessageTypeWidgetState extends State<MessageTypeWidget> {
                                       : const SizedBox.shrink(),
                                     Padding(
                                       padding:widget.isMine ? const EdgeInsets.only(right: 10) : const EdgeInsets.only(left: 10),
-                                      child: Text(widget.data.messsage),
+                                      child: Text(widget.data.messsage,style: theme(context).textTheme.titleSmall!.copyWith(
+                                        fontSize: state.fontSize,
+                                        color: theme(context).backgroundColor
+                                      ),),
                                     ),
                                   ],
                                 ),

@@ -4,6 +4,7 @@
 import 'dart:developer';
 
 import 'package:contacts_service/contacts_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -77,19 +78,19 @@ class UserHelperRepoBody extends UserHelperRepoHeader{
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
               title: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Text('invited to Radical',style:theme(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),),
+                child: Text('Invited to Radical'.tr(),style:theme(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),),
               ),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Text('is not on Radical yet, whould your like to invite them to join?')),
+                     Padding(
+                      padding:const EdgeInsets.only(bottom: 10),
+                      child: Text('is not on Radical yet, whould your like to invite them to join?'.tr())),
                     Row(
                       children: [
                         TextButton(
                           onPressed: ()=>context.navigationBack(context), 
-                          child:const Text('cancel')),
+                          child:Text('Cancel'.tr())),
                         TextButton(
                           onPressed: ()async{
                             final Uri smsModel = Uri(
@@ -98,7 +99,7 @@ class UserHelperRepoBody extends UserHelperRepoHeader{
                               queryParameters:<String,String>{'body':'Come on Bro! come to Radical'} );
                             if(!await launchUrl(smsModel))log('I Cant Do This');
                           }, 
-                          child: const Text('Invited')),
+                          child: Text('Invited'.tr())),
                       ],
                     )
                   ],

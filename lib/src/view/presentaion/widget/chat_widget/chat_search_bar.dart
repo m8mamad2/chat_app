@@ -3,7 +3,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:p_4/src/view/data/model/message_model.dart';
 import 'package:p_4/src/view/presentaion/blocs/chat_bloc/chat_bloc.dart';
 
@@ -53,13 +52,12 @@ class _ChatSearchWidgetState extends State<ChatSearchWidget> {
             if(state is ChatLoadingState)return loading(context);
             if (state is ChatSuccessState ) {
               
-              Stream<List<MessageModel>> megs = state.messages!;
+              List<MessageModel> megs = state.messages!;
               List<MessageModel> ulist = [];
-              megs.listen((event) {
-                setState(() {
-                  ulist.addAll(event);
-                });
-              },);
+              // megs.listen((event) {
+                setState(() {ulist.addAll(megs);});
+              //   });
+              // },);
               
               return Container(
                   decoration: BoxDecoration(

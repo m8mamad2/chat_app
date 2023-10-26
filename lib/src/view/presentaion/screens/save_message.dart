@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
@@ -55,7 +56,8 @@ class _SaveMessageScreenScreenState extends State<SaveMessageScreen> with Widget
       color: theme(context).backgroundColor,
       child: BlocBuilder<ChatBloc,ChatState>(
         builder: (context, state) {
-          if(state is ChatLoadingState)return loading(context);
+          log(state.toString());
+          if(state is ChatLoadingState)return Expanded(child: loading(context));
           if(state is ChatSuccessState){
             return GestureDetector(
                 onTap: ()=>FocusScope.of(context).unfocus(),
@@ -71,41 +73,75 @@ class _SaveMessageScreenScreenState extends State<SaveMessageScreen> with Widget
                     body: Column(
                       children: [
                         //* chat
-                        Expanded(
-                          child: StreamBuilder(
-                            stream: state.messages,
-                            builder: (context, snapshot) {
-                              switch(snapshot.connectionState){
-                                case ConnectionState.none:
-                                case ConnectionState.waiting:return loading(context);
-                                case ConnectionState.active:
-                                default:
-                                  if(snapshot.data == null){return startConversitionLottie(context);}
-                                  else{
-                                    List<MessageModel> messages = snapshot.data!.reversed.toList();
-                                    return ListViewObserver(
-                                      controller: observerController,
-                                      child: ListView.builder(
-                                        controller: scrollController,
-                                        shrinkWrap: true,
-                                        reverse: true,
-                                        itemCount: messages.length,
-                                        itemBuilder: (context, index){
-                                          return GestureDetector(
-                                            onTap: () => log('in ListView -> $index'),
+                        BlocBuilder<ChatBloc,ChatState>(
+                          builder: (context, state) {
+                            // if(state is LoadingMessagesState)return smallLoading(context);
+                            // if(state is LoadedMessagesState){
+                            if(state is ChatLoadingState)return Expanded(child: smallLoading(context));
+                            if(state is ChatSuccessState ){
+                              List<MessageModel>? messages = state.messages;
+                              int? lenght = state.limit;
+                              if(messages == null ||messages.isEmpty )return Expanded(child: Center(child: startConversitionLottie(context)));
+                              return Expanded(
+                                child: ListViewObserver(
+                                  controller: observerController,
+                                  child: ListView.builder(
+                                    controller: scrollController,
+                                    shrinkWrap: true,
+                                    reverse: true,
+                                    itemCount: messages.length + 1,
+                                    itemBuilder: (context, index){
+                                      if(index < messages.length){
+                                        // return SwipeTo(
+
+                                        //   onRightSwipe: () => reply(messages[index]),
+                                        //   child: 
+                                         return GestureDetector(
                                             onDoubleTap: ()async => showDeleteDialg(messages[index].uid),
-                                            child: messageItemWidget(context, messages[index],));}),
-                                    );}
-                              }
-                            },
-                          )),
+                                            child: messageItemWidget(context, messages[index],));
+                                        // );
+                                      }
+                                      else {
+                                        return 
+                                          limit == lenght || lenght! <= limit
+                                            ? Center(child: Padding(
+                                              padding:const EdgeInsets.symmetric(vertical: 32),
+                                              child: Container(
+                                                width: sizeW(context)*0.11,
+                                                height: sizeH(context)*0.08,
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      theme(context).primaryColorDark.withOpacity(0.7),
+                                                      theme(context).primaryColorDark.withOpacity(0.7),
+                                                      theme(context).primaryColorDark.withOpacity(0.2),
+                                                    ]
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(20),
+                                                ),
+                                                child: Center(child: Text('start Point'.tr(),style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor),)),
+                                              ),))
+                                            : const Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 32),
+                                              child: Center(child: CircularProgressIndicator(),),
+                                              );
+                                      }
+                                    }
+                                  ),
+                                )
+                              );
+                            }
+                            if(state is ChatFailState)return Expanded(child: Text(state.error));
+                            return Container(width: 100,height: 100,color:Colors.amber);
+                          },
+                        ),
                         
                         //* button
                         isSearch
                          ? Container(
                             width: sizeW(context),
                             height: sizeH(context)*0.15,
-                            decoration: BoxDecoration(border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.001)),),
+                            decoration: BoxDecoration(border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),),
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.04),
                               child: Row(
@@ -143,7 +179,7 @@ class _SaveMessageScreenScreenState extends State<SaveMessageScreen> with Widget
               );
           }
           if(state is ChatFailState)return FailBlocWidget(state.error);
-          return const SizedBox.shrink();
+          return Expanded(child: Text('Nothing'.tr()),);
         },
       
       ),
@@ -176,7 +212,7 @@ class _SaveMessageScreenScreenState extends State<SaveMessageScreen> with Widget
 
 
     currentUserId = ChatRepoBody().currentUserId()!;
-    BlocProvider.of<ChatBloc>(context).add(GetMessageEvent(context: context,receiverId: currentUserId));
+    BlocProvider.of<ChatBloc>(context).add(GetMessageEvent(context: context,receiverId: currentUserId,limit: limit));
     List<String> ids = [currentUserId,currentUserId];
     ids.sort();
     chatRoomId = ids.join('_');
@@ -185,7 +221,8 @@ class _SaveMessageScreenScreenState extends State<SaveMessageScreen> with Widget
     observerController = ListObserverController(controller: scrollController);
   }
 
-
+int limit = 15;
+  
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if(state == AppLifecycleState.resumed){ context.read<ChatBloc>().add(IsOnlineStatusEvent(true)); }
@@ -209,7 +246,7 @@ class _SaveMessageScreenScreenState extends State<SaveMessageScreen> with Widget
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Container(
-          color: theme(context).primaryColor,
+          color: theme(context).primaryColorDark,
           height: sizeH(context)*0.002,
         ),
       ),
@@ -250,7 +287,7 @@ class _SaveMessageScreenScreenState extends State<SaveMessageScreen> with Widget
                       children: [
                         TextButton(
                           onPressed: ()=>context.navigationBack(context), 
-                          child: Text('cancel',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColor),)),
+                          child: Text('cancel',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).primaryColorDark),)),
                         TextButton(
                           onPressed: ()async{
                             log('Delete');
@@ -304,7 +341,7 @@ class _SaveMessageAppBarState extends State<SaveMessageAppBar> {
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Container(
-          color: theme(context).primaryColor,
+          color: theme(context).primaryColorDark,
           height: sizeH(context)*0.002,
         ),
       ),
@@ -313,7 +350,7 @@ class _SaveMessageAppBarState extends State<SaveMessageAppBar> {
         onTap: ()=> context.navigation(context, AppBarSaveMessage(currentUserId: widget.currentUserId,)),
         child: Row(
           children: [ 
-            CircleAvatar(radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColor,child: Icon(Icons.save_outlined,color: theme(context).backgroundColor,),),
+            CircleAvatar(radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.save_outlined,color: theme(context).backgroundColor,),),
             sizeBoxW(sizeW(context)*0.013),
             Text('Save Messages',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).cardColor,fontSize: sizeW(context)*0.02,fontFamily: 'header')),
           ],
@@ -349,11 +386,11 @@ class _SaveMessageButtonsWidgetState extends State<SaveMessageButtonsWidget> {
         children: [
           CircleAvatar(
               radius: sizeW(context)*0.04,
-              backgroundColor: theme(context).primaryColor,
+              backgroundColor: theme(context).primaryColorDark,
               child: Icon(icon,color: theme(context).backgroundColor,),
           ),
           sizeBoxH(sizeH(context)*0.015),
-          Text(title,style: TextStyle(color: theme(context).primaryColor),)
+          Text(title.tr(),style: TextStyle(color: theme(context).primaryColorDark),)
         ],
       ),
     ),
@@ -393,7 +430,7 @@ class _SaveMessageButtonsWidgetState extends State<SaveMessageButtonsWidget> {
             width: sizeW(context),
             height: sizeH(context)*0.15,
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.001)),
+              border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),
               color: theme(context).backgroundColor,
             ),
             child: Padding(
@@ -413,7 +450,7 @@ class _SaveMessageButtonsWidgetState extends State<SaveMessageButtonsWidget> {
             width: sizeW(context),
             height: sizeH(context)*0.15,
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.001)),
+              border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),
               color: theme(context).backgroundColor,
             ),
             child: Row(
@@ -436,7 +473,7 @@ class _SaveMessageButtonsWidgetState extends State<SaveMessageButtonsWidget> {
                     widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
                     // Timer(const Duration(milliseconds: 500),()=>scrollController.jumpTo(scrollController.position.maxScrollExtent));
                   },
-                  decoration: InputDecoration( border: InputBorder.none,hintText: 'Enter message',hintStyle: TextStyle(color: theme(context).cardColor) ),
+                  decoration: InputDecoration( border: InputBorder.none,hintText: 'Enter message'.tr(),hintStyle: TextStyle(color: theme(context).cardColor) ),
                   )),
               isSendButton 
                 ? IconButton(onPressed: ()async{
@@ -457,7 +494,7 @@ class _SaveMessageButtonsWidgetState extends State<SaveMessageButtonsWidget> {
                           padding: EdgeInsets.only(left: sizeW(context)*0.08),
                           decoration: BoxDecoration(
                             color:  theme(context).backgroundColor,
-                            border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.002)),
+                            border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.002)),
                           ),
                           child:ListView.builder(
                             itemCount: 3,
@@ -571,16 +608,16 @@ class AppBarSaveMessageState extends State<AppBarSaveMessage> {
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Container(
-          color: theme(context).primaryColor,
+          color: theme(context).primaryColorDark,
           height: sizeH(context)*0.002,
         ),
       ),
       title: InkWell(
         child: Row(
           children: [ 
-            CircleAvatar(radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColor,child: Icon(Icons.save_outlined,color: theme(context).backgroundColor,),),
+            CircleAvatar(radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.save_outlined,color: theme(context).backgroundColor,),),
             sizeBoxW(sizeW(context)*0.013),
-            Text('Save Messages',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).cardColor,fontSize: sizeW(context)*0.02,fontFamily: 'header')),
+            Text('Save Messages'..tr(),style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).cardColor,fontSize: sizeW(context)*0.02,fontFamily: 'header')),
           ],
         ),
       )
@@ -597,7 +634,7 @@ class AppBarSaveMessageState extends State<AppBarSaveMessage> {
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(sizeH(context)*0.3),
                 child: TabBar(
-                  indicatorColor: theme(context).primaryColor,
+                  indicatorColor: theme(context).primaryColorDark,
                   indicatorWeight: sizeW(context)*0.002,
                   tabs: [
                     Tab(icon: Icon(Icons.chat,color: theme(context).cardColor,),),
@@ -614,7 +651,7 @@ class AppBarSaveMessageState extends State<AppBarSaveMessage> {
                             case ConnectionState.none:
                             case ConnectionState.waiting:return smallLoading(context);
                             default:
-                              if(snapshot.data == null || snapshot.data!.isEmpty) return const Center(child: Text('Empty'),);
+                              if(snapshot.data == null || snapshot.data!.isEmpty) return Center(child: Text('Empty'.tr()),);
                               return GridView.builder(
                                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
                                 itemCount: snapshot.data!.length,
@@ -643,7 +680,7 @@ class AppBarSaveMessageState extends State<AppBarSaveMessage> {
                                 ),
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) => ListTile(
-                                  leading: CircleAvatar(radius: sizeW(context)*0.04,backgroundColor: theme(context).primaryColor,child: Icon(Icons.insert_drive_file_outlined,color: theme(context).backgroundColor,),),
+                                  leading: CircleAvatar(radius: sizeW(context)*0.04,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.insert_drive_file_outlined,color: theme(context).backgroundColor,),),
                                   onTap: ()=>context.read<UploadBloc>().add(DownloadFileEvent(snapshot.data![index]!.messsage,snapshot.data![index]!.fileType!,snapshot.data![index]!.uid)),
                                   title:BlocBuilder<UploadBloc,UploadState>(
                                     builder: (context, state) {

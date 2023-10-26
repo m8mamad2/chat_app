@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -29,10 +30,10 @@ class _SettingPrivacyScreenState extends State<SettingPrivacyScreen> {
           child: Container(
             height :sizeH(context)*0.001,
             width: sizeW(context),
-            color: theme(context).primaryColor,
+            color: theme(context).primaryColorDark,
           ),
         ),
-        title: Text('Privacy & Security Setting',style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
+        title: Text('Privacy & Security Setting'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
         leading: IconButton(icon: const Icon(Icons.arrow_back,),onPressed:()=> context.navigationBack(context),),
       ),
       body: Column(
@@ -46,7 +47,7 @@ class _SettingPrivacyScreenState extends State<SettingPrivacyScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.021  ,vertical: sizeH(context)*0.05),
-                  child: Text('Security',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColor),),
+                  child: Text('Security'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColorDark),),
                 ),
 
                 ListView(
@@ -56,9 +57,9 @@ class _SettingPrivacyScreenState extends State<SettingPrivacyScreen> {
                   children: [
                     ListTile(
                       minLeadingWidth: sizeW(context)*0.02,
-                      leading:  Icon(Icons.lock_outline,color: theme(context).primaryColor,),
+                      leading:  Icon(Icons.lock_outline,color: theme(context).primaryColorDark,),
                       onTap: () => context.navigation(context, const LockScreen()),
-                      title: Text('Passcode Lock',style: theme(context).textTheme.titleMedium!.copyWith(),),
+                      title: Text('Passcode Lock'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(),),
                   )
                   ],
                   ),

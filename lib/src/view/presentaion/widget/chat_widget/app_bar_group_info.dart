@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -12,6 +13,7 @@ import 'package:p_4/src/view/presentaion/screens/chat_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../config/theme/theme.dart';
+import '../../../../core/common/is_english.dart';
 import '../../../../core/common/sizes.dart';
 import '../../../data/model/user_model.dart';
 
@@ -54,7 +56,7 @@ class _AppbarGroupInfoScreenState extends State<AppbarGroupInfoScreen> {
                     width: sizeW(context),
                     height: sizeH(context)*0.27,
                     decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.0015)),
+                      border: Border(bottom: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.0015)),
                       color: theme(context).backgroundColor,
                     ),
                     child: Padding(
@@ -62,8 +64,8 @@ class _AppbarGroupInfoScreenState extends State<AppbarGroupInfoScreen> {
                       child: Row(
                         children: [
                           widget.data.image != null && widget.data.image!.isNotEmpty
-                            ? CircleAvatar( radius: sizeW(context)*0.045,backgroundColor: theme(context).primaryColor ,backgroundImage: NetworkImage(widget.data.image!),)
-                            : CircleAvatar( radius: sizeW(context)*0.045,backgroundColor: theme(context).primaryColor ,child: Text(widget.data.name[0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor)),),
+                            ? CircleAvatar( radius: sizeW(context)*0.045,backgroundColor: theme(context).primaryColorDark ,backgroundImage: NetworkImage(widget.data.image!),)
+                            : CircleAvatar( radius: sizeW(context)*0.045,backgroundColor: theme(context).primaryColorDark ,child: Text(widget.data.name[0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor)),),
                           sizeBoxW(sizeW(context)*0.02),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -82,26 +84,29 @@ class _AppbarGroupInfoScreenState extends State<AppbarGroupInfoScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ListTile(title: Text('info',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColor),),),
+                          ListTile(title: Text('Info'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColorDark),),),
                           ListTile(
-                              title: Text(widget.data.bio ?? 'nothing'),
-                              subtitle: const Text('Bio'),
+                              title: Text(widget.data.bio ?? 'Nothing'.tr(),style: theme(context).textTheme.titleSmall!.copyWith(),),
+                              subtitle:  Text('Bio'.tr()),
                             ),
-                          Container(color: theme(context).primaryColor,height: sizeW(context)*0.0015,width: sizeW(context),)
+                          Container(color: theme(context).primaryColorDark,height: sizeW(context)*0.0015,width: sizeW(context),)
                         ],
                       ),
                     )
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.only( right: sizeW(context)*0.03,bottom: sizeH(context)*0.1),
+                  padding: EdgeInsets.only( 
+                    right:isEnglish(context) ? sizeW(context)*0.03 : 0,
+                  left:isEnglish(context) ? 0 : sizeW(context)*0.03,
+                  bottom: sizeH(context)*0.1),
                   child: Align(
-                    alignment: Alignment.centerRight,
+                    alignment: isEnglish(context) ? Alignment.centerRight : Alignment.centerLeft,
                     child: InkWell(
                       onTap: () => context.navigationBack(context),
                       child: CircleAvatar(
                         radius: sizeW(context)*0.04,
-                        backgroundColor: theme(context).primaryColor,
+                        backgroundColor: theme(context).primaryColorDark,
                         child: Icon(Icons.chat,color: theme(context).backgroundColor,),
                       ),
                     ),
@@ -116,7 +121,7 @@ class _AppbarGroupInfoScreenState extends State<AppbarGroupInfoScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListTile(title: Text('memebers',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColor),),),
+                  ListTile(title: Text('memebers'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColorDark),),),
                   ListView.separated(
                     separatorBuilder: (context, index) => Divider(
                       thickness: 0.4,
@@ -131,7 +136,7 @@ class _AppbarGroupInfoScreenState extends State<AppbarGroupInfoScreen> {
                         ? ListTile(
                           title: Text(user.name ?? user.uid!.substring(0,5),style:theme(context).textTheme.titleSmall!.copyWith(fontFamily: 'body',fontWeight: FontWeight.w500)),
                           leading: CircleAvatar(radius: sizeW(context)*0.03,),
-                          trailing: Text('Admin',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).primaryColor),),
+                          trailing: Text('Admin'.tr(),style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).primaryColorDark),),
                         )
                         : ListTile(
                             onTap: () { context.navigation(context, ChatPage(data: users[index]));},
@@ -143,7 +148,7 @@ class _AppbarGroupInfoScreenState extends State<AppbarGroupInfoScreen> {
                     }
                   ),
                   
-                  Container(margin: EdgeInsets.only(top: sizeH(context)*0.04),color: theme(context).primaryColor,height: sizeW(context)*0.0015,width: sizeW(context),)
+                  Container(margin: EdgeInsets.only(top: sizeH(context)*0.04),color: theme(context).primaryColorDark,height: sizeW(context)*0.0015,width: sizeW(context),)
                 ],
               ),
             ),

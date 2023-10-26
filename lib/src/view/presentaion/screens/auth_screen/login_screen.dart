@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
+import 'package:p_4/src/core/common/is_english.dart';
 import 'package:p_4/src/core/widget/auth_check.dart';
 import 'package:p_4/src/view/data/repo/auth_repo.dart';
 import 'package:p_4/src/view/presentaion/screens/auth_screen/otp_screen.dart';
@@ -44,7 +46,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: BlocBuilder<AuthBloc,AuthState0>(
           builder: (context, state) {
@@ -63,9 +64,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         Container(
                             margin: EdgeInsets.only(
                               bottom: sizeH(context)*0.05,
-                              right: sizeW(context)*0.17
+                              // right:isEnglish(context) ? sizeW(context)*0.17:0,
+                              // left:isEnglish(context) ? 0:sizeW(context)*0.17,
                             ),
-                            child: Text('Login to Your Account',style: 
+                            child: Text('Login to Your Account'.tr(),style: 
                             theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header'),)),
                         AuthTextFieldWidget(
                           controller: _emailController, 
@@ -76,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressHide: onPressHide,
                           isPassword: false,
                           validatorType: 'email',
+                          textInputType: TextInputType.emailAddress,
                           ),
                         AuthTextFieldWidget(
                           controller: _passwordController, 
@@ -85,12 +88,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           isHide: isHide,
                           onPressHide: onPressHide,
                           isPassword: true,
-                          validatorType: 'password'),
+                          validatorType: 'password',
+                          textInputType: TextInputType.text,
+                          ),
                         sizeBoxH(sizeH(context)*0.1),
                         sizeBoxH(sizeH(context)*0.07),
                         authElevatedButton(
                           context,
-                          'Login',
+                          'Login'.tr(),
                           () async {
                             if(key.currentState!.validate()){
                               context.read<AuthBloc>().add(AuthLoginEvent(context: context, password: _passwordController.text.trim(),email: _emailController.text.trim()));
@@ -99,11 +104,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         sizeBoxH(10),
                         TextButton(
                           style: TextButton.styleFrom(
-                            side: BorderSide(color: theme(context).primaryColor,),
+                            side: BorderSide(color: theme(context).primaryColorDark,),
                             minimumSize: Size(sizeW(context)*0.33, sizeH(context)*0.11),
                           ),
                           onPressed: ()=> context.navigation(context, const SignupScreen()), 
-                          child: const Text('or sign up'))
+                          child: Text('Or SignUp'.tr()))
                       ],
                     ),
                   ),

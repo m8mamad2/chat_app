@@ -18,7 +18,7 @@ Future errorBottomShetHelper(BuildContext context,String error,void Function() o
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         errorLottie(context),
-        Text('Error',style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).primaryColor),),
+        Text('Error',style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).primaryColorDark),),
         sizeBoxH(sizeH(context)*0.05),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.9,
@@ -35,7 +35,7 @@ Future errorBottomShetHelper(BuildContext context,String error,void Function() o
             onPressed:onTap, 
             style: ElevatedButton.styleFrom(
               minimumSize: Size(MediaQuery.of(context).size.width * 0.8, sizeH(context)*0.13),
-              backgroundColor: theme(context).primaryColor
+              backgroundColor: theme(context).primaryColorDark
             ),
             child: Text('ok',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor),)),
         ),

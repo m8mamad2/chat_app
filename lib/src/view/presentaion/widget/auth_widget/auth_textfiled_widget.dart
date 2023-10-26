@@ -14,6 +14,7 @@ class AuthTextFieldWidget extends StatelessWidget {
   final VoidCallback onPressHide;
   final bool isPassword;
   final String validatorType;
+  final TextInputType textInputType;
   const AuthTextFieldWidget({
     super.key, 
     required this.controller, 
@@ -23,7 +24,8 @@ class AuthTextFieldWidget extends StatelessWidget {
     required this.isHide,
     required this.onPressHide,
     required this.isPassword,
-    required this.validatorType
+    required this.validatorType,
+    required this.textInputType
     });
 
   @override
@@ -38,6 +40,7 @@ class AuthTextFieldWidget extends StatelessWidget {
         controller: controller,
         obscureText: isPassword ? isHide ? true : false : false,
         textInputAction: TextInputAction.next,
+        keyboardType: textInputType,
         style: theme(context).textTheme.bodyMedium!.copyWith(fontFamily: 'body'),
         validator: (value) {
           switch(validatorType){
@@ -50,7 +53,7 @@ class AuthTextFieldWidget extends StatelessWidget {
         decoration: InputDecoration(
           labelText: hintText.tr(),
           labelStyle: theme(context).textTheme.bodySmall,
-          prefixIcon:Icon(icon,color: theme(context).primaryColor,) ,
+          prefixIcon:Icon(icon,color: theme(context).primaryColorDark,) ,
           suffixIcon:  isPassword ? IconButton(onPressed: ()=> onPressHide(), icon : isHide ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off_rounded)): null,
           fillColor: theme(context).canvasColor,
           filled: true,
@@ -63,7 +66,7 @@ class AuthTextFieldWidget extends StatelessWidget {
           focusedErrorBorder: border(Colors.red),
           enabledBorder: border(Colors.grey.shade400),
           errorBorder: border(Colors.red),
-          focusedBorder: border(theme(context).primaryColor),
+          focusedBorder: border(theme(context).primaryColorDark),
         ),
       ),
     );

@@ -2,7 +2,7 @@
 // //! تایپ رو دستی میدم 
 
 
-// ignore_for_file: avoid_print, deprecated_member_use
+// ignore_for_file: avoid_print, deprecated_member_use, non_constant_identifier_names
 
 import 'dart:async';
 import 'dart:developer';
@@ -30,18 +30,35 @@ class ChatRepoBody extends ChatRepoHeader{
   Future<Map<String,List<MessageModel>>> getExistConversition() async {
     String curretnUserId = supabase.auth.currentSession!.user.id;
     try{
-      final List<MessageModel> res = await supabase.from('chat')
+    
+     List<MessageModel> data = []; 
+      
+     final List<MessageModel> AtoB = await supabase.from('chat')
         .select<PostgrestList>()
         .eq('senderID', curretnUserId)
         .not('receiverID', 'eq', 'groups').
         then((value) => value.map((e) => MessageModel.fromJson(e, curretnUserId)).toList());
+      
+     final List<MessageModel> BtoA = await supabase.from('chat')
+        .select<PostgrestList>()
+        .eq('receiverID', curretnUserId)
+        .then((value) => value.map((e) => MessageModel.fromJson(e, curretnUserId)).toList());
+    
 
 
-      List<MessageModel> data = [];
-      Set<String> set = res.map((e) => e.receiverID).toSet();
-      for (var e in set) { 
-        data.add(res.firstWhere((i) => i.receiverID == e)); 
+      List<String> AtoBset = AtoB.map((e) => e.receiverID).toSet().toList();
+      List<String> BtoAset = BtoA.map((e) => e.senderID).toSet().toList();
+
+      
+
+      for (var e in AtoBset) { 
+        data.add(AtoB.firstWhere((i) => i.receiverID == e)); 
       }
+
+      for (var e in BtoAset) { 
+        data.add(BtoA.firstWhere((i) => i.senderID == e)); 
+      }
+
       return { 'ok' : data };
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return {e.toString() : []};}
@@ -56,27 +73,29 @@ class ChatRepoBody extends ChatRepoHeader{
   @override
   Future<Map<String,List<UserModel>>> getExistConversitonImage()async{
     try{
+      
+      String curretnUserID = supabase.auth.currentUser!.id;
       List<UserModel> data = [];
       Map<String,List<MessageModel>> getExistConverstion = await getExistConversition();
       final List<UserModel> res = await supabase.from('user').select<PostgrestList>().then((value) => value.map((e) => UserModel.fromJson(e)).toList());
-
+      
       for(var userModel in res){
         for(var i in getExistConverstion.values){ 
           for (var element in i) {
-            if(userModel.uid == element.receiverID) data.add(userModel);
+            if((userModel.uid == element.receiverID && curretnUserID != element.receiverID) || userModel.uid == element.senderID) data.add(userModel);
           }
         }
       }
-      return {'ok':data};
+      final List<UserModel> aftherSet = data.toSet().toList();
+      
+      return {'ok':aftherSet};
 
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return {e.toString():[]};}
     on SocketException catch(e){log('in Group Created Metod $e');return {e.toString():[]};}
     on Exception catch(e){return {e.toString():[]};}
     on SupabaseRealtimeError catch(e){return {e.toString():[]};}
-    catch(e){
-      return {e.toString(): []}; 
-    }
+    catch(e){return {e.toString(): []}; }
   }
 
   @override
@@ -123,18 +142,20 @@ class ChatRepoBody extends ChatRepoHeader{
   }
 
   @override
-  Map<String,Stream<List<MessageModel>>> getMessage(String receiverID){
+  Map<String,Stream<List<MessageModel>>> getMessage(String receiverID,int limit){
     try{
 
         String curretnUserID = supabase.auth.currentUser!.id;
         List<String> ids = [curretnUserID,receiverID];
         ids.sort();
-        String chatRoomId = ids.join('_');
-        
-        Stream<List<MessageModel>> messagesStream =
+        String chatRoomId = ids.join('_');  
+
+        Stream ss;
+        Stream<List<MessageModel>> messagesStream = 
           supabase
             .from('chat')
             .stream(primaryKey: ['id'])
+            .limit(limit)
             .order('timestamp')
             .eq('chatRoomId', chatRoomId)
             .map((event) => event.map((e) => MessageModel.fromJson(e,curretnUserID)).toList())
@@ -353,5 +374,17 @@ class ChatRepoBody extends ChatRepoHeader{
 
   @override
   String? currentUserId() =>  supabase.auth.currentUser!.id;
+
+  @override
+  Future<int> lenghtOfData(String receiverID)async{
+    String curretnUserID = supabase.auth.currentUser!.id;
+    List<String> ids = [curretnUserID,receiverID];
+    ids.sort();
+    String chatRoomId = ids.join('_');  
+
+    List<MessageModel> lenghtOfData = await supabase.from('chat').select<PostgrestList>().eq('chatRoomId', chatRoomId) .then((value) => value.map((e) => MessageModel.fromJson(e, curretnUserID)).toList());
+    return lenghtOfData.length;
+  }
+
 }
 

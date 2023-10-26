@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
@@ -33,10 +34,10 @@ class _LockSettingScreenState extends State<LockSettingScreen> {
           child: Container(
             height :sizeH(context)*0.001,
             width: sizeW(context),
-            color: theme(context).primaryColor,
+            color: theme(context).primaryColorDark,
           ),
         ),
-        title: Text('Lock Setting',style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
+        title: Text('Lock Setting'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
         leading: IconButton(icon:const Icon(Icons.arrow_back),onPressed: (){context.navigationBack(context);context.navigationBack(context);},),
       ),
       body: BlocBuilder<LockBloc,LockState>(
@@ -52,8 +53,8 @@ class _LockSettingScreenState extends State<LockSettingScreen> {
                 children: [
                   ListTile(
                     minLeadingWidth: sizeW(context)*0.02,
-                    title:const Text('Trun Off PassCode'),
-                    leading: Icon(Icons.lock_open,color: theme(context).primaryColor),
+                    title:Text('Trun Off PassCode'.tr()),
+                    leading: Icon(Icons.lock_open,color: theme(context).primaryColorDark),
                     onTap: () {
                       context.read<LockBloc>().add(DeleteLockEvent());
                       context.navigationBack(context);
@@ -61,8 +62,8 @@ class _LockSettingScreenState extends State<LockSettingScreen> {
                     } ,),
                   ListTile(
                     minLeadingWidth: sizeW(context)*0.02,
-                    title: const Text('Change Passcode'),
-                    leading: Icon(Icons.change_circle_outlined,color: theme(context).primaryColor,),
+                    title: Text('Change Passcode'.tr()),
+                    leading: Icon(Icons.change_circle_outlined,color: theme(context).primaryColorDark,),
                     onTap: () => context.navigation(context, const LockChangePass()),
                   ),
                 ],

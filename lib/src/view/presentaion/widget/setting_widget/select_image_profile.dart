@@ -6,7 +6,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_painter/image_painter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:p_4/src/config/theme/theme.dart';
@@ -118,50 +117,3 @@ class ShowImageWidget extends StatelessWidget {
     );
   }
 }
-
-
-class Editore extends StatefulWidget {
-  final File path;
-  const Editore({super.key,required this.path});
-
-  @override
-  State<Editore> createState() => _EditoreState();
-}
-class _EditoreState extends State<Editore> {
-
-  final _imageKey = GlobalKey<ImagePainterState>();
-  XFile? dddd;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: ()async{await OpenFile.open(dddd!.path);}, icon: const Icon(Icons.open_in_browser))
-        ],
-        leading: IconButton(
-          onPressed: ()async{
-            Uint8List? data = await _imageKey.currentState!.exportImage();
-            XFile? xfile = XFile.fromData(data!);
-            log('${xfile.path}');
-            setState(() {
-              dddd = xfile;
-            });
-            // context.read<UserBloc>().add(UpdateUserPictureEvent(file));
-          }, 
-          icon: const Icon(Icons.check)),
-      ),
-      body: ImagePainter.file(
-        width: sizeW(context),
-        widget.path, 
-        key: _imageKey,
-        scalable: true,
-        initialStrokeWidth: 2,
-        initialColor: Colors.green,
-        initialPaintMode: PaintMode.line,
-        )
-    );
-  }
-}
-

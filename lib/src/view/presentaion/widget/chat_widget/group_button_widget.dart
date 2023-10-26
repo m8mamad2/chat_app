@@ -3,12 +3,14 @@
 
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
+import 'package:p_4/src/core/common/is_english.dart';
 import 'package:p_4/src/core/common/sizes.dart';
 import 'package:p_4/src/view/presentaion/blocs/chat_bloc/chat_bloc.dart';
 import 'package:p_4/src/view/presentaion/blocs/group_bloc/group_bloc.dart';
@@ -45,11 +47,11 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
         children: [
           CircleAvatar(
               radius: sizeW(context)*0.04,
-              backgroundColor: theme(context).primaryColor,
+              backgroundColor: theme(context).primaryColorDark,
               child: Icon(icon,color: theme(context).backgroundColor,),
           ),
           sizeBoxH(sizeH(context)*0.015),
-          Text(title,style: TextStyle(color: theme(context).primaryColor),)
+          Text(title.tr(),style: TextStyle(color: theme(context).primaryColorDark),)
         ],
       ),
     ),
@@ -89,7 +91,7 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
             width: sizeW(context),
             height: sizeH(context)*0.15,
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.001)),
+              border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),
               color: theme(context).backgroundColor,
             ),
             child: Padding(
@@ -109,7 +111,7 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
             width: sizeW(context),
             height: sizeH(context)*0.15,
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.001)),
+              border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),
               color: theme(context).backgroundColor,
             ),
             child: Row(
@@ -132,7 +134,7 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
                     widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
                     // Timer(const Duration(milliseconds: 500),()=>scrollController.jumpTo(scrollController.position.maxScrollExtent));
                   },
-                  decoration:  InputDecoration( border: InputBorder.none,hintText: 'Enter message',hintStyle: TextStyle(color: theme(context).cardColor) ),
+                  decoration:  InputDecoration( border: InputBorder.none,hintText: 'Enter message'.tr(),hintStyle: TextStyle(color: theme(context).cardColor) ),
                   )),
               isSendButton 
                 ? IconButton(onPressed: ()async{
@@ -151,10 +153,14 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
                         builder: (context) => Container(
                           width: sizeW(context),
                           height: sizeH(context)*0.4,
-                          padding: EdgeInsets.only(left: sizeW(context)*0.08),
+                          padding: EdgeInsets.only(
+                            left:isEnglish(context) ? sizeW(context)*0.08: 0 ,
+                            right:isEnglish(context) ? 0 : sizeW(context)*0.08 ,
+                            
+                            ),
                           decoration: BoxDecoration(
                             color:  theme(context).backgroundColor,
-                            border: Border(top: BorderSide(color: theme(context).primaryColor,width: sizeW(context)*0.002)),
+                            border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.002)),
                           ),
                           child:ListView.builder(
                             itemCount: 3,

@@ -12,6 +12,7 @@ import 'package:p_4/src/view/presentaion/widget/home_widget/home_tab_group_scree
 
 import '../../../core/common/constance/images.dart';
 import '../blocs/auth_bloc/auth_bloc.dart';
+import '../blocs/chat_bloc/chat_bloc.dart';
 import '../widget/home_widget/drawer_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
             // IconButton(onPressed:() async{context.read<AuthBloc>().add(AuthLogoutEvent(context: context));context.navigation(context, SignupScreen());},icon: const Icon(Icons.logout)),
           ],
           bottom: TabBar(
-            indicatorColor: theme(context).primaryColor,
+            indicatorColor: theme(context).primaryColorDark,
             tabs: [
               Tab(icon: Icon(Icons.chat,color: theme(context).cardColor,),),
               Tab(icon: Icon(Icons.group,color: theme(context).cardColor,),),
@@ -57,7 +58,14 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
         drawer: const HomeDrawerWidget()
       ));
   }
+  
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ExistConversitionBloc>().add(GetExistConversition(context));
+  }
 }
 

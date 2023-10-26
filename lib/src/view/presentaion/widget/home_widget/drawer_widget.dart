@@ -1,4 +1,5 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
@@ -38,7 +39,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                     //* header
                     Container(
                       width: sizeW(context),
-                      decoration: BoxDecoration(color: theme(context).primaryColor,),
+                      decoration: BoxDecoration(color: theme(context).primaryColorDark,),
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.02),
                       child: Column(
@@ -54,7 +55,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                   height: sizeH(context)*0.2,
                                   width: sizeW(context)*0.1,
                                   decoration: BoxDecoration(
-                                    color: theme(context).primaryColor,
+                                    color: theme(context).primaryColorDark,
                                     shape: BoxShape.circle,
                                   ),
                                   child: ClipRRect(
@@ -79,7 +80,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                       itemCount: kDrawerTitle.length,
                       itemBuilder: (context, index) => drawerOneItem(context, kDrawerTitle[index], kDraewrIcons[index], kDrawerOnTapWidgets[index])),
                     Divider(
-                      color: theme(context).primaryColor,
+                      color: theme(context).primaryColorDark,
                       thickness: 1,
                     ),
                     ListView.builder(
@@ -102,13 +103,13 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
   }
 }
 
-List<String> kDrawerTitle = ['new Group','Contacts','Save Message','Setting',];
+List<String> kDrawerTitle = ['New Group','Contacts','Save Message','Setting',];
 List<IconData> kDraewrIcons = [Icons.group,Icons.person,Icons.save,Icons.settings,];
 List<Widget> kDrawerOnTapWidgets = const [CreateGroupScreen(),ContactsScreen(),SaveMessageScreen(),SettingScreen(),];
 Widget drawerOneItem(BuildContext context,String title, IconData icon,Widget onTap) => ListTile(
-  title: Text(title,style: theme(context).textTheme.titleSmall!.copyWith(fontFamily: 'header',fontWeight: FontWeight.w400),),
+  title: Text(title.tr(),style: theme(context).textTheme.titleSmall!.copyWith(fontFamily: 'header',fontWeight: FontWeight.w400),),
   minLeadingWidth: sizeW(context)*0.02,
-  leading: Icon(icon,color: theme(context).primaryColor,),
+  leading: Icon(icon,color: theme(context).primaryColorDark,),
   onTap: ()=>context.navigation(context, onTap),
 );
 
@@ -121,11 +122,11 @@ Widget settingOneItem(BuildContext context,String title,IconData icon,String url
       else { throw 'Could not open the map.'; }
     } ,
     minLeadingWidth: sizeW(context)*0.02,
-    title: Text(title,style: theme(context).textTheme.titleSmall!.copyWith(fontFamily: 'header',fontWeight: FontWeight.w400),),
-    leading: Icon(icon,color: theme(context).primaryColor)
+    title: Text(title.tr(),style: theme(context).textTheme.titleSmall!.copyWith(fontFamily: 'header',fontWeight: FontWeight.w400),),
+    leading: Icon(icon,color: theme(context).primaryColorDark)
 );
 }
-List<String> kSettingTitle = ['FQA','privacy Policy'];
+List<String> kSettingTitle = ['FQA','Privacy Policy'];
 List<IconData> kSettingIcon = [Icons.question_mark,Icons.policy];
 List<String> kSettingUrl = const[
   'https://customers.ai/blog/how-to-make-q-and-a-chatbot',

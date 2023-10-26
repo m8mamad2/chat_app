@@ -8,7 +8,7 @@ class ChatUseCase{
   ChatUseCase( this.chatRepo);
 
   Future<void> sendMessage(String message,String receiverID,MessageModel? replyMessage) async => await chatRepo.sendMessage(message,receiverID,replyMessage);
-  Stream<List<MessageModel>>? getMessage(BuildContext context,String receiverID)=> chatRepo.getMessage(context,receiverID);
+  Stream<List<MessageModel>>? getMessage(BuildContext context,String receiverID,int limit)=> chatRepo.getMessage(context,receiverID,limit);
   Future<void> deleteMessage(String uid) async => await chatRepo.deleteMessagee(uid);
   Future<List<MessageModel>> getExistConversition (BuildContext context)async =>  await chatRepo.getExistConversition(context);
   Future<List<UserModel>> getExistConversitonImage(BuildContext context)async => await chatRepo.getExistConversitonImage(context);
@@ -18,4 +18,5 @@ class ChatUseCase{
   Future<void> sendLocationMessage(String message,String receiverID,MessageModel? replyMessage)async => await chatRepo.sendLocationMessage(message, receiverID,replyMessage);
   Future<List<MessageModel?>> getImageMessage(BuildContext context,String receiverID)async => await chatRepo.getImageMessage(context, receiverID);
   Future<List<MessageModel?>> getFileMessage(BuildContext context,String receiverID)async => await chatRepo.getFileMessage(context, receiverID);
+  Future<int> lenghtOfData(String receiverID)=> chatRepo.lenghtOfData(receiverID);
 }
