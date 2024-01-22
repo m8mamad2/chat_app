@@ -62,11 +62,6 @@ class _MyAppState extends State<MyApp> {
     context.read<ThemeBloc>().add(GetThemeEvent());
   }
 
-  UserModel userModel = UserModel(
-    uid: 'feb2e7d1-cd88-4e4b-8ad7-b73717c009dc',
-    email: 'ms9amdl@mgail.com'
-  );
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeBloc,ThemeState>(
@@ -92,113 +87,6 @@ class _MyAppState extends State<MyApp> {
         }
         return const MaterialApp();
       }
-    );
-  }
-}
-
-class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
-
-  @override
-  State<MyWidget> createState() => _MyWidgetState();
-}
-class _MyWidgetState extends State<MyWidget> {
-
-  
-  
-  
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: StreamBuilder(
-                stream:BB().s(),
-                builder: (context, snapshot) {
-                  log('-------------- DATA ${snapshot.connectionState.toString()}');
-                  switch(snapshot.connectionState){
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:return loading(context);
-                    default:
-                      return snapshot.data == null || snapshot.data!.isEmpty ? const Text('Null'): ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) => Container(
-                          color: Colors.white,
-                          alignment: Alignment.topRight,
-                          child: Text(snapshot.data![index].messsage,style: TextStyle(color: Colors.black),),
-                        ),);
-                  }
-                },),
-            )
-          ],
-        ),
-      )
-    );
-  }
-}
-class BB{
-  
-  StreamController<List<MessageModel>> controller = StreamController.broadcast();
-   
-  Stream<List<MessageModel>> s () async* {
-    final SupabaseClient supabase = Supabase.instance.client;
-    String curretnUserID = supabase.auth.currentUser!.id;
-    List<String> ids = [curretnUserID,'805ab831-e198-44e6-b959-41bbc311de1b'];
-    ids.sort();
-    String chatRoomId = ids.join('_');  
-
-    Stream<List<MessageModel>> messagesStream = 
-      supabase
-        .from('chat')
-        .stream(primaryKey: ['id'])
-        .limit(15)
-        .order('timestamp')
-        .eq('chatRoomId', chatRoomId)
-        .map((event) => event.map((e) => MessageModel.fromJson(e,curretnUserID)).toList())
-        .handleError((error){log(error);})
-        .asBroadcastStream();
-    
-    messagesStream.listen((event) { 
-      controller.add(event);
-    });
-    
-          
-    yield* controller.stream;
-  }
-
-  void disposeStream()=> controller.close();
-}
-
-
-class MyWidget2 extends StatefulWidget {
-  const MyWidget2({super.key});
-
-  @override
-  State<MyWidget2> createState() => _MyWidget2State();
-}
-class _MyWidget2State extends State<MyWidget2> {
-  
-  @override
-  void initState() {
-    super.initState();
-    context.read<MessagesBloc>().add(GetMessageEvent(context: context, receiverId: 'feb2e7d1-cd88-4e4b-8ad7-b73717c009dc', limit: 5));
-  }
-  
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      
     );
   }
 }
