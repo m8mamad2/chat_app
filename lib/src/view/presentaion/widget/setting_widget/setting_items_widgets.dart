@@ -18,11 +18,11 @@ Widget settingOneItem(BuildContext context,String title,IconData icon,Widget wid
     leading: Icon(icon,color:theme(context).primaryColorDark)
 );
 }
-List<String> kSettingTitle = ['Chat Setting','Privacy Security'.tr(),'Language'.tr()];
-List<IconData> kSettingIcon = [Icons.chat_sharp,Icons.privacy_tip,Icons.language];
+List<String> kSettingTitle = ['Chat Setting','Language'.tr()];
+List<IconData> kSettingIcon = [Icons.chat_sharp,Icons.language];
 List kSettingOnTap = const[
   SettingChatSetting(),
-  SettingPrivacyScreen(),
+  // SettingPrivacyScreen(),
   SettingChangeLanguage(),
 ];
 

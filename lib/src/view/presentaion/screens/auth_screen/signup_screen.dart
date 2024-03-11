@@ -113,10 +113,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         TextButton(
                           style: TextButton.styleFrom(
                             side: BorderSide(color: theme(context).primaryColorDark,),
-                            minimumSize: Size(sizeW(context)*0.33, sizeH(context)*0.11),
+                            minimumSize: Size(sizeW(context)*0.33, sizeH(context)*0.12),
                           ),
                           onPressed: ()=> context.navigation(context, const LoginScreen()), 
-                          child: Text('Or Login'.tr()))
+                          child: Text('Or Login'.tr(),style: TextStyle(color: theme(context).primaryColorDark)))
                       ],
                     ),
                   ),

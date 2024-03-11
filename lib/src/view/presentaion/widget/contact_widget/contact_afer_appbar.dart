@@ -10,6 +10,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
+import 'package:p_4/src/core/common/is_english.dart';
 import 'package:p_4/src/core/common/sizes.dart';
 import 'package:p_4/src/core/widget/fail_bloc_widget.dart';
 import 'package:p_4/src/core/widget/loading.dart';
@@ -151,14 +152,14 @@ class ContactAfterAppbar extends StatelessWidget {
         onTap: () => context.navigation(context, const CreateGroupScreen()),
       ),
       Container(
-          alignment: Alignment.centerLeft,
+          alignment: isEnglish(context) ? Alignment.centerLeft : Alignment.centerRight,
           padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.035),
           margin: EdgeInsets.only(bottom: 10),
           width: sizeW(context),
           height: sizeH(context)*0.063,
           color: theme(context).primaryColorDark,
           
-          child: Text('your contacts',style:theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor,fontWeight: FontWeight.w500) ,),
+          child: Text('Contacts'.tr(),style:theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor,fontWeight: FontWeight.w500) ,),
         ),
     ],
   );

@@ -1,11 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:p_4/src/config/theme/cubit/theme_cubit.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
 import 'package:p_4/src/core/common/sizes.dart';
@@ -18,226 +15,223 @@ import 'package:p_4/src/view/data/repo/helper/chat_helper_repo_body.dart';
 import 'package:p_4/src/view/domain/usecase/chat_usecase.dart';
 import 'package:p_4/src/view/presentaion/blocs/chat_bloc/chat_bloc.dart';
 import 'package:p_4/src/view/data/model/message_model.dart';
-import 'dart:io';
 import 'package:p_4/src/view/presentaion/blocs/upload_bloc/upload_bloc.dart';
-import 'package:p_4/src/view/presentaion/widget/chat_widget/location_send.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:record/record.dart';
-import 'package:uuid/uuid.dart';
 import 'package:p_4/src/view/presentaion/widget/chat_widget/type_of_item.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 import '../../../core/common/constance/lotties.dart';
-import '../widget/chat_widget/chat_emoji_picker.dart';
+import 'dart:developer';
+import 'package:swipe_to/swipe_to.dart';
+import 'package:p_4/src/view/presentaion/widget/chat_widget/chat_button.dart';
 
 
 class SaveMessageScreen extends StatefulWidget {
-
-  const SaveMessageScreen({super.key});
+  const SaveMessageScreen({super.key,});
 
   @override
-  State<SaveMessageScreen> createState() => _SaveMessageScreenScreenState();
+  State<SaveMessageScreen> createState() => _SaveMessageScreenState();
 }
-class _SaveMessageScreenScreenState extends State<SaveMessageScreen> with WidgetsBindingObserver{
-  
+class _SaveMessageScreenState extends State<SaveMessageScreen> with WidgetsBindingObserver{
+
   late TextEditingController _controller;
   late TextEditingController _searchController;
   late bool isEmojiSelected ;
   late bool isSearch;
-  late ScrollController scrollController;
-  late ListObserverController observerController;
+  late ScrollController scrollController = ScrollController();
+  late ListObserverController observerController = ListObserverController(controller: scrollController);
+  late FocusNode focusNode;
   late String chatRoomId;
+  late ChatRepoBody repo;
+  late List<int> searchingComingData;
+  MessageModel? replyMessage;
   int searchIndex = 0;
+  int limit = 15;
+  late String currentUserId;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: sizeW(context),
-      height: sizeH(context),
-      color: theme(context).backgroundColor,
-      child: BlocBuilder<ChatBloc,ChatState>(
-        builder: (context, state) {
-          log(state.toString());
-          if(state is ChatLoadingState)return Expanded(child: loading(context));
-          if(state is ChatSuccessState){
-            return GestureDetector(
-                onTap: ()=>FocusScope.of(context).unfocus(),
-                child: WillPopScope(
-                  onWillPop: () {
-                    if(isEmojiSelected){
-                      setState(() => isEmojiSelected = !isEmojiSelected,);
-                      return Future.value(false); }
-                    else{ return Future.value(true);}
-                  },
-                  child: Scaffold(
-                    appBar: isSearch ? searchingAppbar() : SaveMessageAppBar(onPress: onPress,currentUserId: currentUserId),
-                    body: Column(
-                      children: [
-                        //* chat
-                        BlocBuilder<ChatBloc,ChatState>(
-                          builder: (context, state) {
-                            // if(state is LoadingMessagesState)return smallLoading(context);
-                            // if(state is LoadedMessagesState){
-                            if(state is ChatLoadingState)return Expanded(child: smallLoading(context));
-                            if(state is ChatSuccessState ){
-                              List<MessageModel>? messages = state.messages;
-                              int? lenght = state.limit;
-                              if(messages == null ||messages.isEmpty )return Expanded(child: Center(child: startConversitionLottie(context)));
-                              return Expanded(
-                                child: ListViewObserver(
-                                  controller: observerController,
-                                  child: ListView.builder(
-                                    controller: scrollController,
-                                    shrinkWrap: true,
-                                    reverse: true,
-                                    itemCount: messages.length + 1,
-                                    itemBuilder: (context, index){
-                                      if(index < messages.length){
-                                        // return SwipeTo(
-
-                                        //   onRightSwipe: () => reply(messages[index]),
-                                        //   child: 
-                                         return GestureDetector(
-                                            onDoubleTap: ()async => showDeleteDialg(messages[index].uid),
-                                            child: messageItemWidget(context, messages[index],));
-                                        // );
-                                      }
-                                      else {
-                                        return 
-                                          limit == lenght || lenght! <= limit
-                                            ? Center(child: Padding(
-                                              padding:const EdgeInsets.symmetric(vertical: 32),
-                                              child: Container(
-                                                width: sizeW(context)*0.11,
-                                                height: sizeH(context)*0.08,
-                                                decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    colors: [
-                                                      theme(context).primaryColorDark.withOpacity(0.7),
-                                                      theme(context).primaryColorDark.withOpacity(0.7),
-                                                      theme(context).primaryColorDark.withOpacity(0.2),
-                                                    ]
-                                                  ),
-                                                  borderRadius: BorderRadius.circular(20),
-                                                ),
-                                                child: Center(child: Text('start Point'.tr(),style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor),)),
-                                              ),))
-                                            : const Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 32),
-                                              child: Center(child: CircularProgressIndicator(),),
-                                              );
-                                      }
+    return BlocBuilder<ThemeBloc,ThemeState>(
+      builder: (context, state) {
+        if(state is LoadedThemeState){
+         return Container(
+            width: sizeW(context),
+            height: sizeH(context),
+            decoration: BoxDecoration(
+              image:  DecorationImage(image:AssetImage(state.isDark ?? false ? 'assets/image/bg_chat.jpg' : 'assets/image/bg_chat_light.jpg',),fit: BoxFit.cover ),
+              color: theme(context).backgroundColor,
+            ),
+            child: GestureDetector(
+              onTap: ()=>FocusScope.of(context).unfocus(),
+              child: WillPopScope(
+                onWillPop: () {
+                  if(isEmojiSelected){
+                    setState(() => isEmojiSelected = !isEmojiSelected,);
+                    return Future.value(false); }
+                  else{ 
+                    return Future.value(true);}
+                },
+                child: Scaffold(
+                  backgroundColor: Colors.transparent,
+                  appBar: isSearch ? searchingAppbar() : SaveMessageAppBar(currentUserId: currentUserId,onPress: onPress,),
+                  body: Column(
+                    children: [
+        
+                      //* caht
+                      BlocBuilder<MessagesBloc,MessagesState>(
+                      // BlocBuilder<ChatBloc,ChatState>(
+                        builder: (context, state) {
+                          if(state is LoadingMessagesState)return Expanded(child: smallLoading(context));
+                          if(state is LoadedMessagesState){
+                          // if(state is ChatLoadingState)return Expanded(child: smallLoading(context));
+                          // if(state is ChatSuccessState ){
+                            List<MessageModel>? messages = state.model;
+                            int? lenght = state.limit;
+                            if(messages == null ||messages.isEmpty )return Expanded(child: Center(child: startConversitionLottie(context)));
+                            return Expanded(
+                              child: ListViewObserver(
+                                controller: observerController,
+                                child: ListView.builder(
+                                  controller: scrollController,
+                                  shrinkWrap: true,
+                                  reverse: true,
+                                  itemCount: messages.length + 1,
+                                  itemBuilder: (context, index){
+                                    if(index < messages.length){
+                                      return SwipeTo(
+        
+                                        onRightSwipe: (d) => reply(messages[index]),
+                                        child: GestureDetector(
+                                          onDoubleTap: ()async => showDeleteDialg(messages[index].uid),
+                                          child: messageItemWidget(context, messages[index],)),
+                                      );
                                     }
-                                  ),
-                                )
-                              );
-                            }
-                            if(state is ChatFailState)return Expanded(child: Text(state.error));
-                            return Container(width: 100,height: 100,color:Colors.amber);
-                          },
-                        ),
-                        
-                        //* button
-                        isSearch
-                         ? Container(
-                            width: sizeW(context),
-                            height: sizeH(context)*0.15,
-                            decoration: BoxDecoration(border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.04),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed:(){
-                                          observerController.animateTo(index: searchingComingData[searchIndex],curve: Curves.fastOutSlowIn,duration: const Duration(seconds: 1));
-                                          setState(()=>searchIndex ++);
-                                        } , 
-                                        icon:Icon(Icons.arrow_upward,color: theme(context).cardColor,)),
-                                      IconButton(onPressed:(){
-                                          observerController.animateTo(index: searchingComingData[searchIndex != 0 ? searchIndex - 1 : searchIndex],curve: Curves.fastOutSlowIn,duration: const Duration(seconds: 1));
-                                          if(searchIndex != 0) setState(()=>searchIndex --);
-                                      } , icon:Icon(Icons.arrow_downward,color: theme(context).cardColor,)),
-                                    ],
-                                  ),
-                                  Text('$searchIndex of ${searchingComingData.length}',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).cardColor),)
-                                ],
-                              ),
+                                    else {
+                                      return 
+                                        limit == lenght || lenght! <= limit
+                                          ? Center(child: Padding(
+                                            padding:const EdgeInsets.symmetric(vertical: 32),
+                                            child: Container(
+                                              width: sizeW(context)*0.11,
+                                              height: sizeH(context)*0.08,
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    theme(context).primaryColorDark.withOpacity(0.7),
+                                                    theme(context).primaryColorDark.withOpacity(0.7),
+                                                    theme(context).primaryColorDark.withOpacity(0.2),
+                                                  ]
+                                                ),
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: Center(child: Text('start point',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor),)),
+                                            ),))
+                                          : const Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 32),
+                                            child: Center(child: CircularProgressIndicator(),),
+                                            );
+                                    }
+                                  }
+                                ),
+                              )
+                            );
+                          }
+                          if(state is FailMessagesState)return Expanded(child: Text(state.error));
+                          return Container(width: 100,height: 100,color:Colors.amber);
+                        },
+                      ),
+                      
+                      //* button
+                      isSearch
+                        ? Container(
+                          width: sizeW(context),
+                          height: sizeH(context)*0.15,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)
                             ),
-                            )
-                         : SaveMessageButtonsWidget(
-                            scrollController: observerController.controller!,
-                            receiverId: currentUserId, 
-                            chatRoomId: chatRoomId, 
-                            isEmojiSelected: isEmojiSelected, 
-                            controller: _controller),
-
-                      ],
-                    )
-                ))
-              );
-          }
-          if(state is ChatFailState)return FailBlocWidget(state.error);
-          return Expanded(child: Text('Nothing'.tr()),);
-        },
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.04),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed:(){
+                                        observerController.animateTo(index: searchingComingData[searchIndex],curve: Curves.fastOutSlowIn,duration: const Duration(seconds: 1));
+                                        setState(()=>searchIndex ++);
+                                      } , 
+                                      icon:Icon(Icons.arrow_upward,color: theme(context).cardColor,)),
+                                    IconButton(onPressed:(){
+                                        observerController.animateTo(index: searchingComingData[searchIndex != 0 ? searchIndex - 1 : searchIndex],curve: Curves.fastOutSlowIn,duration: const Duration(seconds: 1));
+                                        if(searchIndex != 0) setState(()=>searchIndex --);
+                                    } , icon:Icon(Icons.arrow_downward,color: theme(context).cardColor,)),
+                                  ],
+                                ),
+                                Text('$searchIndex of ${searchingComingData.length}',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).cardColor),)
+                              ],
+                            ),
+                          ),
+                          )
+                        : ChatButtonsWidget(
+                          scrollController: observerController.controller!,
+                          receiverId: currentUserId, 
+                          chatRoomId: chatRoomId, 
+                          isEmojiSelected: isEmojiSelected, 
+                          controller: _controller,
+                          focusNode:focusNode ,
+                          onCancelReply: replyCancel,
+                          replayMessage: replyMessage),
+        
+                    ],
+                  )
+              ))
+            )
+          );
+        }
+        return Container(
+          width: sizeW(context),
+          height: sizeH(context),
+          decoration: BoxDecoration(color: theme(context).backgroundColor,),
+          child: FailBlocWidget('Error : Please Try Again'),
+        );
       
-      ),
-    );
-    
-  }
-
-  onPress(){
-    isSearch = !isSearch;
-    searchingComingData.clear();
-    _searchController.clear();
-    searchIndex = 0;
-    setState((){});
+      },
+    );   
   }
 
   @override
   void initState() {
 
     super.initState();
+    currentUserId = ChatRepoBody().currentUserId()!;
     _controller =  TextEditingController();
     _searchController =  TextEditingController();
     isEmojiSelected = false;
-
+    focusNode = FocusNode();
+    
     isSearch = false;
     searchingComingData = [];
     repo = ChatRepoBody();
 
-    WidgetsBinding.instance.addObserver(this);
-    context.read<ChatBloc>().add(IsOnlineStatusEvent(true));
-
-
-    currentUserId = ChatRepoBody().currentUserId()!;
-    BlocProvider.of<ChatBloc>(context).add(GetMessageEvent(context: context,receiverId: currentUserId,limit: limit));
     List<String> ids = [currentUserId,currentUserId];
     ids.sort();
     chatRoomId = ids.join('_');
 
-    scrollController = ScrollController();
-    observerController = ListObserverController(controller: scrollController);
-  }
+    WidgetsBinding.instance.addObserver(this);
+    context.read<ChatBloc>().add(IsOnlineStatusEvent(true));
 
-int limit = 15;
-  
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if(state == AppLifecycleState.resumed){ context.read<ChatBloc>().add(IsOnlineStatusEvent(true)); }
-    else { context.read<ChatBloc>().add(IsOnlineStatusEvent(false)); }
+    BlocProvider.of<MessagesBloc>(context).add(GetInitialMessageeEvent(context: context ,receiverId: currentUserId));
+
+
+    scrollController.addListener(() => scrollListener());
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
-
-  late ChatRepoBody repo;
-  late List<int> searchingComingData;
-  late String currentUserId;
 
   PreferredSizeWidget searchingAppbar()=> AppBar(
       backgroundColor: theme(context).backgroundColor,
@@ -267,8 +261,8 @@ int limit = 15;
         },
       ),
     );
-  
-    showDeleteDialg(String uid)async{
+
+  showDeleteDialg(String uid)async{
     await showDialog(
       context: context, 
       builder:(context)=> AlertDialog(
@@ -302,300 +296,44 @@ int limit = 15;
               ),
             ));
   }
-
-}
-
-
-
-
-
-
-
-
-class SaveMessageAppBar extends StatefulWidget implements PreferredSizeWidget{
-  final double height;
-  final String currentUserId;
-  // bool isSearch;
-  final VoidCallback onPress;
-  const SaveMessageAppBar({super.key,this.height = kToolbarHeight,
-  // required this.isSearch,
-  required this.onPress,
-  required this.currentUserId
-  });
-
-  @override
-  State<SaveMessageAppBar> createState() => _SaveMessageAppBarState();
   
-  @override
-  Size get preferredSize => Size.fromHeight(height);
-}
-class _SaveMessageAppBarState extends State<SaveMessageAppBar> {
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      scrolledUnderElevation: 0,
-      backgroundColor: theme(context).backgroundColor,
-      leading: IconButton(icon: Icon(Icons.arrow_back,color: theme(context).cardColor,),onPressed: ()=>context.navigationBack(context),),
-      elevation: 0,
-      foregroundColor: theme(context).backgroundColor,
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(0.0),
-        child: Container(
-          color: theme(context).primaryColorDark,
-          height: sizeH(context)*0.002,
-        ),
-      ),
-      actions: [ IconButton(onPressed: widget.onPress,icon: Icon(Icons.search,color: theme(context).cardColor,)) ], 
-      title: InkWell(
-        onTap: ()=> context.navigation(context, AppBarSaveMessage(currentUserId: widget.currentUserId,)),
-        child: Row(
-          children: [ 
-            CircleAvatar(radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.save_outlined,color: theme(context).backgroundColor,),),
-            sizeBoxW(sizeW(context)*0.013),
-            Text('Save Messages',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).cardColor,fontSize: sizeW(context)*0.02,fontFamily: 'header')),
-          ],
-        ),
-      )
-    );
-  }
-}
-
-
-
-class SaveMessageButtonsWidget extends StatefulWidget {
-  final ScrollController scrollController;
-  final String receiverId;
-  final String chatRoomId;
-  bool isEmojiSelected;
-  TextEditingController controller;
-  SaveMessageButtonsWidget({super.key,required this.scrollController
-,required this.receiverId,required this.chatRoomId,required this.isEmojiSelected,required this.controller});
-
-  @override
-  State<SaveMessageButtonsWidget> createState() => _SaveMessageButtonsWidgetState();
-}
-class _SaveMessageButtonsWidgetState extends State<SaveMessageButtonsWidget> {
-
-  Widget oneItemBottomShet(IconData icon,String title,VoidCallback event)=> Padding(
-    padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.015),
-    child: GestureDetector(
-      onTap: event,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CircleAvatar(
-              radius: sizeW(context)*0.04,
-              backgroundColor: theme(context).primaryColorDark,
-              child: Icon(icon,color: theme(context).backgroundColor,),
-          ),
-          sizeBoxH(sizeH(context)*0.015),
-          Text(title.tr(),style: TextStyle(color: theme(context).primaryColorDark),)
-        ],
-      ),
-    ),
-  );
-  
-  late bool isEmojiSelected;
-  final FocusNode focusNode = FocusNode();
-  bool isSendButton = false;
-  late List kBottomShetEvent;
-
-  @override
-  void initState() {
-    super.initState();
-    isEmojiSelected = widget.isEmojiSelected;
-    kBottomShetEvent = [
-     ()=> context.read<UploadBloc>().add(UploadMediaEvent(widget.receiverId, widget.chatRoomId,null)),
-     ()=> context.read<UploadBloc>().add(UploadFileEvent(widget.receiverId, widget.chatRoomId,null)),
-     ()=> context.navigation(context, LocationSendWidget(receiverId: widget.receiverId,)),
-    ];
-  }
-
-  @override
-  void dispose() {
-    audioRecord.dispose();
-    focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-   return Column(
-     children: [
-
-       //* button
-      isRecording 
-          ? Container(
-            width: sizeW(context),
-            height: sizeH(context)*0.15,
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),
-              color: theme(context).backgroundColor,
-            ),
-            child: Padding(
-              padding:  EdgeInsets.symmetric(horizontal: sizeW(context)*0.03),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(_result,style: TextStyle(color: theme(context).cardColor),),
-                  IconButton(
-                    onPressed: () async {setState(()=> isRecording = false);await stopRecording(widget.receiverId);}, 
-                    icon: Icon(Icons.stop,color: theme(context).cardColor,))
-                ],
-              ),
-            ),
-          )
-          : Container(
-            width: sizeW(context),
-            height: sizeH(context)*0.15,
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),
-              color: theme(context).backgroundColor,
-            ),
-            child: Row(
-            children: [
-              IconButton(
-                onPressed: ()async {
-                  FocusScope.of(context).unfocus();
-                  isEmojiSelected = !isEmojiSelected;
-                  setState(() { });  
-                },
-                icon:Icon(isEmojiSelected ? Icons.keyboard : Icons.emoji_emotions,color: theme(context).cardColor,)),
-              Expanded(
-                child:TextFormField(
-                  focusNode: focusNode,
-                  controller: widget.controller, 
-                  onChanged: (value) => widget.controller.text.isNotEmpty ? setState(() => isSendButton = true) : setState(() => isSendButton = false),
-                  onTap: () {
-                    isEmojiSelected ? setState(() => isEmojiSelected = !isEmojiSelected,) : null;
-                    
-                    widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
-                    // Timer(const Duration(milliseconds: 500),()=>scrollController.jumpTo(scrollController.position.maxScrollExtent));
-                  },
-                  decoration: InputDecoration( border: InputBorder.none,hintText: 'Enter message'.tr(),hintStyle: TextStyle(color: theme(context).cardColor) ),
-                  )),
-              isSendButton 
-                ? IconButton(onPressed: ()async{
-                    if(widget.controller.text.isNotEmpty) {
-                      context.read<ChatBloc>().add(SendMessageEvent(receiverId: widget.receiverId, message: widget.controller.text,replyMessage: null));
-                      widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
-                      widget.controller.clear();
-                    }
-                  }, 
-                    icon:  Icon(Icons.send,color: theme(context).cardColor))
-                : Row(children: [
-                    IconButton(
-                      onPressed: ()=> showBottomSheet(
-                        context: context, 
-                        builder: (context) => Container(
-                          width: sizeW(context),
-                          height: sizeH(context)*0.4,
-                          padding: EdgeInsets.only(left: sizeW(context)*0.08),
-                          decoration: BoxDecoration(
-                            color:  theme(context).backgroundColor,
-                            border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.002)),
-                          ),
-                          child:ListView.builder(
-                            itemCount: 3,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => oneItemBottomShet(kBottomShetIcon[index],kBottomShetTitle[index],kBottomShetEvent[index]),)
-                      ),
-                    ),
-                    icon: Icon(Icons.perm_media_outlined,color: theme(context).cardColor,)),
-                    IconButton(onPressed: ()async {
-                      await startRecording();
-                      setState(() => isRecording = true );
-                    }, 
-                    icon:  Icon(Icons.mic,color: theme(context).cardColor)),
-                  ],)
-              ],
-            ),
-          ),
-
-      if(isEmojiSelected) ChatEmojiPickerWidget(controller: widget.controller)
-                
-     ],
-   );
-  }
-
-
-
-
-
-
-
-
-  //! recording voice
-  final Stopwatch stopwatch = Stopwatch();
-  final Record audioRecord = Record();
-  bool isRecording = false;
-  late final Timer _timer;
-  String _result = '00:00';
-  
-  //! methos for recording and playing voide
-  Future<void> startRecording()async{
-    try{
-      if(await audioRecord.hasPermission()){
-        String path = await getDir();
-        await audioRecord.start(path: path);
-        start();
+  scrollListener()async{
+    if(scrollController.hasClients && scrollController.offset >= scrollController.position.maxScrollExtent && !scrollController.position.outOfRange){
+        setState(()=>limit += 7);
+        // BlocProvider.of<ChatBloc>(context).add(GetMessageEvent(context: context ,receiverId: widget.data.uid!,limit: limit));
+        BlocProvider.of<MessagesBloc>(context).add(GetMessageEvent(context: context ,receiverId: currentUserId,limit: limit));
       }
-    }
-    catch(e){ print('----Recordign Start Error : $e');}
   }
-  
-  Future<void> stopRecording(String receiverId,)async{
-    try{
-      String? path = await audioRecord.stop();
-      stop();
-      // await repo.uploadVoice(receiverId, path!).then((value) => print('_____AFter uplaod VOice'));
-      context.read<UploadBloc>().add(UploadVoiceEvent(receiverId,path!,widget.chatRoomId,null));
-    }
-    catch(e){ print('in Stop VOice Error = $e');}
+
+  reply(MessageModel message){
+    replyMessage = message;
+    log(message.messsage);
+    setState(() {});
+    focusNode.requestFocus();
   }
-  
-  Future<String> getDir()async{
-    final Directory? dir = await getExternalStorageDirectory();
-    final String path = '${dir!.path}/${const Uuid().v1()}.m4a';
-    return path;
-  }
-  
-  start(){
-    _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer t) {
-      setState(() {
-        _result = '${stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}:${(stopwatch.elapsed.inMilliseconds % 100).toString().padLeft(2, '0')}';
-      });
-    });
-    stopwatch.start();
-  }
-  
-  stop(){
-    _timer.cancel();
-    stopwatch.stop();
-    stopwatch.reset();
+  replyCancel()=>setState(() => replyMessage = null);
+
+  onPress(){
+    isSearch = !isSearch;
+    searchingComingData.clear();
+    _searchController.clear();
+    searchIndex = 0;
+    setState((){});
   }
 
 }
 
-List<IconData> kBottomShetIcon = [Icons.perm_media_outlined,Icons.file_copy_outlined,Icons.location_on_outlined];
-List<String> kBottomShetTitle  = ['Media','Files','Location'];
-// IconButton(onPressed: ()async => context.read<UploadBloc>().add(UploadMediaEvent(widget.receiverId,widget.chatRoomId)), icon:const Icon(Icons.image,color: Colors.white)),
-// IconButton(onPressed: ()async => context.read<UploadBloc>().add(UploadFileEvent(widget.receiverId,widget.chatRoomId)), icon: const Icon(Icons.file_copy,color: Colors.white)),
-                    
 
 
 
 class AppBarSaveMessage extends StatefulWidget {
   final String currentUserId;
   const AppBarSaveMessage({super.key,required this.currentUserId});
-
   @override
   State<AppBarSaveMessage> createState() => AppBarSaveMessageState();
 }
 class AppBarSaveMessageState extends State<AppBarSaveMessage> {
   ChatUseCase repo = ChatUseCase(ChatHelperRepoBody(ChatRepoBody()));
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -687,8 +425,8 @@ class AppBarSaveMessageState extends State<AppBarSaveMessage> {
                                       if(state is UploadInitialState)return const Text('initial File');
                                       if(state is UploadLoadingState)return const Text('Loading');
                                       if(state is UploadSuccessState){
-                                      return StreamBuilder(
-                                        stream: state.downlaodFile!.asBroadcastStream(),
+                                      return FutureBuilder(
+                                        future: state.downlaodFile,
                                         builder: (context, snapshot) {
                                           switch(snapshot.connectionState){
                                             case ConnectionState.none:
@@ -715,6 +453,55 @@ class AppBarSaveMessageState extends State<AppBarSaveMessage> {
             ))
         ],
       ),
+    );
+  }
+}
+
+
+class SaveMessageAppBar extends StatefulWidget implements PreferredSizeWidget{
+  final double height;
+  final String currentUserId;
+  // bool isSearch;
+  final VoidCallback onPress;
+  const SaveMessageAppBar({super.key,this.height = kToolbarHeight,
+  // required this.isSearch,
+  required this.onPress,
+  required this.currentUserId
+  });
+
+  @override
+  State<SaveMessageAppBar> createState() => _SaveMessageAppBarState();
+  
+  @override
+  Size get preferredSize => Size.fromHeight(height);
+}
+class _SaveMessageAppBarState extends State<SaveMessageAppBar> {
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      scrolledUnderElevation: 0,
+      backgroundColor: theme(context).backgroundColor,
+      leading: IconButton(icon: Icon(Icons.arrow_back,color: theme(context).cardColor,),onPressed: ()=>context.navigationBack(context),),
+      elevation: 0,
+      foregroundColor: theme(context).backgroundColor,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(0.0),
+        child: Container(
+          color: theme(context).primaryColorDark,
+          height: sizeH(context)*0.002,
+        ),
+      ),
+      actions: [ IconButton(onPressed: widget.onPress,icon: Icon(Icons.search,color: theme(context).cardColor,)) ], 
+      title: InkWell(
+        onTap: ()=> context.navigation(context, AppBarSaveMessage(currentUserId: widget.currentUserId,)),
+        child: Row(
+          children: [ 
+            CircleAvatar(radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.save_outlined,color: theme(context).backgroundColor,),),
+            sizeBoxW(sizeW(context)*0.013),
+            Text('Save Messages',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).cardColor,fontSize: sizeW(context)*0.02,fontFamily: 'header')),
+          ],
+        ),
+      )
     );
   }
 }

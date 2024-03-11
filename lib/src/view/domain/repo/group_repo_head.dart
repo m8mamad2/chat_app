@@ -11,4 +11,6 @@ abstract class GroupRepoHeader{
   Future<List<CreateGroupModel>> getExistGroup();
   Future<String> deleteGroup(String groupUid);
   Future<String> leftGroup(String groupUid);
+  Future<int> lenghtOfData(String chatRoomId);
+  Future<void> sendGroupLocationMessage(String message,String groupID);
 }

@@ -97,9 +97,11 @@
     "Empty":"خالی",
     "memebers":"افراد",
     "Admin":"مدیر",
+    "Languages":"زبان ها",
     "Start Conversition Right Now!":"گفت و گو را همین الان شروع کنید!",
     "start Point":"نقطه شروع",
     "Change Lock":"تغییر قفل",
-    "Please Enter new Password":"لطفا رمز عبور جدید را وارد کنید"
+    "Please Enter new Password":"لطفا رمز عبور جدید را وارد کنید",
+    "A Problem has Occurred...":"A Problem has Occurred..."
 
 }

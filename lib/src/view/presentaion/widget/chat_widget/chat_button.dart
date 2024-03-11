@@ -1,7 +1,6 @@
 
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +42,7 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
   Widget oneItemBottomShet(IconData icon,String title,VoidCallback event)=> Padding(
     padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.015),
     child: GestureDetector(
-      onTap: event,
+      onTap:()=> event(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -71,7 +70,7 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
     kBottomShetEvent = [
      () { context.read<UploadBloc>().add(UploadMediaEvent(widget.receiverId, widget.chatRoomId,null));context.navigationBack(context);},
      () { context.read<UploadBloc>().add(UploadFileEvent(widget.receiverId, widget.chatRoomId,null));context.navigationBack(context);},
-     () { context.navigation(context, LocationSendWidget(receiverId: widget.receiverId,));context.navigationBack(context);},
+     () { context.navigation(context, LocationSendWidget(receiverId: widget.receiverId,isGroup: false,));},
     ];
   }
 
@@ -79,13 +78,13 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
   void dispose() {
     audioRecord.dispose();
     widget.focusNode.dispose();
+    // _
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final bool isReply = widget.replayMessage != null ;
-
    return Column(
      children: [
 
@@ -120,19 +119,28 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
                   color: theme(context).cardColor.withOpacity(0.1),
                   child: Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15),
                         child: Icon(Icons.keyboard_arrow_right_rounded),
                       ),
-                      Text(widget.replayMessage!.messsage),
+                      Text(
+                        widget.replayMessage!.type == 'message'
+                          ? 
+                            widget.replayMessage!.messsage.length > 40
+                              ? '${widget.replayMessage!.messsage.substring(0,40)} ...'
+                              : widget.replayMessage!.messsage
+                          : widget.replayMessage!.type
+                        ),
+
                       const Spacer(),
-                      IconButton(onPressed: (){
-                        widget.onCancelReply();
-                      }, icon: const Icon(Icons.close))
+                      IconButton(
+                        onPressed: ()=> widget.onCancelReply() , 
+                        icon: const Icon(Icons.close))
                     ],
                   ),
                 )
                 : const SizedBox.shrink(),
+              
               Container(
                 width: sizeW(context),
                 height: sizeH(context)*0.15,
@@ -149,6 +157,8 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
                       setState(() { });  
                     },
                     icon:Icon(isEmojiSelected ? Icons.keyboard : Icons.emoji_emotions,color: theme(context).cardColor,)),
+                  
+                  //? TextField
                   Expanded(
                     child:TextFormField(
                       focusNode: widget.focusNode,
@@ -161,15 +171,20 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
                       decoration: InputDecoration( border: InputBorder.none,hintText: 'Enter message'.tr(),hintStyle: TextStyle(color: theme(context).cardColor) ),
                       )),
                   isSendButton 
+
+                    //? sendButton
                     ? IconButton(onPressed: ()async{
                         if(widget.controller.text.isNotEmpty) {
                           context.read<ChatBloc>().add(SendMessageEvent(receiverId: widget.receiverId, message: widget.controller.text,replyMessage: widget.replayMessage));
                           if(widget.scrollController.hasClients) widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
                           widget.controller.clear();
                           setState(() => isSendButton = false);
+                          widget.onCancelReply();
                         }
                       }, 
                         icon: Icon(Icons.send,color: theme(context).cardColor))
+                    
+                    //? Media and Record BUtton
                     : Row(children: [
                         IconButton(
                           onPressed: ()=> showBottomSheet(
@@ -219,7 +234,7 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
 
   //! recording voice
   final Stopwatch stopwatch = Stopwatch();
-  final Record audioRecord = Record();
+  final AudioRecorder audioRecord = AudioRecorder();
   bool isRecording = false;
   late final Timer _timer;
   String _result = '00:00';
@@ -229,7 +244,7 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
     try{
       if(await audioRecord.hasPermission()){
         String path = await getDir();
-        await audioRecord.start(path: path);
+        await audioRecord.start(RecordConfig(),path: path);
         start();
       }
     }

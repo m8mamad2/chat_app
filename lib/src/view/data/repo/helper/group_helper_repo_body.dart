@@ -24,7 +24,7 @@ class GroupHelperRepoBody extends GroupRepoHelperHeader{
    return await repo.createGroup(name,bio,users, file,mySelf)
       .then((value) async{
         if(value == 'ok') {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>const AuthCheckWidget(),));
+          context.navigationRemoveUtils(context, const AuthCheckWidget());
           context.read<ExistGroupBloc>().add(GetExsistGroups());
         }
         else { await errorBottomShetHelper(context, value,(){context.navigationBack(context);});}
@@ -63,10 +63,14 @@ class GroupHelperRepoBody extends GroupRepoHelperHeader{
       then((value)async {
         if(value == 'ok'){
           context.navigationBack(context);
+          context.navigationBack(context);
           context.read<ExistGroupBloc>().add(GetExsistGroups());
         }
         else { await errorBottomShetHelper(context, value,(){context.navigationBack(context);}); }
       });
   }
+
+  @override
+  Future<int> lenghtOfData(String chatRoomId)async => await repo.lenghtOfData(chatRoomId);
 
 }

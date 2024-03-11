@@ -124,11 +124,15 @@
 
 
 
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/constance/lotties.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
@@ -174,11 +178,20 @@ class _SettingScreenState extends State<SettingScreen> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5),side: BorderSide(color: theme(context).cardColor,width: sizeW(context)*0.0002)),
                 itemBuilder: (context) => [
                   popupItem(context, ()=> context.navigation(context, const EditNameScreen()) , 'Edit Name', Icons.edit_outlined),
-                  popupItem(context, ()=> showModalBottomSheet(
-                    shape:const RoundedRectangleBorder( borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),)),
-                    context: context,
-                    builder: (context) => const BottomShetImagesWidget(),), 'Set Profile Image', Icons.image_outlined),
-                  popupItem(context, ()=> context.read<AuthBloc>().add(AuthLogoutEvent(context: context)) , ' ', Icons.logout_outlined),
+                  popupItem(context, ()async{
+                    XFile? imagePicker = await ImagePicker().pickImage(source: ImageSource.gallery);
+                    if(imagePicker != null){
+                      File? data = File(imagePicker.path);
+                      context.navigation(context, ShowImageWidget(file: data));
+                    }
+                  },
+                    // showModalBottomSheet(
+                    //   shape:const RoundedRectangleBorder( borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),)),
+                    //   context: context, 
+                    //   builder: (context) => const BottomShetImagesWidget(),), 
+                    'Set Profile Image', 
+                     Icons.image_outlined),
+                  popupItem(context, ()=> context.read<AuthBloc>().add(AuthLogoutEvent(context: context)) , 'Logout'.tr(), Icons.logout_outlined),
                 ]
               )
             ],

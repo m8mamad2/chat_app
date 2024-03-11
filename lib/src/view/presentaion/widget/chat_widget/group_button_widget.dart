@@ -21,6 +21,7 @@ import 'package:record/record.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../config/theme/theme.dart';
+import '../../../data/model/message_model.dart';
 import '../../../data/repo/group_repo_body.dart';
 import 'chat_emoji_picker.dart';
 
@@ -29,8 +30,11 @@ class GroupButtonsWidget extends StatefulWidget {
   final String groupUid;
   bool isEmojiSelected;
   TextEditingController controller;
-  GroupButtonsWidget({super.key,required this.scrollController
-,required this.groupUid,required this.isEmojiSelected,required this.controller});
+  FocusNode focusNode;
+  MessageModel? replayMessage;
+  VoidCallback onCancelReply;
+  GroupButtonsWidget({super.key,required this.scrollController,required this.groupUid,required this.isEmojiSelected,required this.controller,required this.focusNode,required this.replayMessage,required this.onCancelReply
+});
 
   @override
   State<GroupButtonsWidget> createState() => _GroupButtonsWidgetState();
@@ -69,7 +73,7 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
     kBottomShetEvent = [
      ()=> context.read<UploadBloc>().add(UploadMediaEvent(widget.groupUid, widget.groupUid,null)),
      ()=> context.read<UploadBloc>().add(UploadFileEvent( widget.groupUid, widget.groupUid,null)),
-     ()=> context.navigation(context, LocationSendWidget(receiverId: widget.groupUid,)),
+     ()=> context.navigation(context, LocationSendWidget(receiverId: widget.groupUid,isGroup: true,)),
     ];
   }
 
@@ -82,6 +86,7 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
 
   @override
   Widget build(BuildContext context) {
+  final bool isReply = widget.replayMessage != null ;
    return Column(
      children: [
 
@@ -107,76 +112,102 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
               ),
             ),
           )
-          : Container(
-            width: sizeW(context),
-            height: sizeH(context)*0.15,
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),
-              color: theme(context).backgroundColor,
-            ),
-            child: Row(
+          : Column(
             children: [
-              IconButton(
-                onPressed: ()async {
-                  FocusScope.of(context).unfocus();
-                  isEmojiSelected = !isEmojiSelected;
-                  setState(() { });  
-                },
-                icon:Icon(isEmojiSelected ? Icons.keyboard : Icons.emoji_emotions,color: theme(context).cardColor,)),
-              Expanded(
-                child:TextFormField(
-                  focusNode: focusNode,
-                  controller: widget.controller, 
-                  onChanged: (value) => widget.controller.text.isNotEmpty ? setState(() => isSendButton = true) : setState(() => isSendButton = false),
-                  onTap: () {
-                    isEmojiSelected ? setState(() => isEmojiSelected = !isEmojiSelected,) : null;
-                    
-                    widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
-                    // Timer(const Duration(milliseconds: 500),()=>scrollController.jumpTo(scrollController.position.maxScrollExtent));
-                  },
-                  decoration:  InputDecoration( border: InputBorder.none,hintText: 'Enter message'.tr(),hintStyle: TextStyle(color: theme(context).cardColor) ),
-                  )),
-              isSendButton 
-                ? IconButton(onPressed: ()async{
-                    GroupRepoBody repo = GroupRepoBody();
-                    if(widget.controller.text.isNotEmpty) {
-                      await repo.sendGroupMessage(widget.controller.text, widget.groupUid,null);
-                      if(widget.scrollController.hasClients) widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
-                      widget.controller.clear();
-                    }
-                  }, 
-                    icon: Icon(Icons.send,color: theme(context).cardColor))
-                : Row(children: [
-                    IconButton(
-                      onPressed: ()=> showBottomSheet(
-                        context: context, 
-                        builder: (context) => Container(
-                          width: sizeW(context),
-                          height: sizeH(context)*0.4,
-                          padding: EdgeInsets.only(
-                            left:isEnglish(context) ? sizeW(context)*0.08: 0 ,
-                            right:isEnglish(context) ? 0 : sizeW(context)*0.08 ,
-                            
-                            ),
-                          decoration: BoxDecoration(
-                            color:  theme(context).backgroundColor,
-                            border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.002)),
-                          ),
-                          child:ListView.builder(
-                            itemCount: 3,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => oneItemBottomShet(kBottomShetIcon[index],kBottomShetTitle[index],kBottomShetEvent[index]),)
+              isReply 
+                ? Container(
+                  height: sizeH(context)*0.13,
+                  width: sizeW(context),
+                  color: theme(context).cardColor.withOpacity(0.1),
+                  child: Row(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: Icon(Icons.keyboard_arrow_right_rounded),
                       ),
-                    ),
-                    icon:Icon(Icons.perm_media_outlined,color: theme(context).cardColor,)),
-                    IconButton(onPressed: ()async {
-                      await startRecording();
-                      setState(() => isRecording = true );
-                    }, 
-                    icon: Icon(Icons.mic,color: theme(context).cardColor)),
-                  ],)
-              ],
-            ),
+                      Text(widget.replayMessage!.messsage),
+                      const Spacer(),
+                      IconButton(onPressed: (){
+                        widget.onCancelReply();
+                      }, icon: const Icon(Icons.close))
+                    ],
+                  ),
+                )
+                : const SizedBox.shrink(),
+              Container(
+                width: sizeW(context),
+                height: sizeH(context)*0.15,
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),
+                  color: theme(context).backgroundColor,
+                ),
+                child: Row(
+                children: [
+                  IconButton(
+                    onPressed: ()async {
+                      FocusScope.of(context).unfocus();
+                      isEmojiSelected = !isEmojiSelected;
+                      setState(() { });  
+                    },
+                    icon:Icon(isEmojiSelected ? Icons.keyboard : Icons.emoji_emotions,color: theme(context).cardColor,)),
+                  Expanded(
+                    child:TextFormField(
+                      focusNode: focusNode,
+                      controller: widget.controller, 
+                      onChanged: (value) => widget.controller.text.isNotEmpty || widget.controller.text != '' ? setState(() => isSendButton = true) : setState(() => isSendButton = false),
+                      onTap: () {
+                        isEmojiSelected ? setState(() => isEmojiSelected = !isEmojiSelected,) : null;
+                        
+                        if(widget.scrollController.hasClients)widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
+                        // Timer(const Duration(milliseconds: 500),()=>scrollController.jumpTo(scrollController.position.maxScrollExtent));
+                      },
+                      decoration:  InputDecoration( border: InputBorder.none,hintText: 'Enter message'.tr(),hintStyle: TextStyle(color: theme(context).cardColor) ),
+                      )),
+                  isSendButton 
+                    ? IconButton(onPressed: ()async{
+                        GroupRepoBody repo = GroupRepoBody();
+                        if(widget.controller.text.isNotEmpty) {
+                          await repo.sendGroupMessage(widget.controller.text, widget.groupUid,widget.replayMessage);
+                          if(widget.scrollController.hasClients) widget.scrollController.jumpTo(widget.scrollController.position.minScrollExtent);
+                          widget.controller.clear();
+                          setState(()=>isSendButton = false);
+                          widget.onCancelReply();
+                        }
+                      }, 
+                        icon: Icon(Icons.send,color: theme(context).cardColor))
+                    : Row(children: [
+                        IconButton(
+                          onPressed: ()=> showBottomSheet(
+                            context: context, 
+                            builder: (context) => Container(
+                              width: sizeW(context),
+                              height: sizeH(context)*0.4,
+                              padding: EdgeInsets.only(
+                                left:isEnglish(context) ? sizeW(context)*0.08: 0 ,
+                                right:isEnglish(context) ? 0 : sizeW(context)*0.08 ,
+                                
+                                ),
+                              decoration: BoxDecoration(
+                                color:  theme(context).backgroundColor,
+                                border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.002)),
+                              ),
+                              child:ListView.builder(
+                                itemCount: 3,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) => oneItemBottomShet(kBottomShetIcon[index],kBottomShetTitle[index],kBottomShetEvent[index]),)
+                          ),
+                        ),
+                        icon:Icon(Icons.perm_media_outlined,color: theme(context).cardColor,)),
+                        IconButton(onPressed: ()async {
+                          await startRecording();
+                          setState(() => isRecording = true );
+                        }, 
+                        icon: Icon(Icons.mic,color: theme(context).cardColor)),
+                      ],)
+                  ],
+                ),
+              ),
+            ],
           ),
 
       if(isEmojiSelected) ChatEmojiPickerWidget(controller: widget.controller)
@@ -194,7 +225,7 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
 
   //! recording voice
   final Stopwatch stopwatch = Stopwatch();
-  final Record audioRecord = Record();
+  final AudioRecorder audioRecord = AudioRecorder();
   bool isRecording = false;
   late final Timer _timer;
   String _result = '00:00';
@@ -204,7 +235,7 @@ class _GroupButtonsWidgetState extends State<GroupButtonsWidget> {
     try{
       if(await audioRecord.hasPermission()){
         String path = await getDir();
-        await audioRecord.start(path: path);
+        await audioRecord.start( RecordConfig(),path: path);
         start();
       }
     }

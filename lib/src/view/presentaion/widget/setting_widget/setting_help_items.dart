@@ -6,15 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
 import 'package:p_4/src/core/common/sizes.dart';
+import 'package:p_4/src/view/presentaion/widget/setting_widget/settign_webview_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
 Widget settingOneItem(BuildContext context,String title,IconData icon,String url) {
  return ListTile(
     onTap:()async{
-      final Uri data = Uri.parse(url);
-      if ( await launchUrl(data)) { await launchUrl(data); } 
-      else { throw 'Could not open the map.'; }
+      // final Uri data = Uri.parse(url);
+      // if ( await launchUrl(data)) { await launchUrl(data); } 
+      // else { throw 'Could not open the map.'; }
+      context.navigation(context, WebViewScreenWidget(url: url));
     } ,
     title: Text(title.tr(),style: theme(context).textTheme.titleMedium!.copyWith(),),
     leading: Icon(icon,color:theme(context).primaryColorDark)

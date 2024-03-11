@@ -15,8 +15,16 @@ class CreateGroupEvent1 extends GroupEvent{
 
 class GetGroupMessagesEvent extends GroupEvent{
   final String groupUid;
-  GetGroupMessagesEvent(this.groupUid);
+  final int limit;
+  GetGroupMessagesEvent(this.groupUid,this.limit);
 }
+
+class GetInitialGroupMessageeEvent extends GroupEvent{
+  final BuildContext context;
+  final String receiverId;
+  GetInitialGroupMessageeEvent({required this.context,required this.receiverId});
+}
+
 
 class SendGroupMessageEvent extends GroupEvent{
   final String message;

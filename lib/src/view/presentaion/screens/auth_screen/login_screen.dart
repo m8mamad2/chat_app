@@ -2,23 +2,12 @@ import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
-import 'package:p_4/src/core/common/is_english.dart';
-import 'package:p_4/src/core/widget/auth_check.dart';
-import 'package:p_4/src/view/data/repo/auth_repo.dart';
-import 'package:p_4/src/view/presentaion/screens/auth_screen/otp_screen.dart';
-import 'package:p_4/src/view/presentaion/screens/home_screen.dart';
 import 'package:p_4/src/view/presentaion/widget/auth_widget/auth_button_widget.dart';
 import 'package:p_4/src/view/presentaion/widget/auth_widget/auth_textfiled_widget.dart';
 import 'package:p_4/src/view/presentaion/screens/auth_screen/signup_screen.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../../../../core/common/constance/images.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bloc/bloc.dart';
 import 'package:p_4/src/core/common/sizes.dart';
 import 'package:p_4/src/core/widget/fail_bloc_widget.dart';
 import 'package:p_4/src/core/widget/loading.dart';
@@ -105,10 +94,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                           style: TextButton.styleFrom(
                             side: BorderSide(color: theme(context).primaryColorDark,),
-                            minimumSize: Size(sizeW(context)*0.33, sizeH(context)*0.11),
+                            minimumSize: Size(sizeW(context)*0.33, sizeH(context)*0.12),
                           ),
                           onPressed: ()=> context.navigation(context, const SignupScreen()), 
-                          child: Text('Or SignUp'.tr()))
+                          child: Text('Or SignUp'.tr(),style: TextStyle(color: theme(context).primaryColorDark),))
                       ],
                     ),
                   ),

@@ -9,16 +9,18 @@ Future errorBottomShetHelper(BuildContext context,String error,void Function() o
   context: context, 
   builder: (context) => Container(
     width: double.infinity,
-    decoration:const BoxDecoration(
-      color: Colors.white,
-      borderRadius:  BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30))
+    decoration: BoxDecoration(
+      color: theme(context).backgroundColor,
+      borderRadius:const BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30))
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         errorLottie(context),
-        Text('Error',style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).primaryColorDark),),
+        Text('A Problem has Occurred...'.trim(),
+          style: theme(context).textTheme.titleLarge!.copyWith(
+            fontFamily: 'header',color: theme(context).primaryColorDark),),
         sizeBoxH(sizeH(context)*0.05),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.9,
@@ -26,7 +28,7 @@ Future errorBottomShetHelper(BuildContext context,String error,void Function() o
             child: Text(
               error,
               textAlign: TextAlign.center,
-              style: theme(context).textTheme.titleMedium!.copyWith(),),
+              style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).cardColor),),
           )),
         const Spacer(),
         Padding(

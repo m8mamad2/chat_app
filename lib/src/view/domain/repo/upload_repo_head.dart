@@ -5,7 +5,7 @@ abstract class UploadRepoHead{
   Future<void> uploadMedia(String receiverId,String chatRoomId,MessageModel? replyMessage);
   Future<void> uploadFile(String receiverId,String chatRoomId, MessageModel? replyMessage);
   Future<void> uploadVoice(String receiverId,String path,String chatRoomId,MessageModel? replyMessage);
-  Stream<String> downlaodFile(String data, String fileType,String fileUid);
+  Future<String?> downlaodFile(String data, String fileType,String fileUid);
   // Stream<Map<String?,String>> downloadVoice(String data,String fileType,String fileUid);
   Future<String?> downloadVoice(String data,String fileType,String fileUid);
   Future<String?> downloadVideo(String data,String fileType,String fileUid);

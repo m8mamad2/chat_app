@@ -6,7 +6,7 @@ class MessageEntity{
   final String receiverID;
   final String messsage;
   final String type;
-  final String timestamp;
+  final String? timestamp;
   final String? fileType;
   final bool markAsRead;
   final bool isMine;

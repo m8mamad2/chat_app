@@ -11,6 +11,7 @@ import 'package:p_4/src/view/presentaion/screens/contacts_screen.dart';
 import 'package:p_4/src/view/presentaion/screens/create_group_screen.dart';
 import 'package:p_4/src/view/presentaion/screens/setting_screen.dart';
 import 'package:p_4/src/view/presentaion/screens/setting_screen/setting_chat_screen.dart';
+import 'package:p_4/src/view/presentaion/widget/setting_widget/settign_webview_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../config/theme/theme.dart';
@@ -117,9 +118,10 @@ Widget drawerOneItem(BuildContext context,String title, IconData icon,Widget onT
 Widget settingOneItem(BuildContext context,String title,IconData icon,String url) {
  return ListTile(
     onTap:()async{
-      final Uri data = Uri.parse(url);
-      if ( await launchUrl(data)) { await launchUrl(data); } 
-      else { throw 'Could not open the map.'; }
+      // final Uri data = Uri.parse(url);
+      // if ( await launchUrl(data)) { await launchUrl(data); } 
+      // else { throw 'Could not open the map.'; }
+      context.navigation(context, WebViewScreenWidget(url: url));
     } ,
     minLeadingWidth: sizeW(context)*0.02,
     title: Text(title.tr(),style: theme(context).textTheme.titleSmall!.copyWith(fontFamily: 'header',fontWeight: FontWeight.w400),),

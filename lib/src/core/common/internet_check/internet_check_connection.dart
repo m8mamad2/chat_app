@@ -39,6 +39,7 @@ import 'dart:developer';
 import 'dart:convert' as convert;
 
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -77,6 +78,7 @@ class _InternetCheckerWidgetState extends State<InternetCheckerWidget> {
     super.initState();
   }
   
+  bool loading = false;
   bool aftherTry = false; 
   
   Future showing() async {
@@ -87,22 +89,22 @@ class _InternetCheckerWidgetState extends State<InternetCheckerWidget> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       builder: (context) => Container(
         width: double.infinity,
-        decoration:const BoxDecoration(
-          color: Colors.white,
-          borderRadius:  BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30))
+        decoration: BoxDecoration(
+          color: theme(context).backgroundColor,
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30))
     ),
         child:  Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             errorLottie(context),
-            Text('Error',style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).primaryColor),),
+            Text('Error',style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).primaryColorDark),),
             sizeBoxH(sizeH(context)*0.05),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.9,
               child: Center(
                 child: Text(
-                  aftherTry ? 'Not Connected yet ... one more time!' : 'Check Your Connection please...',
+                  aftherTry ? 'Not Connected yet ... one more time!'.tr() : 'Check Your Connection Please...'.tr(),
                   textAlign: TextAlign.center,
                   style: theme(context).textTheme.titleMedium!.copyWith(),),
               )),
@@ -111,15 +113,16 @@ class _InternetCheckerWidgetState extends State<InternetCheckerWidget> {
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: ElevatedButton(
                 onPressed:()async {
-                  log(aftherTry.toString());
-                  await InternetConnectionChecker().hasConnection.then((value) => setState(()=> aftherTry = true),);
-                  log(aftherTry.toString());
+                  setState(()=> loading = true);
+                  bool isConnect =  await InternetConnectionChecker().hasConnection;
+                  isConnect == true ? setState(()=> aftherTry =false) : setState(()=> aftherTry =true);
+                  setState(()=> loading = false);
                 } , 
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(MediaQuery.of(context).size.width * 0.8, sizeH(context)*0.13),
-                  backgroundColor: theme(context).primaryColor
+                  backgroundColor: theme(context).primaryColorDark
                 ),
-                child: Text('ok',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor),)),
+                child:loading ? CircularProgressIndicator(color: theme(context).cardColor,) :Text('ok',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).cardColor),)),
             ),
         ]),
     ),);

@@ -36,7 +36,7 @@ class _SettingChangeLanguageState extends State<SettingChangeLanguage> {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.021  ,vertical: sizeH(context)*0.05),
-            child: Text('Languages',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColorDark),),
+            child: Text('Languages'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).primaryColorDark),),
           ),
           ListView(
             shrinkWrap: true,

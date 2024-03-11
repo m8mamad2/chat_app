@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
@@ -9,6 +10,7 @@ import 'package:meta/meta.dart';
 import 'package:p_4/src/view/data/model/message_model.dart';
 import 'package:p_4/src/view/data/model/user_model.dart';
 import 'package:p_4/src/view/domain/usecase/group_usecase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../data/model/create_group_model.dart';
 
@@ -53,6 +55,7 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
   }
 }
 
+//! exist group conversition
 class ExistGroupBloc extends HydratedBloc<GroupEvent,ExistGroupState>{
   final GroupUsecase usecase;
   ExistGroupBloc(this.usecase):super(LoadingExistGroupState()){
@@ -60,7 +63,6 @@ class ExistGroupBloc extends HydratedBloc<GroupEvent,ExistGroupState>{
     on<GetExsistGroups>((event, emit)async {
       try{
         List<CreateGroupModel> data = await usecase.getExistGroup();
-        log('--> in Bloc$data');
         emit(LoadedExistGroupState(data));
       }
       catch(e){ emit(ErrorExistGroupState(e.toString()));}
@@ -78,5 +80,81 @@ class ExistGroupBloc extends HydratedBloc<GroupEvent,ExistGroupState>{
   @override
   Map<String, dynamic>? toJson(ExistGroupState state) => {'value':<CreateGroupModel>[]};
 
+
+}
+
+//! message of gropu
+class GroupMessageBloc extends HydratedBloc<GroupEvent,GroupMessageState> {
+  final GroupUsecase useCase;
+  GroupMessageClass msgClass = GroupMessageClass();
+  GroupMessageBloc(this.useCase):super(InitialGroupMessageState()){
+    
+
+    on<GetGroupMessagesEvent>((event, emit)async {
+
+      try{
+
+        Stream<List<MessageModel>> model = msgClass.s(event.groupUid,event.limit);
+        int lenght = await useCase.lenghtOfData(event.groupUid);
+
+        await model.forEach((element) { emit(LoadedGroupMessagesState(element, lenght)); })
+        .catchError((e)=> emit(FailGroupMessagesState(e.toString())));
+        
+      }
+      catch(e){log('$e');emit(FailGroupMessagesState(e.toString()));}
+    });
+    
+    on<GetInitialGroupMessageeEvent>((event, emit)async {
+      emit(LoadingGroupMessagesState());
+      try{
+
+        Stream<List<MessageModel>> model = msgClass.s(event.receiverId,20);
+        int lenght = await useCase.lenghtOfData(event.receiverId);
+
+        await model.forEach((element) { emit(LoadedGroupMessagesState(element, lenght)); })
+        .catchError((e)=> emit(FailGroupMessagesState(e.toString())));
+        
+      }
+      catch(e){log('$e');emit(FailGroupMessagesState(e.toString()));}
+    });
+
+  }
+  
+  @override
+  GroupMessageState fromJson(Map<String, dynamic> json){
+    List<MessageModel>? model = json['value'] as List<MessageModel>?;
+    return LoadedGroupMessagesState(model!,null);
+  }
+  
+  @override
+  Map<String, dynamic>? toJson(GroupMessageState state) => {'value':state.model!.map((e) => e.toMap()).toList()};
+}
+
+//! repo
+class GroupMessageClass {
+  
+  StreamController<List<MessageModel>> controller = StreamController.broadcast();
+  Stream<List<MessageModel>> s (String groupUid,int limit) async* {
+
+    final SupabaseClient supabase = Supabase.instance.client;
+    String curretnUserID = supabase.auth.currentUser!.id;
+
+    Stream<List<MessageModel>> messagesStream =  supabase.from('chat')
+      .stream(primaryKey: ['id'])
+      .eq('chatRoomId',groupUid)
+      .limit(limit)
+      .order('timestamp')
+      .map((event) => event.map((e) => MessageModel.fromJson(e, curretnUserID)).toList())
+      .handleError((err)=>log(err))
+      .asBroadcastStream();
+  
+    
+    messagesStream.listen((event) { 
+      controller.add(event);
+    });
+    
+          
+    yield* controller.stream;
+  }
 
 }

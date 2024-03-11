@@ -52,21 +52,21 @@ class _ChatAppBarState extends State<ChatAppBar> {
       toolbarHeight: sizeH(context)*0.16,
       leading: IconButton(icon: Icon(Icons.arrow_back,color: theme(context).cardColor,),onPressed: ()=>context.navigationBack(context),),
       actions: [
-        IconButton(
-          onPressed: ()async{
+        // IconButton(
+        //   onPressed: ()async{
 
-            String currentUserId = ChatRepoBody().currentUserId()!;
-            List<String> ids = [currentUserId,widget.data.uid!];
-            ids.sort();
-            String chatRoomId = ids.join('_');
+        //     String currentUserId = ChatRepoBody().currentUserId()!;
+        //     List<String> ids = [currentUserId,widget.data.uid!];
+        //     ids.sort();
+        //     String chatRoomId = ids.join('_');
 
-            String roomID = await repo.createRoom();
-            context.navigation(context, VideoCallScreen(roomId: roomID,token: repo.token,));
-            await repo.inviteToCall(widget.data.uid!, roomID, chatRoomId).then((value) => log('WOOOOOOW'));
+        //     String roomID = await repo.createRoom();
+        //     context.navigation(context, VideoCallScreen(roomId: roomID,token: repo.token,));
+        //     await repo.inviteToCall(widget.data.uid!, roomID, chatRoomId).then((value) => log('WOOOOOOW'));
             
-          }, 
-          icon: Icon(Icons.video_call,color: theme(context).cardColor,)),
-        IconButton(onPressed: widget.onPress,icon: Icon(Icons.search,color: theme(context).cardColor,))
+        //   }, 
+        //   icon: Icon(Icons.video_call,color: theme(context).cardColor,)),
+        // IconButton(onPressed: widget.onPress,icon: Icon(Icons.search,color: theme(context).cardColor,))
       ], 
       title: InkWell(
         onTap: (){context.navigation(context, AppBarInfoScreen(data: widget.data,));},

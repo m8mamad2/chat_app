@@ -17,5 +17,5 @@ class GroupUsecase{
   Future<List<CreateGroupModel>> getExistGroup() async => await repo.getExistGroup();
   Future<void> deleteGroup(BuildContext context,String groupUid)async => await repo.deleteGroup(context, groupUid);
   Future<void> leftGroup(BuildContext context,String uid)async => await repo.leftGroup(context, uid);
-
+  Future<int> lenghtOfData(String chatRoomId) async => await repo.lenghtOfData(chatRoomId);
 }

@@ -33,6 +33,7 @@ import 'internet_check/internet_check_connection.dart';
       BlocProvider<BorderRadiusBloc>(create:(_) => BorderRadiusBloc()),
       BlocProvider<ThemeBloc>(create:(_) => ThemeBloc()),
       BlocProvider<InternetBloc>(create:(_) => InternetBloc()),
+      BlocProvider<GroupMessageBloc>(create:(_) => locator()),
     ], 
     child: child);
     

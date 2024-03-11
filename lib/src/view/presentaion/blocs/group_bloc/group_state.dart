@@ -32,7 +32,35 @@ class LoadedExistGroupState extends ExistGroupState{
   LoadedExistGroupState(this.data):super(data);
 
 }
+
 class ErrorExistGroupState extends ExistGroupState{
   final String error;
   ErrorExistGroupState(this.error):super([]);
 }
+
+
+
+abstract class GroupMessageState{ 
+  final List<MessageModel>? model;
+  const GroupMessageState(this.model);
+}
+
+class InitialGroupMessageState extends GroupMessageState{
+  InitialGroupMessageState():super([]);
+}
+
+class LoadingGroupMessagesState extends GroupMessageState{
+  LoadingGroupMessagesState():super([]);
+}
+
+class LoadedGroupMessagesState extends GroupMessageState{
+  int? limit;
+  LoadedGroupMessagesState(List<MessageModel> model,this.limit):super(model);
+}
+
+class FailGroupMessagesState extends GroupMessageState{
+  final String error;
+  FailGroupMessagesState(this.error):super([]);
+}
+
+

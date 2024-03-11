@@ -27,9 +27,10 @@ class ContactsScreen extends StatefulWidget {
 
 class _ContactsScreenState extends State<ContactsScreen> {
   
-  List<UserModel> searchedUser = <UserModel>[];
+  List<UserModel>? serachUser = <UserModel>[];
   bool isSearch = false;
   TextEditingController controller = TextEditingController();
+  
 
   @override
   void initState() {
@@ -43,7 +44,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
       width: sizeW(context),
       height: sizeH(context),
       color: theme(context).backgroundColor,
-      child: BlocBuilder<AllUserBloc,AllUserState>(
+      child: BlocConsumer<AllUserBloc,AllUserState>(
+        listener: (context, state) {
+          if(state is LoadedAllUserState)serachUser = state.model;
+        },
         builder: (context, state) {
           if(state is LoadingAllUserState)return smallLoading(context);
           if(state is LoadedAllUserState){
@@ -51,13 +55,28 @@ class _ContactsScreenState extends State<ContactsScreen> {
             return Scaffold(
               appBar:isSearch 
                 ? AppBar(
-                  title: TextField(
-                    textInputAction:TextInputAction.search,
-                    onChanged: (text) {},
-                    controller: controller,
-                    decoration: const InputDecoration(border: InputBorder.none,),
+                  title: SizedBox(
+                    height: sizeH(context)*0.1,
+                    child: TextField(
+                      autofocus: true,
+                      textInputAction:TextInputAction.search,
+                      onChanged: (text) {
+                        setState(() =>
+                          serachUser = data!.where((item) => item.name!.toLowerCase().contains(text.toLowerCase())).toList());
+                      },
+                      controller: controller,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(bottom: sizeH(context)*0.01,left: sizeW(context)*0.01),
+                        focusedBorder: border( theme(context).primaryColorDark),
+                        enabledBorder: border( theme(context).primaryColorDark),
+                        border: InputBorder.none,),
+                    ),
                   ),
-                  leading: IconButton(icon: const Icon(Icons.arrow_back,),onPressed: () => onPressed(),),
+                  leading: IconButton(icon: const Icon(Icons.arrow_back,),onPressed: (){
+                    isSearch = !isSearch;
+                    serachUser = state.model;
+                    setState(() { });
+                  },),
                 )
                 : AppBar(
                   bottom: PreferredSize(
@@ -74,42 +93,22 @@ class _ContactsScreenState extends State<ContactsScreen> {
               body: Column(
                 children: [
                   isSearch ?  const SizedBox.shrink() : const ContactAfterAppbar(),
-                  data == null || data.isEmpty
+                  data == null || data.isEmpty 
                     ? Center(child: Text('No contact'.tr()))
-                    : isSearch
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          itemCount:searchedUser.length ,
-                          itemBuilder: (context, index) {
-                            String res = data[index].name!;
-                            return InkWell(
-                            onTap: () => context.navigation(context, ChatPage(data: data[index])),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: sizeH(context)*0.01),
-                                child: ListTile(
-                                  leading: CircleAvatar(
-                                    radius: sizeW(context)*0.03,
-                                    child: data[index].image != null ? Image.network(data[index].image!,fit: BoxFit.cover,) : Text(data[index].name?[0] ?? ''),
-                                  ),
-                                  title: Text(res),
-                                  onTap: () => context.navigation(context, ChatPage(data: data[index])),
-                                ),
-                              ),
-                          );})
-                      : ListView.builder(
+                    : ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount:data.length ,
+                            itemCount: serachUser!.length ,
                             itemBuilder:(context, index) { 
-                              String res = data[index].name ?? '';
+                              String res = serachUser![index].name ?? '';
                               return InkWell(
-                              onTap: () => context.navigation(context, ChatPage(data: data[index])),
+                              onTap: () => context.navigation(context, ChatPage(data: serachUser![index])),
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(vertical: sizeH(context)*0.015),
                                   child: ListTile(
                                     title: Text(res,style: theme(context).textTheme.titleSmall!.copyWith(fontSize: sizeW(context)*0.018,fontFamily: 'body',fontWeight: FontWeight.w500),),
-                                    onTap: () => context.navigation(context, ChatPage(data: data[index])),
-                                    leading: data[index].image != null && data[index].image!.isNotEmpty
+                                    onTap: () => context.navigation(context, ChatPage(data: serachUser![index])),
+                                    leading: serachUser![index].image != null && serachUser![index].image!.isNotEmpty
                                         ? Container(
                                           width: sizeW(context)*0.066,
                                           decoration: BoxDecoration(
@@ -118,13 +117,13 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                             image: DecorationImage(
                                               fit: BoxFit.cover,
                                               onError: (exception, stackTrace) => setState(() => AssetImage(kLogoImage)),
-                                              image: NetworkImage(data[index].image!))
+                                              image: NetworkImage(serachUser![index].image!))
                                           ),
                                         )
                                         : CircleAvatar( 
                                         backgroundColor: theme(context).primaryColorDark,
                                         radius: sizeW(context)*0.034, 
-                                        child: Text(data[index].name?[0].toUpperCase() ?? data[index].uid![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),),
+                                        child: Text(serachUser![index].name?[0].toUpperCase() ?? serachUser![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),),
                                   
                                   ),
                                 ),
@@ -152,6 +151,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   final TextEditingController _addMemberController = TextEditingController();
   GlobalKey<FormState> addMemberKey = GlobalKey<FormState>();
+  OutlineInputBorder border (Color color) => OutlineInputBorder( borderRadius: BorderRadius.circular(12),  borderSide:BorderSide(color: color, width: 0.4));
   
   addMember()async=>showModalBottomSheet(
     isScrollControlled: true,
@@ -164,9 +164,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
     context: context, 
     builder: (context) {
      
-      OutlineInputBorder border (Color color) => OutlineInputBorder(
-         borderRadius: BorderRadius.circular(12), 
-         borderSide:BorderSide(color: color, width: 0.4));
 
       return Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),

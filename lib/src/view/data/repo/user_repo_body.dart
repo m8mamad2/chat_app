@@ -16,8 +16,8 @@ class UserRepoBody extends UserRepoHead{
     try{
       return supbase.from('user')
         .stream(primaryKey: ['id'])
-        .order('timestamp')
         .eq('uid', currentUser)
+        .order('timestamp')
         .map((event) => UserModel.fromJson(event[0]));
     }
     on SocketException catch(e){log('in Group Created Metod $e');return const Stream.empty();}
@@ -71,8 +71,8 @@ class UserRepoBody extends UserRepoHead{
     String user = supbase.auth.currentUser!.id;
     return supbase.from('user')
         .stream(primaryKey: ['id'])
-        .order('timestamp')
         .eq('uid',user)
+        .order('timestamp')
         .map((event) =>event[0]['image']);
   }
 
@@ -80,7 +80,7 @@ class UserRepoBody extends UserRepoHead{
   Future<UserModel> getUserData()async{
     final String currentUser = supbase.auth.currentUser!.id;
     final res = supbase.from('user')
-      .select<PostgrestList>()
+      .select()
       .eq('uid', currentUser)
       .then((value) => UserModel.fromJson(value[0]));
     log('$res');
@@ -89,7 +89,7 @@ class UserRepoBody extends UserRepoHead{
 
   @override
   Future<Map<String,UserModel?>> isInApp(String phone)async{
-    UserModel? res = await supbase.from('user').select<PostgrestList>().eq('phone', phone).then((value) { return value.isEmpty ? null : UserModel.fromJson(value[0]);});
+    UserModel? res = await supbase.from('user').select().eq('phone', phone).then((value) { return value.isEmpty ? null : UserModel.fromJson(value[0]);});
     return res != null ? {'ok':res} : {'no':null};
   }
 

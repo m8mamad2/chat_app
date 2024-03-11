@@ -59,15 +59,15 @@ class GroupRepoBody extends GroupRepoHeader{
   }
   
   @override
-  Future<List<CreateGroupModel>?> groupsModel()async => await supabase.from('groups').select<PostgrestList>().then((value) => value.map((e) => CreateGroupModel.fromJson(e)).toList());
+  Future<List<CreateGroupModel>?> groupsModel()async => await supabase.from('groups').select().then((value) => value.map((e) => CreateGroupModel.fromJson(e)).toList());
   
   @override
   Stream<List<MessageModel>> getGroupMessages(String groupUid) {
     String currentUser = supabase.auth.currentUser!.id;
     return supabase.from('chat')
       .stream(primaryKey: ['id'])
-      .order('timestamp')
       .eq('chatRoomId',groupUid)
+      .order('timestamp')
       .map((event) => event.map((e) => MessageModel.fromJson(e, currentUser)).toList());
   }
   
@@ -83,6 +83,19 @@ class GroupRepoBody extends GroupRepoHeader{
         message, 
         groupID,
         replyMessage);
+        
+        // MessageModel messageModel = MessageModel(  
+        // uid: uid,
+        // senderID: currentUser, 
+        // receiverID: 'groups', 
+        // messsage: message, 
+        // chatRoomID:groupID,
+        // type: 'location', 
+        // timestamp: DateFormat.yMMMEd().format(DateTime.now()), 
+        // fileType: 'location', 
+        // markAsRead: false, 
+        // isMine: true,
+        // replyMessage: replyMessage);
 
       return supabase.from('chat').insert(messageModel.toMap());
     }
@@ -109,7 +122,7 @@ class GroupRepoBody extends GroupRepoHeader{
     // }
     List<CreateGroupModel> groups = [];
     final String currentUser = supabase.auth.currentSession!.user.id;
-    final List<CreateGroupModel> groupModel = await supabase.from('groups').select<PostgrestList>().then((value) => value.map((e) => CreateGroupModel.fromJson(e)).toList());
+    final List<CreateGroupModel> groupModel = await supabase.from('groups').select().then((value) => value.map((e) => CreateGroupModel.fromJson(e)).toList());
 
     for(var grpModel in groupModel){
       List<UserModel> userModels = grpModel.users.map((e) => UserModel.fromJson(e)).toList();
@@ -134,7 +147,7 @@ class GroupRepoBody extends GroupRepoHeader{
   Future<String> leftGroup(String groupUid)async{
     try{
       String currenUser = supabase.auth.currentUser!.id;
-      CreateGroupModel groupModel = await supabase.from('groups').select<PostgrestList>().eq('uid', groupUid).then((value) => CreateGroupModel.fromJson(value[0]));
+      CreateGroupModel groupModel = await supabase.from('groups').select().eq('uid', groupUid).then((value) => CreateGroupModel.fromJson(value[0]));
       List<UserModel> usersGroup  = groupModel.users.map((e) => UserModel.fromJson(e)).toList();
       usersGroup.removeWhere((element) => element.uid == currenUser);
       List<Map<String,dynamic>> userDeletedGroup = usersGroup.map((e) => e.toMap()).toList();
@@ -144,6 +157,40 @@ class GroupRepoBody extends GroupRepoHeader{
     catch(e){
       log('-----> in LeftGroup$e');
       return e.toString();
+    }
+  }
+
+  @override
+  Future<int> lenghtOfData(String chatRoomId)async{
+    List<MessageModel> lenghtOfData = await supabase.from('chat').select().eq('chatRoomId', chatRoomId) .then((value) => value.map((e) => MessageModel.fromJson(e, null)).toList());
+    return lenghtOfData.length;
+  }
+
+
+  @override
+  Future<void> sendGroupLocationMessage(String message,String groupID)async{
+
+    try{String currentUser = supabase.auth.currentUser!.id;
+      String uid = const Uuid().v4();
+
+        MessageModel messageModel = MessageModel(  
+        uid: uid,
+        senderID: currentUser, 
+        receiverID: 'groups', 
+        messsage: message, 
+        chatRoomID:groupID,
+        type: 'location', 
+        timestamp: DateFormat.yMMMEd().format(DateTime.now()), 
+        fileType: 'location', 
+        markAsRead: false, 
+        isMine: true,
+        replyMessage: null);
+
+      return supabase.from('chat').insert(messageModel.toMap());
+    }
+    on PostgrestException catch(e){log('in Group Created Metod $e');}
+    catch(e){
+      log('Send Message ---->>>> $e');
     }
   }
 } 

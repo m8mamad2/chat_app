@@ -1,15 +1,9 @@
 
 import 'dart:async';
 import 'dart:developer';
-import 'dart:convert' as convert;
-import 'dart:io';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:p_4/src/view/data/model/message_model.dart';
 import 'package:p_4/src/view/data/model/user_model.dart';
 import 'package:p_4/src/view/domain/usecase/chat_usecase.dart';
@@ -43,7 +37,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       on<SendLocationMessageEvent>((event, emit) async => await useCase.sendLocationMessage(event.message, event.receiverId,event.replyMessage));
       on<DeleteMessageEvent>((event, emit) async => await useCase.deleteMessage(event.uid));
       on<IsOnlineStatusEvent>((event, emit) async => await useCase.isOnlineStatus(event.status));
-      
+      on<DeleteChatRoomEvent>((event, emit) async => await useCase.deleteChatRoom(event.context, event.receiverID));
+
   }
 }
 
@@ -148,40 +143,6 @@ class MessagesBloc extends HydratedBloc<ChatEvent,MessagesState> {
   Map<String, dynamic>? toJson(MessagesState state) => {'value':state.model!.map((e) => e.toMap()).toList()};
 }
 
-// class MessagesBloc extends HydratedBloc<ChatEvent,MessagesState>{
-//   final ChatUseCase useCase;
-//   MessageClass msgClass = MessageClass();
-//   MessagesBloc(this.useCase):super(LoadingMessagesState()){
-  
-//     on<DisposeGetMessageEvent>((event, emit)async {await msgClass.disposeStream();});
-
-//     on<GetMessageEvent>((event, emit)async {
-
-//       try{
-
-//         Stream<List<MessageModel>> model = msgClass.s(event.receiverId,event.limit);
-//         int lenght = await useCase.lenghtOfData(event.receiverId);
-
-//         await model.forEach((element) {
-//           emit(LoadedMessagesState(element, lenght));
-//          })
-//         .catchError((e)=> emit(FailMessagesState(e.toString())));
-        
-//       }
-//       catch(e){log('$e');emit(FailMessagesState(e.toString()));}
-//     });
-
-//   }
-  
-//   @override
-//   MessagesState fromJson(Map<String, dynamic> json){
-//     List<MessageModel>? model = json['value'] as List<MessageModel>?;
-//     return LoadedMessagesState(model!,null);
-//   }
-  
-//   @override
-//   Map<String, dynamic>? toJson(MessagesState state) => {'value':state.model!.map((e) => e.toMap()).toList()};
-// }
 
 class MessageClass {
   
@@ -198,16 +159,15 @@ class MessageClass {
       supabase
         .from('chat')
         .stream(primaryKey: ['id'])
-        .limit(limit)
-        .order('timestamp')
         .eq('chatRoomId', chatRoomId)
+        .limit(limit)
+        .order('timestamp',ascending: true)
         .map((event) => event.map((e) => MessageModel.fromJson(e,curretnUserID)).toList())
         .handleError((error){log(error);})
         .asBroadcastStream();
     
     messagesStream.listen((event) { 
-      controller.add(event);
-    });
+      controller.add(event.reversed.toList()); });
     
           
     yield* controller.stream;

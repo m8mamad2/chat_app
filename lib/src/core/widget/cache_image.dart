@@ -10,12 +10,12 @@ Widget cachedImageWidget( BuildContext context, String imageUrl, double? width, 
     key: UniqueKey(),
     imageUrl: imageUrl,
     fit: BoxFit.cover,
-    // width: width,
-    // height: height,
     placeholder: (context, url) => Shimmer.fromColors(
-      baseColor: theme(context).primaryColor.withOpacity(0.8),
-      highlightColor: theme(context).primaryColor,
-      child: Container(color: Colors.white10,),
+      // baseColor: theme(context).primaryColor.withOpacity(0.8),
+      // highlightColor: theme(context).primaryColor,
+      baseColor: Colors.grey.shade300,
+      highlightColor: theme(context).primaryColorDark.withOpacity(0.7),
+      child: Container(color: Colors.white24,),
     ),
   );
 }

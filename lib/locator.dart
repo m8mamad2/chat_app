@@ -59,6 +59,7 @@ final GetIt locator = GetIt.instance;
     locator.registerSingleton<UploadBloc>(UploadBloc(locator()));
 
     locator.registerSingleton<ExistGroupBloc>(ExistGroupBloc(locator()));
+    locator.registerSingleton<GroupMessageBloc>(GroupMessageBloc(locator()));
     locator.registerSingleton<ExistConversitionBloc>(ExistConversitionBloc(locator()));
     locator.registerSingleton<AllUserBloc>(AllUserBloc(locator()));
     locator.registerSingleton<MessagesBloc>(MessagesBloc(locator()));

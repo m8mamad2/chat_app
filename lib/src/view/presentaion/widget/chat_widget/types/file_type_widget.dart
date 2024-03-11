@@ -57,17 +57,18 @@ class _FileTypeWidgetState extends State<FileTypeWidget> {
                             child: Icon(Icons.file_copy,color: theme(context).primaryColorDark),
                             ),
                           sizeBoxW(sizeW(context)*0.01),
+                          
                           BlocBuilder<UploadBloc,UploadState>(
                             builder: (context, state) {
-                              if(state is UploadInitialState)return const Text('initial File');
+                              print(state);
+                              if(state is UploadInitialState)return const Text('File');
                               if(state is UploadLoadingState)return const Text('Loading');
                               if(state is UploadSuccessState){
-                              return StreamBuilder(
-                                stream: state.downlaodFile!.asBroadcastStream(),
+                              return FutureBuilder(
+                                future: state.downlaodFile,
                                 builder: (context, snapshot) {
                                   switch(snapshot.connectionState){
                                     case ConnectionState.none:
-                                    case ConnectionState.waiting:return loading(context);
                                     default:
                                       return snapshot.data == null 
                                         ? const Text('File')

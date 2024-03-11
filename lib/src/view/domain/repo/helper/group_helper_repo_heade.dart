@@ -13,4 +13,5 @@ abstract class GroupRepoHelperHeader{
   Future<List<CreateGroupModel>> getExistGroup();
   Future<void> deleteGroup(BuildContext context,String uid);
   Future<void> leftGroup(BuildContext context,String groupUid);
+  Future<int> lenghtOfData(String chatRoomId);
 }

@@ -35,7 +35,7 @@ class LocalNotificationService{
       await _localNotificationsPlugin.zonedSchedule(
         id, 
         title, 
-        body, 
+        body,   
         scheduleTime, 
         notifDetail, 
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,

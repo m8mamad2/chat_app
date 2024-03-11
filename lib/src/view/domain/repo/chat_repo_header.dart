@@ -17,6 +17,6 @@ abstract class ChatRepoHeader{
   Future<Map<String,List<MessageModel?>>> getImageMessage(String receiverID);
   Future<Map<String,List<MessageModel?>>> getFileMessage(String receiverID);
   Future<Map<List<MessageModel>,List<int>>> searching(String receiverID,String search,);
-  Future<String> deleteGroup(String groupUid);
+  Future<String> deleteChatRoom(String receiverID);
   Future<int> lenghtOfData(String receiverID);
 }

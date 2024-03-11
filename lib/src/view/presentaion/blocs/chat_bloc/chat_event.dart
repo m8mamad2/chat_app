@@ -38,6 +38,12 @@ class DeleteMessageEvent extends ChatEvent{
   DeleteMessageEvent(this.uid);
 }
 
+class DeleteChatRoomEvent extends ChatEvent{
+  final String receiverID;
+  final BuildContext context;
+  DeleteChatRoomEvent(this.context,this.receiverID);
+}
+
 class GetAllUserEvent extends ChatEvent{
   final BuildContext context;
   GetAllUserEvent(this.context);

@@ -1,12 +1,8 @@
-import 'dart:developer';
-import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:p_4/src/config/theme/theme.dart';
-import 'package:p_4/src/core/common/constance/colors.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+  import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class ThemeEvent{}
 class GetThemeEvent extends ThemeEvent{}

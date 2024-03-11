@@ -8,14 +8,12 @@ import 'package:p_4/src/core/common/extension/navigation.dart';
 import 'package:p_4/src/core/widget/auth_check.dart';
 import 'package:p_4/src/core/widget/fail_bloc_widget.dart';
 import 'package:p_4/src/core/widget/loading.dart';
-import 'package:p_4/src/view/data/repo/lock_repo_body.dart';
 import 'package:p_4/src/view/presentaion/blocs/lock_bloc/lock_bloc.dart';
 
 import '../../../../../config/theme/theme.dart';
 import '../../../../../core/common/constance/lotties.dart';
 import '../../../../../core/common/is_english.dart';
 import '../../../../../core/common/sizes.dart';
-import 'lock_setting_screen.dart';
 
 class LockEnteringScreen extends StatefulWidget {
   const LockEnteringScreen({super.key});

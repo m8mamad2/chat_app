@@ -38,16 +38,17 @@ class _LocationShowWidgetState extends State<LocationShowWidget> {
         ],
       ),
       body: OSMFlutter(
-        controller:controller,
-        staticPoints: [
-          StaticPositionGeoPoint(
-            'first', 
-            MarkerIcon(icon: Icon(Icons.location_on_sharp,color: Colors.black,size:sizeW(context)*0.08,),), 
-            [ GeoPoint(latitude: late, longitude: long) ])
-        ],
-        initZoom: 15,
-        minZoomLevel: 3,
-        maxZoomLevel: 19,
+        controller:controller, 
+        osmOption: OSMOption(
+          staticPoints: [
+            StaticPositionGeoPoint(
+              'first', 
+              MarkerIcon(icon: Icon(Icons.location_on_sharp,color: Colors.black,size:sizeW(context)*0.08,),), 
+              [ GeoPoint(latitude: late, longitude: long) ])
+          ],
+          zoomOption:const ZoomOption( initZoom: 15, minZoomLevel: 3, maxZoomLevel: 19, ),
+        ),
+        
         ),
     );
   }

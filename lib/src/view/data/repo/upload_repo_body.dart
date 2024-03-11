@@ -7,7 +7,6 @@ import 'dart:io' as io;
 import 'dart:io';
 import 'package:p_4/src/core/common/permission_service.dart';
 import 'package:path/path.dart' as pathh;
-
 import 'package:p_4/src/view/domain/repo/upload_repo_head.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
@@ -138,12 +137,9 @@ class UploadRepoBody extends UploadRepoHead{
 }
 
   @override
-  Stream<String> downlaodFile(String data, String fileType,String fileUid) async* { 
-
-    List<int> bytes = [];
+  Future<String?> downlaodFile(String data, String fileType,String fileUid) async { 
 
     bool isDownloaded = false;
-    // await [Permission.storage,Permission.manageExternalStorage].request();
     await permission.req([Permission.storage, Permission.manageExternalStorage]);
 
     //! path 
@@ -154,47 +150,40 @@ class UploadRepoBody extends UploadRepoHead{
     //! check if in Files
     for(var onePath in fileDirectory){
       if(onePath.path.contains(file.path)){
-        log('---->>>>>in For');
+        print('-----------> in Donwloaded');
         isDownloaded = true;
         await OpenFile.open(onePath.path);
-        yield 'downloaded';
-        // controller.sink.add('downloaded');
+        return 'ok';
       }
     }
     
     //! not in Files
     if(isDownloaded == false){
-      final client = http.Client();
-      http.StreamedResponse response = await client.send(http.Request("GET", Uri.parse(data)));
-      
-      response.stream.asBroadcastStream()
-        .listen((value)async* {
-          bytes.addAll(value);
-          yield 'loading';
-          // controller.sink.add('loading');
-         })
-        .onDone(()async* {
-          // controller.sink.add('downloaded');
-          // controller.sink.close();
-          yield 'downloaded';
-          await file.writeAsBytes(bytes);
-          if(await Permission.storage.status.isGranted)await OpenFile.open(file.path);
-         });
-      
+      final res = await http.get(Uri.parse(data));
+      try{
+        if(res.statusCode == 200){
+          File data = await file.writeAsBytes(res.bodyBytes);
+          await OpenFile.open(data.path);
+          return 'ok';
+        }
+      }
+      catch(e){ 
+        print('Error -- > $e');
+        return res.statusCode.toString();
+      }
       // if(response.statusCode == 200){
-        //! write to file
-        // await file.writeAsBytes(response.bodyBytes);
-        //! open file
-        // if(await Permission.storage.status.isGranted){
-        //   try{
-        //     log('in Download');
-        //     await OpenFile.open(file.path);
-        //     return 'inFile';
-        //   }
-        //   catch(e){ print("---> Error in Cath ${e.toString()}"); return 'error'; }
-        // }}
+      //   ! write to file
+      //   await file.writeAsBytes(response.bodyBytes);
+      //   ! open file
+      //   if(await Permission.storage.status.isGranted){
+      //     try{
+      //       log('in Download');
+      //       await OpenFile.open(file.path);
+      //       return 'inFile';
+      //     }
+      //     catch(e){ print("---> Error in Cath ${e.toString()}"); return 'error'; }
+      //   }}
       // else { log(response.body); return 'error';}
-    
     }
     
   }
@@ -203,8 +192,8 @@ class UploadRepoBody extends UploadRepoHead{
   Future<String?> downloadVoice(String data, String fileType,String fileUid) async {
 
     bool isDownloaded = false;
-    // await [Permission.storage,Permission.manageExternalStorage].request().then((value) => log('After Permission'));
     await permission.req([Permission.storage, Permission.manageExternalStorage]);
+    
 
     // ! path
     final String path = (await getExternalStorageDirectory())!.path;
@@ -315,110 +304,5 @@ class UploadRepoBody extends UploadRepoHead{
 
 }
 
-//   Stream<Map <Stream<bool> , Map< int , Stream<int> >>> downlaodFile(String data, String fileType,String fileUid) async* { 
-//     final vvv = StreamController<Map<Stream<bool>,Map<int,Stream<int>>>>();
-//     final downloadingState = StreamController<bool>();
-//     final receiverState = StreamController<int>();
-//     bool isDownloaded = false;
-//     await [Permission.storage,Permission.manageExternalStorage].request();
-//     //! path 
-//     final String path = (await getExternalStorageDirectory())!.path;
-//     final file = io.File('$path/${fileUid.substring(0,5)}.$fileType');
-//     List<io.FileSystemEntity> fileDirectory = io.Directory('$path/').listSync();
-//     //! check if in Files
-//     for(var onePath in fileDirectory){
-//       if(onePath.path.contains(file.path)){
-//         isDownloaded = true;
-//         await OpenFile.open(onePath.path);
-//         vvv.add({Stream.value(false): { 0 : Stream.value(0)}});
-//       }
-//     }
-//     //! not in Files -> so we should downloaded
-//     if(isDownloaded == false){
-//       final client = http.Client();
-//       int total=0; //! all data
-//       int receiver=0; //! receiver data
-//       final List<int> bytes = []; //! downloaded file as byte
-//       http.StreamedResponse response = await client.send(http.Request("GET", Uri.parse(data)));
-//       total = response.contentLength ?? 0;
-//        response.stream.listen((value) { 
-//         bytes.addAll(value);
-//         receiver += value.length;
-//         receiverState.add(receiver);
-//         downloadingState.add(true);
-//         vvv.add({ downloadingState.stream : { total : receiverState.stream } });
-//       })
-//       .onDone(()async {
-//         downloadingState.add(false);
-//         vvv.add({ downloadingState.stream : { total : receiverState.stream } });
-//         await file.writeAsBytes(bytes);
-//         if(await Permission.storage.status.isGranted)OpenFile.open(file.path);
-//         // final file = File();
-//         // await file.weiteAsByte(_bytes);
-//         // _image = file;
-//       });
-//       // final response = await http.get(Uri.parse(data));
-//       // if(response.statusCode == 200){
-//       //   //! write to file
-//       //   await file.writeAsBytes(response.bodyBytes);
-//       //   //! open file
-//         // if(await Permission.storage.status.isGranted){
-//         //   try{
-//         //     log('in Download');
-//         //     await OpenFile.open(file.path);
-//         //     return 'inFile';
-//         //   }
-//         //   catch(e){ print("---> Error in Cath ${e.toString()}"); return 'error'; }
-//         // }}
-//       // else { log(response.body); return 'error';}
-//     }
-//     yield* vvv.stream;
-//   }
-// @override
-//   Stream<Map<String?,String>> downloadVoice(String data, String fileType,String fileUid) async* {
-//     List<int> bytes = [];
-//     bool isDownloaded = false;
-//     // await [Permission.storage,Permission.manageExternalStorage].request();
-//     // ! path
-//     final String path = (await getExternalStorageDirectory())!.path;
-//     final file = io.File('$path/${fileUid.substring(0,5)}.$fileType');
-//     List<io.FileSystemEntity> fileDirectory = io.Directory('$path/').listSync();
-//     //! check if in Files
-//     for(var onePath in fileDirectory){
-//       if(onePath.path.contains(file.path)){
-//         log('---->>>>>in For');
-//         isDownloaded = true;
-//         yield{onePath.path:'downloaded'};
-//         // return 'inFile';
-//       }
-//     }
-//     if(isDownloaded == false){
-//       final client = http.Client();
-//       http.StreamedResponse response = await client.send(http.Request("GET", Uri.parse(data)));
-//       response.stream.asBroadcastStream()
-//         .listen((value)async* {
-//           bytes.addAll(value);
-//           yield {null:'loading'};
-//           // controller.sink.add('loading');
-//          })
-//         .onDone(()async* {
-//           // controller.sink.add('downloaded');
-//           // controller.sink.close();
-//           // yield 'downloaded';
-//           await file.writeAsBytes(bytes);
-//           yield{file.path:'downloaded'};
-//           // yield file.path;
-//          });
-//       }
-//     // if(isDownloaded == false){
-//     //   final response = await http.get(Uri.parse(data));
-//     //   if(response.statusCode == 200){
-//     //     //! write to file
-//     //     await file.writeAsBytes(response.bodyBytes);
-//     //     //! return String that save in local 
-//     //     log('in Downlaoded ...');
-//     //     return file.path;
-//     //   }
-//     //   else { print('--------Error ${response.statusCode}');return null;}
-//     // }
-//   }
+
+

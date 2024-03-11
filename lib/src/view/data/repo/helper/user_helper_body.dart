@@ -96,7 +96,7 @@ class UserHelperRepoBody extends UserHelperRepoHeader{
                             final Uri smsModel = Uri(
                               scheme: 'sms',
                               path: addMemberController.text.trim(),
-                              queryParameters:<String,String>{'body':'Come on Bro! come to Radical'} );
+                              queryParameters:<String,String>{'body':'come\ton\tto\tRadical'} );
                             if(!await launchUrl(smsModel))log('I Cant Do This');
                           }, 
                           child: Text('Invited'.tr())),

@@ -2,22 +2,18 @@ import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
 import 'package:p_4/src/core/common/is_english.dart';
 import 'package:p_4/src/core/common/sizes.dart';
 import 'package:p_4/src/core/widget/cache_image.dart';
-import 'package:p_4/src/core/widget/fail_bloc_widget.dart';
 import 'package:p_4/src/core/widget/loading.dart';
 import 'package:p_4/src/core/widget/photo_view.dart';
 import 'package:p_4/src/view/data/repo/chat_repo_body.dart';
 import 'package:p_4/src/view/data/repo/helper/chat_helper_repo_body.dart';
 import 'package:p_4/src/view/domain/usecase/chat_usecase.dart';
 import 'package:p_4/src/view/presentaion/blocs/chat_bloc/chat_bloc.dart';
-
-import '../../../data/model/message_model.dart';
 import '../../../data/model/user_model.dart';
 import '../../blocs/upload_bloc/upload_bloc.dart';
 
@@ -38,7 +34,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
       appBar: AppBar(
         actions: [
           
-          IconButton(onPressed: (){}, icon: Icon(Icons.delete_outline,color: theme(context).cardColor,))
+          // IconButton(onPressed: ()=> context.read<ChatBloc>().add(DeleteChatRoomEvent(context, widget.data.uid!)), icon: Icon(Icons.delete_outline,color: theme(context).cardColor,))
         ],
         leading: IconButton(icon:const Icon(Icons.arrow_back),onPressed: () => context.navigationBack(context),),),
       body: Column(
@@ -130,8 +126,8 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                   indicatorColor: theme(context).primaryColorDark,
                   indicatorWeight: sizeW(context)*0.002,
                   tabs: [
-                    Tab(icon: Icon(Icons.chat,color: theme(context).cardColor,),),
-                    Tab(icon: Icon(Icons.group,color: theme(context).cardColor,),),
+                    Tab(icon: Icon(Icons.image,color: theme(context).cardColor,),),
+                    Tab(icon: Icon(Icons.file_copy,color: theme(context).cardColor,),),
                   ])) ,
               body: TabBarView(
                   children: [
@@ -180,8 +176,8 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                                       if(state is UploadInitialState)return const Text('initial File');
                                       if(state is UploadLoadingState)return const Text('Loading');
                                       if(state is UploadSuccessState){
-                                      return StreamBuilder(
-                                        stream: state.downlaodFile!.asBroadcastStream(),
+                                      return FutureBuilder(
+                                        future: state.downlaodFile,
                                         builder: (context, snapshot) {
                                           switch(snapshot.connectionState){
                                             case ConnectionState.none:
@@ -211,3 +207,9 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
     );
   }
 }
+
+
+
+
+
+

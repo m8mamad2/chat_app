@@ -19,4 +19,5 @@ class ChatUseCase{
   Future<List<MessageModel?>> getImageMessage(BuildContext context,String receiverID)async => await chatRepo.getImageMessage(context, receiverID);
   Future<List<MessageModel?>> getFileMessage(BuildContext context,String receiverID)async => await chatRepo.getFileMessage(context, receiverID);
   Future<int> lenghtOfData(String receiverID)=> chatRepo.lenghtOfData(receiverID);
+  Future<void> deleteChatRoom(BuildContext context,String receiverID) => chatRepo.deleteChatRoom(context, receiverID);
 }

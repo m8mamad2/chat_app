@@ -3,9 +3,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+// import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:p_4/src/config/theme/cubit/theme_cubit.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/constance/lotties.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
@@ -18,6 +19,7 @@ import 'package:p_4/src/view/presentaion/blocs/upload_bloc/upload_bloc.dart';
 import 'package:p_4/src/view/presentaion/widget/chat_widget/type_of_item.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+import 'package:swipe_to/swipe_to.dart';
 import 'package:uuid/uuid.dart';
 import '../../data/model/create_group_model.dart';
 import 'dart:developer';
@@ -44,112 +46,160 @@ class _GroupScreenState extends State<GroupScreen> with WidgetsBindingObserver{
   late TextEditingController _searchController;
   late bool isEmojiSelected ;
   late bool isSearch;
-  late ScrollController scrollController;
+  ScrollController scrollController = ScrollController();
   late ListObserverController observerController;
+  MessageModel? replyMessage;
+  late FocusNode focusNode;
   late String chatRoomId;
   int searchIndex = 0;
+  int limit = 15;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: sizeW(context),
-      height: sizeH(context),
-      color: theme(context).backgroundColor,
-      child: BlocBuilder<GroupBloc,GroupState>(
-        builder: (context, state) {
-          if(state is GroupLoadingState)return loading(context);
-          if(state is GroupSuccessState){
-            return GestureDetector(
-                onTap: ()=>FocusScope.of(context).unfocus(),
-                child: WillPopScope(
-                  onWillPop: () {
-                    if(isEmojiSelected){
-                      setState(() => isEmojiSelected = !isEmojiSelected,);
-                      return Future.value(false); }
-                    else{ return Future.value(true);}
-                  },
-                  child: Scaffold(
-                    appBar: isSearch ? searchingAppbar() : GroupAppBar(data: widget.groupModel,onPress: onPress),
-                    body: Column(
-                      children: [
-                        //* chat
-                        Expanded(
-                          child: StreamBuilder(
-                            stream: state.messages,
-                            builder: (context, snapshot) {
-                              switch(snapshot.connectionState){
-                                case ConnectionState.none:
-                                case ConnectionState.waiting:return loading(context);
-                                case ConnectionState.active:
-                                default:
-                                  if(snapshot.data == null || snapshot.data!.isEmpty){return startConversitionLottie(context);}
-                                  else{
-                                    List<MessageModel> messages = snapshot.data!.reversed.toList();
-                                    log(messages.toString());
-                                    return ListViewObserver(
-                                      controller: observerController,
-                                      child: ListView.builder(
-                                        controller: scrollController,
-                                        shrinkWrap: true,
-                                        reverse: true,
-                                        itemCount: messages.length,
-                                        itemBuilder: (context, index){
-                                          return GestureDetector(
-                                            onTap: () => log('in ListView -> $index'),
-                                            onDoubleTap: ()async => showDeleteDialg(messages[index].uid),
-                                            child: messageItemWidget(context, messages[index],));}),
-                                    );}
-                              }
-                            },
-                          )),
-                        
-                        //* button
-                        isSearch
-                         ? Container(
-                            width: sizeW(context),
-                            height: sizeH(context)*0.15,
-                            decoration:BoxDecoration(
-                              border: Border( top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.04),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed:(){
-                                          observerController.animateTo(index: searchingComingData[searchIndex],curve: Curves.fastOutSlowIn,duration: const Duration(seconds: 1));
-                                          setState(()=>searchIndex ++);
-                                        } , 
-                                        icon:Icon(Icons.arrow_upward,color: theme(context).cardColor,)),
-                                      IconButton(onPressed:(){
-                                          observerController.animateTo(index: searchingComingData[searchIndex != 0 ? searchIndex - 1 : searchIndex],curve: Curves.fastOutSlowIn,duration: const Duration(seconds: 1));
-                                          if(searchIndex != 0) setState(()=>searchIndex --);
-                                      } , icon:Icon(Icons.arrow_downward,color: theme(context).cardColor,)),
-                                    ],
-                                  ),
-                                  Text('$searchIndex of ${searchingComingData.length}',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).cardColor),)
-                                ],
+    return BlocBuilder<ThemeBloc,ThemeState>(
+      builder: (context, state) {
+        if(state is LoadedThemeState){
+          return Container(
+            width: sizeW(context),
+            height: sizeH(context),
+            decoration: BoxDecoration(
+              image:   DecorationImage(image:AssetImage(state.isDark ?? false ? 'assets/image/bg_chat.jpg' : 'assets/image/bg_chat_light.jpg',),fit: BoxFit.cover ),
+              color: theme(context).backgroundColor,
+            ),
+            child: GestureDetector(
+                      onTap: ()=>FocusScope.of(context).unfocus(),
+                      child: WillPopScope(
+                        onWillPop: () {
+                          if(isEmojiSelected){
+                            setState(() => isEmojiSelected = !isEmojiSelected,);
+                            return Future.value(false); }
+                          else{ return Future.value(true);}
+                        },
+                        child: Scaffold(
+                          backgroundColor: Colors.transparent,
+                          appBar: isSearch ? searchingAppbar() : GroupAppBar(data: widget.groupModel,onPress: onPress),
+                          body: Column(
+                            children: [
+                              //* chat
+                              BlocBuilder<GroupMessageBloc,GroupMessageState>(
+                              // BlocBuilder<ChatBloc,ChatState>(
+                                builder: (context, state) {
+                                  if(state is LoadingGroupMessagesState)return Expanded(child: smallLoading(context));
+                                  if(state is LoadedGroupMessagesState){
+                                  // if(state is ChatLoadingState)return Expanded(child: smallLoading(context));
+                                  // if(state is ChatSuccessState ){
+                                    List<MessageModel>? messages = state.model?.reversed.toList();
+                                    int? lenght = state.limit;
+                                    if(messages == null ||messages.isEmpty )return Expanded(child: Center(child: startConversitionLottie(context)));
+                                    return Expanded(
+                                      child: ListViewObserver(
+                                        controller: observerController,
+                                        child: ListView.builder(
+                                          controller: scrollController,
+                                          shrinkWrap: true,
+                                          reverse: true,
+                                          itemCount: messages.length + 1,
+                                          itemBuilder: (context, index){
+                                            if(index < messages.length){
+                                              return SwipeTo(
+                                                onRightSwipe: (d) => reply(messages[index]),
+                                                child: GestureDetector(
+                                                  onDoubleTap: ()async => showDeleteDialg(messages[index].uid),
+                                                  child: messageItemWidget(context, messages[index],)),
+                                              );
+                                            }
+                                            else {
+                                              return 
+                                                limit == lenght || lenght! <= limit
+                                                  ? Center(child: Padding(
+                                                    padding:const EdgeInsets.symmetric(vertical: 32),
+                                                    child: Container(
+                                                      width: sizeW(context)*0.11,
+                                                      height: sizeH(context)*0.08,
+                                                      decoration: BoxDecoration(
+                                                        gradient: LinearGradient(
+                                                          colors: [
+                                                            theme(context).primaryColorDark.withOpacity(0.7),
+                                                            theme(context).primaryColorDark.withOpacity(0.7),
+                                                            theme(context).primaryColorDark.withOpacity(0.2),
+                                                          ]
+                                                        ),
+                                                        borderRadius: BorderRadius.circular(20),
+                                                      ),
+                                                      child: Center(child: Text('start point',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor),)),
+                                                    ),))
+                                                  : const Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 32),
+                                                    child: Center(child: CircularProgressIndicator(),),
+                                                    );
+                                            }
+                                          }
+                                        ),
+                                      )
+                                    );
+                                  }
+                                  if(state is FailGroupMessagesState)return Expanded(child: Text(state.error));
+                                  return Container(width: 100,height: 100,color:Colors.amber);
+                                },
                               ),
-                            ),
-                            )
-                         : GroupButtonsWidget(
-                            scrollController: observerController.controller!,
-                            groupUid: widget.groupModel.uid,
-                            isEmojiSelected: isEmojiSelected, 
-                            controller: _controller),
-
-                      ],
+                              
+                              
+                              //* button
+                              isSearch
+                              ? Container(
+                                  width: sizeW(context),
+                                  height: sizeH(context)*0.15,
+                                  decoration:BoxDecoration(
+                                    border: Border( top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.04),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              onPressed:(){
+                                                log(searchingComingData[searchIndex].toString());
+                                                observerController.animateTo(index: searchingComingData[searchIndex],curve: Curves.fastOutSlowIn,duration: const Duration(seconds: 1));
+                                                setState(()=>searchIndex ++);
+                                              } , 
+                                              icon:Icon(Icons.arrow_upward,color: theme(context).cardColor,)),
+                                            IconButton(onPressed:(){
+                                                observerController.animateTo(index: searchingComingData[searchIndex != 0 ? searchIndex - 1 : searchIndex],curve: Curves.fastOutSlowIn,duration: const Duration(seconds: 1));
+                                                if(searchIndex != 0) setState(()=>searchIndex --);
+                                            } , icon:Icon(Icons.arrow_downward,color: theme(context).cardColor,)),
+                                          ],
+                                        ),
+                                        Text('$searchIndex of ${searchingComingData.length}',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).cardColor),)
+                                      ],
+                                    ),
+                                  ),
+                                  )
+                              : GroupButtonsWidget(
+                                  scrollController: observerController.controller!,
+                                  groupUid: widget.groupModel.uid,
+                                  isEmojiSelected: isEmojiSelected, 
+                                  controller: _controller,
+                                  focusNode: focusNode,
+                                  onCancelReply: replyCancel,
+                                  replayMessage: replyMessage,
+                                  ),
+        
+                            ],
+                          )
+                      ))
                     )
-                ))
-              );
-          }
-          if(state is GroupFailState)return FailBlocWidget(state.error);
-          return const SizedBox.shrink();
-        },
+          );
+        }
+        return Container(
+          width: sizeW(context),
+          height: sizeH(context),
+          decoration: BoxDecoration(color: theme(context).backgroundColor,),
+          child: FailBlocWidget('Error : Please Try Again'),
+        );
       
-      ),
+      },
     );
     
   }
@@ -169,16 +219,18 @@ class _GroupScreenState extends State<GroupScreen> with WidgetsBindingObserver{
     _controller =  TextEditingController();
     _searchController =  TextEditingController();
     isEmojiSelected = false;
+    focusNode = FocusNode();
 
     isSearch = false;
     searchingComingData = [];
 
     WidgetsBinding.instance.addObserver(this);
 
-    BlocProvider.of<GroupBloc>(context).add(GetGroupMessagesEvent(widget.groupModel.uid));
-
-    scrollController = ScrollController();
+    BlocProvider.of<GroupMessageBloc>(context).add(GetInitialGroupMessageeEvent(context: context,receiverId: widget.groupModel.uid));
+    
     observerController = ListObserverController(controller: scrollController);
+
+    scrollController.addListener(() => scrollListener());
   }
 
 
@@ -221,7 +273,7 @@ class _GroupScreenState extends State<GroupScreen> with WidgetsBindingObserver{
       ),
     );
 
-    showDeleteDialg(String uid)async{
+  showDeleteDialg(String uid)async{
     await showDialog(
       context: context, 
       builder:(context)=> AlertDialog(
@@ -255,5 +307,22 @@ class _GroupScreenState extends State<GroupScreen> with WidgetsBindingObserver{
               ),
             ));
   }
+
+   scrollListener()async{
+    if(scrollController.hasClients && scrollController.offset >= scrollController.position.maxScrollExtent && !scrollController.position.outOfRange){
+        setState(()=>limit += 7);
+        // BlocProvider.of<ChatBloc>(context).add(GetMessageEvent(context: context ,receiverId: widget.data.uid!,limit: limit));
+        BlocProvider.of<GroupMessageBloc>(context).add(GetGroupMessagesEvent(widget.groupModel.uid,limit));
+      }
+  }
+
+  reply(MessageModel message){
+    replyMessage = message;
+    log(message.messsage);
+    setState(() {});
+    focusNode.requestFocus();
+  }
+  replyCancel()=>setState(() => replyMessage = null);
+
 
 }

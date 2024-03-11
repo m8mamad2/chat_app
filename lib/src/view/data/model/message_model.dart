@@ -20,7 +20,7 @@ class MessageModel extends MessageEntity{
   final String type;
   
   @override
-  final String timestamp;
+  final String? timestamp;
   
   @override
   final String? fileType;
@@ -39,7 +39,7 @@ class MessageModel extends MessageEntity{
 
 
 
-  MessageModel({required this.senderID, required this.receiverID, required this.messsage, required this.type,required this.timestamp,required this.fileType,required this.markAsRead,required this.isMine,required this.chatRoomID,required this.uid,required this.replyMessage})
+  MessageModel({required this.senderID, required this.receiverID, required this.messsage, required this.type,this.timestamp,required this.fileType,required this.markAsRead,required this.isMine,required this.chatRoomID,required this.uid,required this.replyMessage})
     :super(
       uid: uid,
       fileType: fileType,
@@ -76,7 +76,7 @@ class MessageModel extends MessageEntity{
     'receiverID':receiverID,
     'messsage':messsage,
     'type':type,
-    'timestamp':timestamp,
+    // 'timestamp':timestamp,
     'fileType':fileType,
     'markAsRead':markAsRead,
     'isMine':isMine,
@@ -92,7 +92,8 @@ class MessageModel extends MessageEntity{
     messsage: messsage, 
     chatRoomID:chatRoomID,
     type: 'message', 
-    timestamp: DateFormat.yMMMEd().format(DateTime.now()), 
+    // timestamp: DateFormat.yMMMEd().format(DateTime.now()), 
+    timestamp: null, 
     fileType: 'message', 
     markAsRead: false, 
     isMine: true,
@@ -106,7 +107,8 @@ class MessageModel extends MessageEntity{
     receiverID: receiverId, 
     messsage: 'fakeImage', 
     type: fakeType, 
-    timestamp: DateFormat.yMMMEd().format(DateTime.now()), 
+    // timestamp: DateFormat.yMMMEd().format(DateTime.now()), 
+    timestamp: null,
     fileType: fakeType, 
     markAsRead: false, 
     isMine: true, 
@@ -121,10 +123,12 @@ class MessageModel extends MessageEntity{
     messsage: messsage, 
     chatRoomID: chatRoomID, 
     type: 'message', 
-    timestamp: DateFormat.yMMMEd().format(DateTime.now()), 
+    // timestamp: DateFormat.yMMMEd().format(DateTime.now()), 
+    timestamp: null,
     fileType: 'message', 
     markAsRead: false, 
     isMine: true,
     replyMessage: replyMessage
     );
 }
+

@@ -9,7 +9,7 @@ class UploadLoadingState extends UploadState{}
 
 // ignore: must_be_immutable
 class UploadSuccessState extends UploadState{
-  Stream<String>? downlaodFile;
+  Future<String?>? downlaodFile;
   Stream<Map<String?,String>>? downloadVoice;
   UploadSuccessState({this.downlaodFile,this.downloadVoice}):super();
 }

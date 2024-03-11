@@ -2,21 +2,17 @@
 
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:open_file/open_file.dart';
 import 'package:p_4/src/config/theme/theme.dart';
 import 'package:p_4/src/core/common/extension/navigation.dart';
 import 'package:p_4/src/core/common/sizes.dart';
 import 'package:p_4/src/core/widget/loading.dart';
 import 'package:p_4/src/view/presentaion/blocs/user_bloc/user_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_manager/photo_manager.dart' ;
 import 'package:photo_view/photo_view.dart';
-
+import 'package:photo_manager_image_provider/photo_manager_image_provider.dart' as AssetImageWidget;
 
 
 class BottomShetImagesWidget extends StatefulWidget {
@@ -28,20 +24,28 @@ class BottomShetImagesWidget extends StatefulWidget {
 class _BottomShetImagesWidgetState extends State<BottomShetImagesWidget> {
 
   AssetPathEntity? selectAlbum;
-  List<AssetPathEntity> albumList = [];
+  List<AssetPathEntity> data = [];
   List<AssetEntity> assetList = [];
+  bool loading = true;
 
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    List<AssetPathEntity> data = await PhotoManager.getAssetPathList(type: RequestType.image);
-    setState(() {
-      albumList = data;
-      selectAlbum = data[0];
-    });
-    assetList = await selectAlbum!.getAssetListRange(start: 0, end: selectAlbum!.assetCount);
-    setState((){});
+    try{
+      data = await PhotoManager.getAssetPathList(type: RequestType.image);
+      print(data);
+      
+      setState(() { selectAlbum = data[0]; });
+      
+      final int count = await PhotoManager.getAssetCount();
+      assetList = await selectAlbum!.getAssetListRange(start: 0, end: count);
+      
+      setState((){});
+
+      Future.delayed(const Duration(seconds: 3),()=>setState(()=> loading = false));
+    }
+    catch(e){ print('---> $e'); }
   }
   
   @override
@@ -55,14 +59,17 @@ class _BottomShetImagesWidgetState extends State<BottomShetImagesWidget> {
         )
       ),
       width: sizeW(context),
-      child: GridView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: assetList.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3), 
-        itemBuilder: (context, index) {
-            return Padding( padding:const EdgeInsets.all(2), child: assetWidget(assetList[index]),);
-          },
-      ),
+      child: 
+      loading 
+        ? smallLoading(context)
+        :GridView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: assetList.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3), 
+          itemBuilder: (context, index) {
+              return Padding( padding:const EdgeInsets.all(2), child: assetWidget(assetList[index]),);
+            },
+        ),
     );
   }
   
@@ -74,11 +81,23 @@ class _BottomShetImagesWidgetState extends State<BottomShetImagesWidget> {
         // log(assetEntity.relativePath!);
         // File? data = await assetEntity.file;
         // context.navigation(context, Editore(path: data!));
-        
         File? data = await assetEntity.file;
         context.navigation(context, ShowImageWidget(file: data!));
       } ,
-      child: AssetEntityImage(
+      // child: Container(
+      //     decoration: BoxDecoration(color: Colors.red),
+      //     child: FutureBuilder(
+      //       future: assetEntity.file,
+      //       builder: (context, snapshot) {
+      //         switch(snapshot.connectionState){
+      //           case ConnectionState.none:
+      //           case ConnectionState.waiting: return CircularProgressIndicator();
+      //           default:
+      //             return snapshot.data == null ? Text('null') :  Image.file(snapshot.data!.absolute);
+      //         }
+      //       },),
+      // ),
+      child: AssetImageWidget.AssetEntityImage(
         assetEntity,
         isOriginal: false,
         thumbnailSize: const ThumbnailSize.square(250),
@@ -99,11 +118,11 @@ class ShowImageWidget extends StatelessWidget {
       backgroundColor: Colors.white,
       body: PhotoView(imageProvider:FileImage(file)),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: theme(context).primaryColor,
+        backgroundColor: theme(context).primaryColorDark,
         child: BlocBuilder<UserBloc,UserState>(
           builder: (context, state) {
             if(state is UserLoadingState)return smallLoading(context,color: theme(context).backgroundColor);
-            if(state is UserSuccessState)return Icon(Icons.check,color: theme(context).backgroundColor,);
+            if(state is UserSuccessState || state is UserInitialState)return Icon(Icons.check,color: theme(context).backgroundColor,);
             if(state is UserFailState)   return Icon(Icons.error,color: theme(context).backgroundColor,);
             return Container();
           },
@@ -117,3 +136,6 @@ class ShowImageWidget extends StatelessWidget {
     );
   }
 }
+
+
+

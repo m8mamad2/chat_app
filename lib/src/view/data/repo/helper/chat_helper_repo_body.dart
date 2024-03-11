@@ -26,8 +26,8 @@ class ChatHelperRepoBody extends ChatHelperRepoHeader{
     final data = repo.getMessage(receiverID,limit);
     String isOk = data.keys.last;
     
-    int lenghtOfData = await repo.lenghtOfData(receiverID);
-    int finalLenght = lenghtOfData <= 15 ? lenghtOfData : limit ;
+    // int lenghtOfData = await repo.lenghtOfData(receiverID);
+    // int finalLenght = lenghtOfData <= 15 ? lenghtOfData : limit ;
 
     if (isOk == 'ok'){
       yield* repo.getMessage(receiverID,limit).values.last;}
@@ -113,8 +113,8 @@ class ChatHelperRepoBody extends ChatHelperRepoHeader{
   Future<Map<List<MessageModel>,List<int>>> searching(String receiverID,String search,)async => await repo.searching(receiverID, search);
   
   @override
-  Future<void> deleteGroup(BuildContext context,String groupUid)async{
-    return await repo.deleteGroup(groupUid)
+  Future<void> deleteChatRoom(BuildContext context,String receiverID)async{
+    return await repo.deleteChatRoom(receiverID)
       .then((value) async {
         return value == 'ok' ? value : await errorBottomShetHelper(context, value, () {
           context.navigationBack(context);

@@ -28,6 +28,7 @@ class CreateGroupInfoScreen extends StatefulWidget {
 class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
   
   XFile? image;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController controller = TextEditingController();
   final TextEditingController biocontroller = TextEditingController();
   
@@ -48,91 +49,95 @@ class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
         title: Text('New Group'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
         leading: IconButton(icon:const Icon(Icons.arrow_back),onPressed: ()=>context.navigationBack(context),),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: sizeH(context)*0.04),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  InkWell(
-                    onTap: ()async{
-                      XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
-                      setState(() => file != null ? image = file : log('Choese Image null'),);
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: theme(context).primaryColorDark,
-                      radius: sizeW(context)*0.052,
-                      backgroundImage: image != null ? FileImage(File(image!.path)) : null,
-                      child: Center(child: image != null ? null : Icon(Icons.add_a_photo,size: sizeW(context)*0.04,color: Colors.white,)),
+      body: Form(
+        key: formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: sizeH(context)*0.04),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    InkWell(
+                      onTap: ()async{
+                        XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
+                        setState(() => file != null ? image = file : log('Choese Image null'),);
+                      },
+                      child: CircleAvatar(
+                        backgroundColor: theme(context).primaryColorDark,
+                        radius: sizeW(context)*0.052,
+                        backgroundImage: image != null ? FileImage(File(image!.path)) : null,
+                        child: Center(child: image != null ? null : Icon(Icons.add_a_photo,size: sizeW(context)*0.04,color: Colors.white,)),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: sizeW(context)*0.33,
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: controller,
-                          decoration: InputDecoration(
-                            border: border(),
-                            focusedBorder: border(),
-                            hintText: 'Enter group Name'.tr(),),
-                        ),
-                        TextField(
-                          controller: biocontroller,
-                          decoration: InputDecoration(
-                            border: border(),
-                            focusedBorder: border(),
-                            hintText: 'Enter Bio',),
-                        ),
-                      ],
-                    ))
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.035,vertical: sizeH(context)*0.02),
-              width: sizeW(context),
-              height: sizeH(context)*0.08,
-              color: theme(context).primaryColor,
-              child: Text('${widget.data?.length} memebers',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).primaryColorDark),),
-            ),
-            sizeBoxH(sizeH(context)*0.02),
-            ListView.separated(
-              separatorBuilder: (context, index) => Divider(thickness: 0.4,indent: sizeW(context)*0.1,),
-              shrinkWrap: true,
-              itemCount: widget.data?.length ?? 0,
-              itemBuilder: (context, index) => Padding(
-                padding: EdgeInsets.symmetric(vertical: sizeH(context)*0.01),
-                child: ListTile(
-                  leading: widget.data?[index].image != null
-                    ? Container(
-                        width: sizeW(context)*0.066,
-                        decoration: BoxDecoration(
-                          color: theme(context).primaryColorDark,
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            onError: (exception, stackTrace) => setState(() => AssetImage(kLogoImage)),
-                            image: NetworkImage(widget.data![index].image!))
-                        ),
-                      )
-                    : CircleAvatar(
-                      backgroundColor: theme(context).primaryColorDark,
-                      radius: sizeW(context)*0.034,
-                      child: Text(widget.data![index].name?[0].toUpperCase() ?? widget.data![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),)),
-                  title: Text(widget.data?[index].name ?? widget.data![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleSmall!.copyWith(fontSize: sizeW(context)*0.018,fontFamily: 'body',fontWeight: FontWeight.w500)),
+                    SizedBox(
+                      width: sizeW(context)*0.33,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: controller,
+                            validator: (value) => value!.isEmpty ? 'Enter Something'.tr():null,
+                            decoration: InputDecoration(
+                              border: border(),
+                              focusedBorder: border(),
+                              hintText: 'Enter group Name'.tr(),),
+                          ),
+                          TextField(
+                            controller: biocontroller,
+                            decoration: InputDecoration(
+                              border: border(),
+                              focusedBorder: border(),
+                              hintText: 'Enter Bio'.tr(),),
+                          ),
+                        ],
+                      ))
+                  ],
                 ),
-              ),)
-          ],
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.035,vertical: sizeH(context)*0.02),
+                width: sizeW(context),
+                height: sizeH(context)*0.08,
+                color: theme(context).primaryColor,
+                child: Text('${widget.data?.length} memebers',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).primaryColorDark),),
+              ),
+              sizeBoxH(sizeH(context)*0.02),
+              ListView.separated(
+                separatorBuilder: (context, index) => Divider(thickness: 0.4,indent: sizeW(context)*0.1,),
+                shrinkWrap: true,
+                itemCount: widget.data?.length ?? 0,
+                itemBuilder: (context, index) => Padding(
+                  padding: EdgeInsets.symmetric(vertical: sizeH(context)*0.01),
+                  child: ListTile(
+                    leading: widget.data?[index].image != null
+                      ? Container(
+                          width: sizeW(context)*0.066,
+                          decoration: BoxDecoration(
+                            color: theme(context).primaryColorDark,
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              onError: (exception, stackTrace) => setState(() => AssetImage(kLogoImage)),
+                              image: NetworkImage(widget.data![index].image!))
+                          ),
+                        )
+                      : CircleAvatar(
+                        backgroundColor: theme(context).primaryColorDark,
+                        radius: sizeW(context)*0.034,
+                        child: Text(widget.data![index].name?[0].toUpperCase() ?? widget.data![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),)),
+                    title: Text(widget.data?[index].name ?? widget.data![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleSmall!.copyWith(fontSize: sizeW(context)*0.018,fontFamily: 'body',fontWeight: FontWeight.w500)),
+                  ),
+                ),)
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: theme(context).primaryColorDark,
         onPressed: ()async {
-          context.read<GroupBloc>().add(CreateGroupEvent1(context: context,name: controller.text.trim(),bio: biocontroller.text.trim() ,users: widget.data!, file: image,mySelf: widget.myself));
+          if(formKey.currentState!.validate())context.read<GroupBloc>().add(CreateGroupEvent1(context: context,name: controller.text.trim(),bio: biocontroller.text.trim() ,users: widget.data!, file: image,mySelf: widget.myself));
         },
         child:BlocBuilder<GroupBloc,GroupState>(
         builder: (context, state) {

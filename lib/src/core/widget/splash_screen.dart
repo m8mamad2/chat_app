@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 margin: EdgeInsets.only(bottom: sizeH(context)*0.4,left: sizeW(context)*0.2),
-                width: sizeW(context),height: sizeH(context)*0.2,color: const Color(0xff1A1C1E),)),
+                width: sizeW(context),height: sizeH(context)*0.2,color: widget.isDark ?const Color(0xff1A1C1E) : theme(context).backgroundColor,)),
             Container(
               margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.8),
               child: FutureBuilder(
@@ -55,18 +55,18 @@ class _SplashScreenState extends State<SplashScreen> {
                   log(snapshot.connectionState.toString());
                   switch(snapshot.connectionState){
                     case ConnectionState.none:
-                    case ConnectionState.waiting:return smallLoading(context);
+                    case ConnectionState.waiting:return smallLoading(context,color: theme(context).cardColor);
                     default:
                       bool isConnected = snapshot.data!;
                       log(snapshot.data.toString());
                       return isConnected 
-                        ?  smallLoading(context)
+                        ?  smallLoading(context,color: theme(context).cardColor)
                         :  IconButton(
                           onPressed: ()async{
                             await isInternetConnectAndCanGo();
                             setState(() {});
                           }, 
-                          icon: const Icon(Icons.local_dining));
+                          icon: Icon(Icons.replay_sharp,color: theme(context).cardColor,));
                   }
                 },
               ),

@@ -27,6 +27,7 @@
     "Edit Name":"Edit Name",
     "Set Profile Image":"Set Profile Image",
     "Logout":"Logout",
+    "Languages":"Languages",
     "Message Text Size":"Message Text Size",
     "It's All Wright":"It's All Wright",
     "Hi Man ! Whats up?":"Hi Man ! Whats up?",
@@ -100,5 +101,8 @@
     "Start Conversition Right Now!":"Start Conversition Right Now!",
     "start Point":"start Point",
     "Change Lock":"Change Lock",    
-    "Please Enter new Password":"Please Enter new Password"
+    "Please Enter new Password":"Please Enter new Password",
+    "Not Connected yet ... one more time!":"Not Connected yet ... one more time!",
+    "Check Your Connection Please...":"Check Your Connection Please...",
+    "A Problem has Occurred...":"A Problem has Occurred..."
 }

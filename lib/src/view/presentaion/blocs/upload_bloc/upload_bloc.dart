@@ -14,15 +14,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
     on<UploadMediaEvent>((event, emit) async => await useCase.uploadMedia(event.receiverId,event.chatRoomId,event.replyMessage));
     on<UploadFileEvent>((event, emit) async => await useCase.uploadFile(event.receiverId,event.chatRoomId,event.replyMessage));
     on<UploadVoiceEvent>((event, emit) async => await useCase.uploadVoice(event.receiverId,event.path,event.chatRoomId,event.replyMessage));
-    on<DownloadFileEvent>((event, emit){
-      emit(UploadLoadingState());
-      try{
-        Stream<String> downloadFile = useCase.downloadFile(event.data, event.fileType, event.fileUid,).asBroadcastStream();
-        emit(UploadSuccessState( downlaodFile: downloadFile ));
-
-      }
-      catch(e){emit(UploadFailState(error: e.toString()));}
-    });
+    on<DownloadFileEvent>((event, emit) => useCase.downloadFile(event.data, event.fileType, event.fileUid,) );
     on<DownloadVoiceEvent>((event, emit) async =>  useCase.downloadVoice(event.data,event.fileType,event.fileUid));
     on<DownloadVideoEvent>((event, emit) async =>  useCase.downloadVideo(event.data,event.fileType,event.fileUid));
     

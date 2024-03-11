@@ -34,13 +34,13 @@ class ChatRepoBody extends ChatRepoHeader{
      List<MessageModel> data = []; 
       
      final List<MessageModel> AtoB = await supabase.from('chat')
-        .select<PostgrestList>()
+        .select()
         .eq('senderID', curretnUserId)
         .not('receiverID', 'eq', 'groups').
         then((value) => value.map((e) => MessageModel.fromJson(e, curretnUserId)).toList());
       
      final List<MessageModel> BtoA = await supabase.from('chat')
-        .select<PostgrestList>()
+        .select()
         .eq('receiverID', curretnUserId)
         .then((value) => value.map((e) => MessageModel.fromJson(e, curretnUserId)).toList());
     
@@ -77,7 +77,7 @@ class ChatRepoBody extends ChatRepoHeader{
       String curretnUserID = supabase.auth.currentUser!.id;
       List<UserModel> data = [];
       Map<String,List<MessageModel>> getExistConverstion = await getExistConversition();
-      final List<UserModel> res = await supabase.from('user').select<PostgrestList>().then((value) => value.map((e) => UserModel.fromJson(e)).toList());
+      final List<UserModel> res = await supabase.from('user').select().then((value) => value.map((e) => UserModel.fromJson(e)).toList());
       
       for(var userModel in res){
         for(var i in getExistConverstion.values){ 
@@ -150,16 +150,17 @@ class ChatRepoBody extends ChatRepoHeader{
         ids.sort();
         String chatRoomId = ids.join('_');  
 
-        Stream ss;
+        // Stream ss;
         Stream<List<MessageModel>> messagesStream = 
           supabase
             .from('chat')
             .stream(primaryKey: ['id'])
+            .eq('chatRoomId', chatRoomId)
             .limit(limit)
             .order('timestamp')
-            .eq('chatRoomId', chatRoomId)
-            .map((event) => event.map((e) => MessageModel.fromJson(e,curretnUserID)).toList())
+            .map((event)=> event.map((e) => MessageModel.fromJson(e,curretnUserID)).toList() )
             .handleError((error){log(error);});
+        
         
       return {'ok':messagesStream};
     }
@@ -178,13 +179,14 @@ class ChatRepoBody extends ChatRepoHeader{
     await supabase.from('user').update({'inOnline':status}).eq('uid', user);
   }
   
+  //!
   @override
   Stream<List<UserModel>>? getUserStatus(String uid){
     return supabase
       .from('user')
       .stream(primaryKey: ['id'])
-      .order('timestamp')
       .eq('uid',uid)
+      .order('timestamp')
       .map((event) => event.map((e) =>UserModel.fromJson(e)).toList());
   }
 
@@ -228,7 +230,7 @@ class ChatRepoBody extends ChatRepoHeader{
       await permission.req([Permission.contacts]);
 
       //!data from table
-      final List<UserModel> res = await supabase.from('user').select<PostgrestList>().not('uid', 'eq', supabase.auth.currentUser!.id).then((value) => value.map((e) => UserModel.fromJson(e)).toList());
+      final List<UserModel> res = await supabase.from('user').select().not('uid', 'eq', supabase.auth.currentUser!.id).then((value) => value.map((e) => UserModel.fromJson(e)).toList());
       
       //! contacts from device
       List<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
@@ -276,7 +278,7 @@ class ChatRepoBody extends ChatRepoHeader{
 
       await supabase
             .from('chat')
-            .select<PostgrestList>()
+            .select()
             .eq('chatRoomId', chatRoomId)
             .then((value) => value.map((e){MessageModel data = MessageModel.fromJson(e, curretnUserID);if(data.type.contains('image'))images.add(data);}).toList());
         
@@ -306,7 +308,7 @@ class ChatRepoBody extends ChatRepoHeader{
 
     await supabase
           .from('chat')
-          .select<PostgrestList>()
+          .select()
           .eq('chatRoomId', chatRoomId)
           .then((value) => value.map((e){
             MessageModel data = MessageModel.fromJson(e, curretnUserID);
@@ -338,7 +340,7 @@ class ChatRepoBody extends ChatRepoHeader{
     List<int> searchingIndex = [];
 
     
-    List<MessageModel> messages = await supabase.from('chat').select<PostgrestList>().eq('chatRoomId', chatRoomId).then((event) => event.map((e) => MessageModel.fromJson(e,curretnUserID)).toList());
+    List<MessageModel> messages = await supabase.from('chat').select().eq('chatRoomId', chatRoomId).then((event) => event.map((e) => MessageModel.fromJson(e,curretnUserID)).toList());
     List<MessageModel> reverseMessage = messages.reversed.toList();
 
     // for(var model in reverseMessage){
@@ -360,9 +362,13 @@ class ChatRepoBody extends ChatRepoHeader{
   }
 
   @override
-  Future<String> deleteGroup(String groupUid)async{
+  Future<String> deleteChatRoom(String receiverID)async{
     try{
-      await supabase.from('user').delete().eq('uid', groupUid);
+      String curretnUserID = supabase.auth.currentUser!.id;
+      List<String> ids = [curretnUserID,receiverID];
+      ids.sort();
+      String chatRoomId = ids.join('_');  
+      await supabase.from('user').delete().eq('chatRoomId', chatRoomId);
       return 'ok';
     }
     on PostgrestException catch(e){log('in Group Created Metod $e');return e.toString();}
@@ -382,7 +388,7 @@ class ChatRepoBody extends ChatRepoHeader{
     ids.sort();
     String chatRoomId = ids.join('_');  
 
-    List<MessageModel> lenghtOfData = await supabase.from('chat').select<PostgrestList>().eq('chatRoomId', chatRoomId) .then((value) => value.map((e) => MessageModel.fromJson(e, curretnUserID)).toList());
+    List<MessageModel> lenghtOfData = await supabase.from('chat').select().eq('chatRoomId', chatRoomId) .then((value) => value.map((e) => MessageModel.fromJson(e, curretnUserID)).toList());
     return lenghtOfData.length;
   }
 
