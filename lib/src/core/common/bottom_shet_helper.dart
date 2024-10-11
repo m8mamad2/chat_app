@@ -10,7 +10,7 @@ Future errorBottomShetHelper(BuildContext context,String error,void Function() o
   builder: (context) => Container(
     width: double.infinity,
     decoration: BoxDecoration(
-      color: theme(context).backgroundColor,
+      color: theme(context).scaffoldBackgroundColor,
       borderRadius:const BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30))
     ),
     child: Column(
@@ -39,7 +39,7 @@ Future errorBottomShetHelper(BuildContext context,String error,void Function() o
               minimumSize: Size(MediaQuery.of(context).size.width * 0.8, sizeH(context)*0.13),
               backgroundColor: theme(context).primaryColorDark
             ),
-            child: Text('ok',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor),)),
+            child: Text('ok',style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).scaffoldBackgroundColor),)),
         ),
     ]),
   ),);

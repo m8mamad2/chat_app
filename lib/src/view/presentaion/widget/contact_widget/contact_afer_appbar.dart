@@ -57,7 +57,7 @@ class ContactAfterAppbar extends StatelessWidget {
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Container(
           decoration: BoxDecoration(
-            color: theme(context).backgroundColor,
+            color: theme(context).scaffoldBackgroundColor,
             borderRadius:const BorderRadius.only(
              topLeft: Radius.circular(20),
               topRight: Radius.circular(20), 
@@ -116,7 +116,7 @@ class ContactAfterAppbar extends StatelessWidget {
                             minimumSize: Size(sizeW(context), sizeH(context)*0.13),
                             shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15) )
                           ),
-                          child: Text('Craete Contanst',style:theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor))),
+                          child: Text('Craete Contanst',style:theme(context).textTheme.titleMedium!.copyWith(color: theme(context).scaffoldBackgroundColor))),
                       ],
                     ),
                   ),
@@ -159,7 +159,7 @@ class ContactAfterAppbar extends StatelessWidget {
           height: sizeH(context)*0.063,
           color: theme(context).primaryColorDark,
           
-          child: Text('Contacts'.tr(),style:theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor,fontWeight: FontWeight.w500) ,),
+          child: Text('Contacts'.tr(),style:theme(context).textTheme.bodySmall!.copyWith(color: theme(context).scaffoldBackgroundColor,fontWeight: FontWeight.w500) ,),
         ),
     ],
   );

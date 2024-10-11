@@ -126,7 +126,7 @@ class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
                       : CircleAvatar(
                         backgroundColor: theme(context).primaryColorDark,
                         radius: sizeW(context)*0.034,
-                        child: Text(widget.data![index].name?[0].toUpperCase() ?? widget.data![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),)),
+                        child: Text(widget.data![index].name?[0].toUpperCase() ?? widget.data![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor),)),
                     title: Text(widget.data?[index].name ?? widget.data![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleSmall!.copyWith(fontSize: sizeW(context)*0.018,fontFamily: 'body',fontWeight: FontWeight.w500)),
                   ),
                 ),)
@@ -142,8 +142,8 @@ class _CreateGroupInfoScreenState extends State<CreateGroupInfoScreen> {
         child:BlocBuilder<GroupBloc,GroupState>(
         builder: (context, state) {
           log('$state');
-          if(state is GroupLoadingState)return smallLoading(context,color: theme(context).backgroundColor);
-          if(state is GroupSuccessState || state is GroupInitialState) return Icon(Icons.check,color: theme(context).backgroundColor,);
+          if(state is GroupLoadingState)return smallLoading(context,color: theme(context).scaffoldBackgroundColor);
+          if(state is GroupSuccessState || state is GroupInitialState) return Icon(Icons.check,color: theme(context).scaffoldBackgroundColor,);
           if(state is GroupFailState)return FailBlocWidget(state.error);
           return Container(width: 100,height: 100,color: Colors.amber,);
         },

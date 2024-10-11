@@ -6,26 +6,26 @@ import 'package:p_4/src/view/domain/usecase/lock_usecase.dart';
 part 'lock_event.dart';
 part 'lock_state.dart';
 
-class LockBloc extends Bloc<LockEvent, LockState> {
+class LockBloc extends Bloc<LockEvent, LockStartBloc> {
   final LockUseCase useCase;
-  LockBloc(this.useCase) : super(InitialLockState()) {
+  LockBloc(this.useCase) : super(InitialLockStartBloc()) {
     on<LockEvent>((event, emit) async {
 
-      emit(LoadingLockState());
+      emit(LoadingLockStartBloc());
       
       try{
         if(event is GetLockEvent) {
           final List<LockEntity> data = useCase.getPassword();
-          emit(SuccessLockState(data: data));}
+          emit(SuccessLockStartBloc(data: data));}
         if(event is SavePasswordLockEvent){
           await useCase.savePassword(event.passwrod);
-          emit(SuccessLockState());}
+          emit(SuccessLockStartBloc());}
         if(event is DeleteLockEvent){
           await useCase.deletePassword();
-          emit(SuccessLockState());
+          emit(SuccessLockStartBloc());
         }
       }
-      catch(e){ emit(FailLockState(e.toString())); }
+      catch(e){ emit(FailLockStartBloc(e.toString())); }
 
     });
   }

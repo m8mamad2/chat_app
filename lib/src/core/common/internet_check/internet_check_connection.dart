@@ -15,7 +15,7 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       backgroundColor: theme(context).backgroundColor,
+//       backgroundColor: theme(context).scaffoldBackgroundColor,
 //       body: Center(
 //         child: StreamBuilder<InternetConnectionStatus>(
 //           stream: InternetConnectionChecker().onStatusChange,
@@ -90,7 +90,7 @@ class _InternetCheckerWidgetState extends State<InternetCheckerWidget> {
       builder: (context) => Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: theme(context).backgroundColor,
+          color: theme(context).scaffoldBackgroundColor,
           borderRadius: const BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30))
     ),
         child:  Column(

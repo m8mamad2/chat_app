@@ -88,12 +88,12 @@ class _MessageTypeWidgetState extends State<MessageTypeWidget> {
                                       padding:widget.isMine ? const EdgeInsets.only(right: 10) : const EdgeInsets.only(left: 10),
                                       child: Text(widget.data.messsage,style: theme(context).textTheme.titleSmall!.copyWith(
                                         fontSize: state.fontSize,
-                                        color: theme(context).backgroundColor
+                                        color: theme(context).scaffoldBackgroundColor
                                       ),),
                                     ),
                                   ],
                                 ),
-                                Icon(Icons.check,size: 10,color: theme(context).backgroundColor,)  
+                                Icon(Icons.check,size: 10,color: theme(context).scaffoldBackgroundColor,)  
                                 ]),
                             );
                           }

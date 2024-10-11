@@ -67,7 +67,7 @@ Container oneLIneWidget(BuildContext context)=> Container(
 
 Container fontSizeChangerWidget(BuildContext context)=> Container(
   width: sizeW(context),
-  color: theme(context).backgroundColor,
+  color: theme(context).scaffoldBackgroundColor,
   child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -123,7 +123,7 @@ List<MessageModel> models = [
 
 Container changeColorTheme(BuildContext context)=> Container(
   width: sizeW(context),
-  color: theme(context).backgroundColor,
+  color: theme(context).scaffoldBackgroundColor,
   child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     
@@ -135,7 +135,7 @@ Container changeColorTheme(BuildContext context)=> Container(
       ),
       Container(
         decoration: BoxDecoration(
-          color: theme(context).backgroundColor,
+          color: theme(context).scaffoldBackgroundColor,
           border: Border.symmetric(horizontal: BorderSide(color: theme(context).cardColor,width: sizeW(context)*0.0001))
         ),
         height: sizeH(context)*0.2,
@@ -175,7 +175,7 @@ List<Color> colors = [
 
 Container borderRadiusChangerWidget(BuildContext context)=> Container(
   width: sizeW(context),
-  color: theme(context).backgroundColor,
+  color: theme(context).scaffoldBackgroundColor,
   child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [

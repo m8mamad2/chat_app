@@ -103,7 +103,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
                                   : CircleAvatar( 
                                     backgroundColor: theme(context).primaryColorDark,
                                     radius: sizeW(context)*0.029, 
-                                    child: Text(data[index].name?[0].toUpperCase() ?? data[index].uid![0].toUpperCase(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),),
+                                    child: Text(data[index].name?[0].toUpperCase() ?? data[index].uid![0].toUpperCase(),style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor),),),
                                   
                             ),
                           );}
@@ -122,7 +122,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
             UserModel? mySelf = state.model;
             return FloatingActionButton(
               backgroundColor: theme(context).primaryColorDark,
-              child: Icon(Icons.check,color: theme(context).backgroundColor,),
+              child: Icon(Icons.check,color: theme(context).scaffoldBackgroundColor,),
               onPressed: ()async{
                 chips.isNotEmpty 
                 ? context.navigation(context, CreateGroupInfoScreen(data: chips,myself: mySelf!,))
@@ -153,7 +153,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
         width: sizeW(context)*0.09,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: theme(context).backgroundColor,
+          color: theme(context).scaffoldBackgroundColor,
           image: DecorationImage(
             fit: BoxFit.cover,
             onError: (exception, stackTrace) => setState(() => AssetImage(kLogoImage)),
@@ -164,7 +164,7 @@ class CreateGroupScreenState extends State<CreateGroupScreen> {
       ),
       label: Text(
         model.name?[0].toUpperCase() ?? model.uid![0].toUpperCase(),
-        style:theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor),
+        style:theme(context).textTheme.bodySmall!.copyWith(color: theme(context).scaffoldBackgroundColor),
       ),
       backgroundColor: color,
       elevation: 1.0,

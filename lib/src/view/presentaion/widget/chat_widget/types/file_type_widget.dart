@@ -53,7 +53,7 @@ class _FileTypeWidgetState extends State<FileTypeWidget> {
                           sizeBoxW(4),
                           CircleAvatar(
                             radius: (sizeW(context)*0.035).toDouble(),
-                            backgroundColor: theme(context).backgroundColor,
+                            backgroundColor: theme(context).scaffoldBackgroundColor,
                             child: Icon(Icons.file_copy,color: theme(context).primaryColorDark),
                             ),
                           sizeBoxW(sizeW(context)*0.01),
@@ -134,11 +134,11 @@ class FileLoaingTypeWidget extends StatelessWidget {
                           SizedBox(
                             height: sizeH(context)*0.16,
                             width: sizeW(context)*0.078,
-                            child:  CircularProgressIndicator(strokeWidth: 1,color: theme(context).backgroundColor,)),
+                            child:  CircularProgressIndicator(strokeWidth: 1,color: theme(context).scaffoldBackgroundColor,)),
                           CircleAvatar(
                             radius: (sizeW(context)*0.035).toDouble(),
                             backgroundColor: const Color(0xff1b2028),
-                            child: Icon(Icons.file_copy,color: theme(context).backgroundColor),
+                            child: Icon(Icons.file_copy,color: theme(context).scaffoldBackgroundColor),
                             ),
                         ],
                       ),
@@ -155,7 +155,7 @@ class FileLoaingTypeWidget extends StatelessWidget {
                             width: sizeW(context)*0.01,
                             child:  CircularProgressIndicator(
                               strokeWidth: 1,
-                              color: theme(context).backgroundColor,),
+                              color: theme(context).scaffoldBackgroundColor,),
                           )),
                       )
                 ],

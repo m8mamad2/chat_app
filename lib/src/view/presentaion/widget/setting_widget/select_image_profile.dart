@@ -121,9 +121,9 @@ class ShowImageWidget extends StatelessWidget {
         backgroundColor: theme(context).primaryColorDark,
         child: BlocBuilder<UserBloc,UserState>(
           builder: (context, state) {
-            if(state is UserLoadingState)return smallLoading(context,color: theme(context).backgroundColor);
-            if(state is UserSuccessState || state is UserInitialState)return Icon(Icons.check,color: theme(context).backgroundColor,);
-            if(state is UserFailState)   return Icon(Icons.error,color: theme(context).backgroundColor,);
+            if(state is UserLoadingState)return smallLoading(context,color: theme(context).scaffoldBackgroundColor);
+            if(state is UserSuccessState || state is UserInitialState)return Icon(Icons.check,color: theme(context).scaffoldBackgroundColor,);
+            if(state is UserFailState)   return Icon(Icons.error,color: theme(context).scaffoldBackgroundColor,);
             return Container();
           },
         ),

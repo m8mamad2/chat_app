@@ -58,7 +58,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver{
             height: sizeH(context),
             decoration: BoxDecoration(
               image:DecorationImage(image:AssetImage(state.isDark ?? false ? 'assets/image/bg_chat.jpg' : 'assets/image/bg_chat_light.jpg',),fit: BoxFit.cover ),
-              color: theme(context).backgroundColor,
+              color: theme(context).scaffoldBackgroundColor,
             ),
             child: GestureDetector(
               onTap: ()=>FocusScope.of(context).unfocus(),
@@ -116,7 +116,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver{
                                                 color: theme(context).primaryColorDark,
                                                 borderRadius: BorderRadius.circular(8),
                                               ),
-                                              child: Center(child: Text('start point',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor),)),
+                                              child: Center(child: Text('start point',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).scaffoldBackgroundColor),)),
                                             ),))
                                           : const Padding(
                                             padding: EdgeInsets.symmetric(vertical: 32),
@@ -186,7 +186,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver{
         return Container(
           width: sizeW(context),
           height: sizeH(context),
-          decoration: BoxDecoration(color: theme(context).backgroundColor,),
+          decoration: BoxDecoration(color: theme(context).scaffoldBackgroundColor,),
           child: FailBlocWidget('Error : Please Try Again'),
         );
       },
@@ -237,7 +237,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver{
   }
 
   PreferredSizeWidget searchingAppbar()=> AppBar(
-      backgroundColor: theme(context).backgroundColor,
+      backgroundColor: theme(context).scaffoldBackgroundColor,
       elevation: 0,
       scrolledUnderElevation: 0,
       bottom: PreferredSize(
@@ -249,7 +249,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver{
       ),
       toolbarHeight: sizeH(context)*0.16,
       leading: IconButton(icon: Icon(Icons.arrow_back,color: theme(context).cardColor,),onPressed: onPress,),
-      actions: [ _searchController.text.isEmpty ? const SizedBox.shrink() : IconButton(onPressed: ()=>_searchController.clear(), icon: Icon(Icons.clear,color: theme(context).backgroundColor,)) ],
+      actions: [ _searchController.text.isEmpty ? const SizedBox.shrink() : IconButton(onPressed: ()=>_searchController.clear(), icon: Icon(Icons.clear,color: theme(context).scaffoldBackgroundColor,)) ],
       title: TextField(
         autofocus: true,
         decoration:const InputDecoration(border: InputBorder.none),

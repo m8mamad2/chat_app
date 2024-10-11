@@ -65,12 +65,12 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                   ),
                                 )
                                 : CircleAvatar(radius: sizeW(context)*0.045,child: kUserPersonLottie,),
-                              IconButton(onPressed: ()=>Scaffold.of(context).closeDrawer(), icon: Icon(Icons.close,color: theme(context).backgroundColor,)),
+                              IconButton(onPressed: ()=>Scaffold.of(context).closeDrawer(), icon: Icon(Icons.close,color: theme(context).scaffoldBackgroundColor,)),
                             ],
                           ),
                           sizeBoxH(sizeH(context)*0.035),
                           data.name != null  
-                              ? Text(data.name ?? '',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor,fontSize: sizeW(context)*0.024),)
+                              ? Text(data.name ?? '',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor,fontSize: sizeW(context)*0.024),)
                               : const Text('no name'),
                           Text(data.phone!,style: theme(context).textTheme.titleSmall!.copyWith(fontSize: sizeW(context)*0.015,color: theme(context).canvasColor,fontWeight: FontWeight.w300),),
                           sizeBoxH(sizeH(context)*0.05),

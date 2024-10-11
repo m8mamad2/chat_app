@@ -139,10 +139,10 @@ class _LockChangePassState extends State<LockChangePass> {
                         color:  theme(context).primaryColorDark ,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Center(child: index == 11 ? Icon(Icons.backspace,color: theme(context).backgroundColor,) : Text(
+                      child: Center(child: index == 11 ? Icon(Icons.backspace,color: theme(context).scaffoldBackgroundColor,) : Text(
                         numbers[index == 10 ? index - 1 : index].tr(),style: theme(context).textTheme.titleMedium!.copyWith(
                           fontSize: isEnglish(context) ? sizeW(context)*0.021 : sizeW(context)*0.028,
-                          color: theme(context).backgroundColor))),
+                          color: theme(context).scaffoldBackgroundColor))),
                       ),
                   );
               },
@@ -195,7 +195,7 @@ class _AnimatedBoxItemState extends State<AnimatedBoxItem> with TickerProviderSt
       animation: animationController,
       builder: (context, child) => Container(
         margin: const EdgeInsets.all(10),
-        color: theme(context).backgroundColor,
+        color: theme(context).scaffoldBackgroundColor,
         child: Stack(
           children: [
             Container(),

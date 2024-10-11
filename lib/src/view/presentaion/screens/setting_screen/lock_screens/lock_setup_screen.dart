@@ -37,10 +37,10 @@ class _LockScreenState extends State<LockScreen> {
       appBar: AppBar(
         actions: [ canGo ? IconButton(onPressed: (){}, icon:  Icon(Icons.check,color: theme(context).primaryColorDark,)) : const SizedBox.shrink(),],
         leading: IconButton(icon: const Icon(Icons.arrow_back),onPressed: ()=>context.navigationBack(context),),),
-      body: BlocBuilder<LockBloc,LockState>(
+      body: BlocBuilder<LockBloc,LockStartBloc>(
         builder: (context, state) {
-          if(state is LoadingLockState)return loading(context);
-          if(state is SuccessLockState){
+          if(state is LoadingLockStartBloc)return loading(context);
+          if(state is SuccessLockStartBloc){
             bool isLock = state.data != null && state.data!.isNotEmpty && state.data![0].isLock == true ? true : false;
             return Column(
               children: [
@@ -139,8 +139,8 @@ class _LockScreenState extends State<LockScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(child: index == 11 
-                              ? Icon(Icons.backspace,color: theme(context).backgroundColor,) 
-                              : Text(numbers[index == 10 ? index - 1 : index].tr(),style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor),)),
+                              ? Icon(Icons.backspace,color: theme(context).scaffoldBackgroundColor,) 
+                              : Text(numbers[index == 10 ? index - 1 : index].tr(),style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).scaffoldBackgroundColor),)),
                             ),
                         );
                     },
@@ -149,7 +149,7 @@ class _LockScreenState extends State<LockScreen> {
               ],
             );
           }
-          if(state is FailLockState)return FailBlocWidget(state.fail);
+          if(state is FailLockStartBloc)return FailBlocWidget(state.fail);
           return Container(width: 100,height: 100,color: Colors.amber,);
         },
       ),
@@ -193,7 +193,7 @@ class _AnimatedBoxItemState extends State<AnimatedBoxItem> with TickerProviderSt
       animation: animationController,
       builder: (context, child) => Container(
         margin: const EdgeInsets.all(10),
-        color: theme(context).backgroundColor,
+        color: theme(context).scaffoldBackgroundColor,
         child: Stack(
           children: [
             Container(),

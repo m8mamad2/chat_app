@@ -174,7 +174,7 @@ class _SettingScreenState extends State<SettingScreen> {
             actions: [
               PopupMenuButton(
                 position: PopupMenuPosition.under,
-                color: theme(context).backgroundColor,
+                color: theme(context).scaffoldBackgroundColor,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5),side: BorderSide(color: theme(context).cardColor,width: sizeW(context)*0.0002)),
                 itemBuilder: (context) => [
                   popupItem(context, ()=> context.navigation(context, const EditNameScreen()) , 'Edit Name', Icons.edit_outlined),

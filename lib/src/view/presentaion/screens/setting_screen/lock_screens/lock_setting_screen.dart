@@ -40,14 +40,14 @@ class _LockSettingScreenState extends State<LockSettingScreen> {
         title: Text('Lock Setting'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
         leading: IconButton(icon:const Icon(Icons.arrow_back),onPressed: (){context.navigationBack(context);context.navigationBack(context);},),
       ),
-      body: BlocBuilder<LockBloc,LockState>(
+      body: BlocBuilder<LockBloc,LockStartBloc>(
         builder: (context, state) {
-          if(state is LoadingLockState)return loading(context);
-          if(state is SuccessLockState){
+          if(state is LoadingLockStartBloc)return loading(context);
+          if(state is SuccessLockStartBloc){
             return Container(
               height: sizeH(context)*0.4,
               width: sizeW(context),
-              color: theme(context).backgroundColor,
+              color: theme(context).scaffoldBackgroundColor,
               margin: EdgeInsets.only(top: sizeH(context)*0.04),
               child: ListView(
                 children: [
@@ -70,7 +70,7 @@ class _LockSettingScreenState extends State<LockSettingScreen> {
               ),
             );
           }
-          if(state is FailLockState)return FailBlocWidget(state.fail);
+          if(state is FailLockStartBloc)return FailBlocWidget(state.fail);
 
           return Container();
         },

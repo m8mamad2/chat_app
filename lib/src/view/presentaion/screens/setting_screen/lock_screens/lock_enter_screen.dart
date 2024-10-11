@@ -36,10 +36,10 @@ class _LockEnteringScreenState extends State<LockEnteringScreen> {
       appBar: AppBar(
         actions: null,
         leading: null),
-      body: BlocBuilder<LockBloc,LockState>(
+      body: BlocBuilder<LockBloc,LockStartBloc>(
         builder: (context, state) {
-          if(state is LoadingLockState)return loading(context);
-          if(state is SuccessLockState){
+          if(state is LoadingLockStartBloc)return loading(context);
+          if(state is SuccessLockStartBloc){
             return Column(
               children: [
                 Column(
@@ -135,12 +135,12 @@ class _LockEnteringScreenState extends State<LockEnteringScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(child: index == 11 
-                              ? Icon(Icons.backspace,color: theme(context).backgroundColor,) 
+                              ? Icon(Icons.backspace,color: theme(context).scaffoldBackgroundColor,) 
                               : Text(
                                 numbers[index == 10 ? index - 1 : index].tr(),
                                 style: theme(context).textTheme.titleSmall!.copyWith(
                                   fontSize: isEnglish(context) ? sizeW(context)*0.021 : sizeW(context)*0.028,
-                                  color: theme(context).backgroundColor),)),
+                                  color: theme(context).scaffoldBackgroundColor),)),
                             ),
                         );
                     },
@@ -149,7 +149,7 @@ class _LockEnteringScreenState extends State<LockEnteringScreen> {
               ],
             );
           }
-          if(state is FailLockState)return FailBlocWidget(state.fail);
+          if(state is FailLockStartBloc)return FailBlocWidget(state.fail);
           return Container(width: 100,height: 100,color: Colors.amber,);
         },
       ),
@@ -193,7 +193,7 @@ class _AnimatedBoxItemState extends State<AnimatedBoxItem> with TickerProviderSt
       animation: animationController,
       builder: (context, child) => Container(
         margin: const EdgeInsets.all(10),
-        color: theme(context).backgroundColor,
+        color: theme(context).scaffoldBackgroundColor,
         child: Stack(
           children: [
             Container(),

@@ -48,7 +48,7 @@ class _AuthInfoScreenState extends State<AuthInfoScreen> {
             ),
           ),
         title: Text('User Information',style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
-        backgroundColor: theme(context).backgroundColor,
+        backgroundColor: theme(context).scaffoldBackgroundColor,
       ),
       body: Form(
         key: key,
@@ -90,11 +90,11 @@ class _AuthInfoScreenState extends State<AuthInfoScreen> {
       floatingActionButton:BlocBuilder<AuthBloc,AuthState0>(
           builder: (context, state) {
             log('$state');
-            if(state is AuthLoadingState) return FloatingActionButton(backgroundColor: theme(context).primaryColor,onPressed:null,child: smallLoading(context,color: theme(context).backgroundColor));
+            if(state is AuthLoadingState) return FloatingActionButton(backgroundColor: theme(context).primaryColor,onPressed:null,child: smallLoading(context,color: theme(context).scaffoldBackgroundColor));
             if(state is AuthSucessState || state is AuthInitialState){
              return FloatingActionButton(
               backgroundColor: theme(context).primaryColor,
-              child: Icon(Icons.check, color:theme(context).backgroundColor),
+              child: Icon(Icons.check, color:theme(context).scaffoldBackgroundColor),
               onPressed: (){
                 if(key.currentState!.validate()){
                   context.read<AuthBloc>().add(AuthInfoEvent(context, image, controller.text.trim()));

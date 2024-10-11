@@ -43,7 +43,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
     return Container(
       width: sizeW(context),
       height: sizeH(context),
-      color: theme(context).backgroundColor,
+      color: theme(context).scaffoldBackgroundColor,
       child: BlocConsumer<AllUserBloc,AllUserState>(
         listener: (context, state) {
           if(state is LoadedAllUserState)serachUser = state.model;
@@ -123,7 +123,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                         : CircleAvatar( 
                                         backgroundColor: theme(context).primaryColorDark,
                                         radius: sizeW(context)*0.034, 
-                                        child: Text(serachUser![index].name?[0].toUpperCase() ?? serachUser![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),),
+                                        child: Text(serachUser![index].name?[0].toUpperCase() ?? serachUser![index].uid![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor),),),
                                   
                                   ),
                                 ),
@@ -132,7 +132,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
               ),
               floatingActionButton: FloatingActionButton(
                 backgroundColor: theme(context).primaryColorDark,
-                child: Icon(Icons.person_add_alt_1_sharp,color: theme(context).backgroundColor,),
+                child: Icon(Icons.person_add_alt_1_sharp,color: theme(context).scaffoldBackgroundColor,),
                 onPressed: ()async{
                   // context.read<UserBloc>().add();
                   await addMember();
@@ -169,7 +169,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Container(
           decoration: BoxDecoration(
-            color: theme(context).backgroundColor,
+            color: theme(context).scaffoldBackgroundColor,
             borderRadius:const BorderRadius.only(
              topLeft: Radius.circular(20),
               topRight: Radius.circular(20), 
@@ -228,7 +228,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                             minimumSize: Size(sizeW(context), sizeH(context)*0.13),
                             shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15) )
                           ),
-                          child: Text('Craete Contanst'.tr(),style:theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor))),
+                          child: Text('Craete Contanst'.tr(),style:theme(context).textTheme.titleMedium!.copyWith(color: theme(context).scaffoldBackgroundColor))),
                       ],
                     ),
                   ),

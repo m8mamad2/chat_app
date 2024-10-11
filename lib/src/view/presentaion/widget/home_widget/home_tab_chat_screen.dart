@@ -63,7 +63,7 @@ class TabChatScreenState extends State<TabChatScreen> {
                         leading: CircleAvatar(
                           backgroundColor: theme(context).primaryColorDark,
                           radius: sizeW(context)*0.034,
-                          child: Icon(Icons.save,color: theme(context).backgroundColor),),
+                          child: Icon(Icons.save,color: theme(context).scaffoldBackgroundColor),),
                         title: Text('Save Message'.tr(),style: theme(context).textTheme.titleSmall!.copyWith(fontFamily: 'body',fontWeight: FontWeight.w500),),
                         onTap: ()=> context.navigation(context, const SaveMessageScreen()),
                       )
@@ -90,13 +90,13 @@ class TabChatScreenState extends State<TabChatScreen> {
                             ),
                             height: sizeH(context)*0.2,
                             width: sizeW(context)*0.07,
-                            child: Center(child: Text(data[index].name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),)),
+                            child: Center(child: Text(data[index].name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor),)),
                           )
                           
                           // : CircleAvatar( 
                           //     backgroundColor: theme(context).primaryColorDark,
                           //     radius: sizeW(context)*0.034, 
-                              // child: Text(data[index].name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),),),
+                              // child: Text(data[index].name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor),),),),
                       ),
                   );
                 },);}
@@ -107,7 +107,7 @@ class TabChatScreenState extends State<TabChatScreen> {
         backgroundColor: theme(context).primaryColorDark,
         heroTag: 'contactsAdd',
         onPressed: () => context.navigation(context, const ContactsScreen()),
-        child: Icon(Icons.add,color: theme(context).backgroundColor),),
+        child: Icon(Icons.add,color: theme(context).scaffoldBackgroundColor),),
     );
   }
 }
@@ -190,7 +190,7 @@ class TabChatScreenState extends State<TabChatScreen> {
 //                   //         color: theme(context).primaryColorDark,
 //                   //         shape: BoxShape.circle,
 //                   //       ),
-//                   //       child: Text(data[index].name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),
+//                   //       child: Text(data[index].name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor),),
 //                   //     ),
 //                   // )
 //                   );
@@ -202,7 +202,7 @@ class TabChatScreenState extends State<TabChatScreen> {
 //         backgroundColor: theme(context).primaryColorDark,
 //         heroTag: 'contactsAdd',
 //         onPressed: () => context.navigation(context, const ContactsScreen()),
-//         child: Icon(Icons.add,color: theme(context).backgroundColor),),
+//         child: Icon(Icons.add,color: theme(context).scaffoldBackgroundColor),),
 //     );
 //   }
 // }

@@ -68,12 +68,12 @@ class _VoiceTypeWidgetState extends State<VoiceTypeWidget> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                        isLoading
-                        ? smallLoading(context,color: theme(context).backgroundColor)
+                        ? smallLoading(context,color: theme(context).scaffoldBackgroundColor)
                         : InkWell(
                             onTap:playPause,
                             child: CircleAvatar(
                               radius: (sizeW(context)*0.035).toDouble(),
-                              backgroundColor: theme(context).backgroundColor,
+                              backgroundColor: theme(context).scaffoldBackgroundColor,
                               child: Icon(icon,color: theme(context).primaryColorDark,),
                             ),
                           ),
@@ -85,8 +85,8 @@ class _VoiceTypeWidgetState extends State<VoiceTypeWidget> {
                             SizedBox(
                               width: sizeW(context) * 0.22,
                               child:Slider(
-                                activeColor: theme(context).backgroundColor,
-                                inactiveColor: theme(context).backgroundColor,
+                                activeColor: theme(context).scaffoldBackgroundColor,
+                                inactiveColor: theme(context).scaffoldBackgroundColor,
                                 min: 0,
                                 max: duration.inSeconds.toDouble(),
                                 value: position.inSeconds.toDouble(), 
@@ -214,7 +214,7 @@ class _VoiceLoadingTypeWidgetState extends State<VoiceLoadingTypeWidget> {
                   children: [
                     CircleAvatar(
                         radius: (sizeW(context)*0.035).toDouble(),
-                        backgroundColor: theme(context).backgroundColor,
+                        backgroundColor: theme(context).scaffoldBackgroundColor,
                         child: SizedBox(
                           width: sizeW(context)*0.055,
                           height: sizeH(context)*0.11,
@@ -228,8 +228,8 @@ class _VoiceLoadingTypeWidgetState extends State<VoiceLoadingTypeWidget> {
                         SizedBox(
                           width: sizeW(context) * 0.22,
                           child:Slider(
-                            activeColor: theme(context).backgroundColor,
-                            inactiveColor: theme(context).backgroundColor,
+                            activeColor: theme(context).scaffoldBackgroundColor,
+                            inactiveColor: theme(context).scaffoldBackgroundColor,
                             min: 0,
                             max: 0,
                             value: 0, 
@@ -239,7 +239,7 @@ class _VoiceLoadingTypeWidgetState extends State<VoiceLoadingTypeWidget> {
                           padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.02),
                           child: Text('00:00',
                             style: theme(context).textTheme.titleMedium!.copyWith(
-                              color: theme(context).backgroundColor,
+                              color: theme(context).scaffoldBackgroundColor,
                               fontSize: sizeW(context)*0.013,
                             ),),
                         ),

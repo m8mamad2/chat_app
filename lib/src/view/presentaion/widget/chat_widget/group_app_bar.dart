@@ -42,9 +42,9 @@ class _GroupAppBarState extends State<GroupAppBar> {
 
     return AppBar(
       scrolledUnderElevation: 0,
-      backgroundColor: theme(context).backgroundColor,
+      backgroundColor: theme(context).scaffoldBackgroundColor,
       elevation: 0,
-      foregroundColor: theme(context).backgroundColor,
+      foregroundColor: theme(context).scaffoldBackgroundColor,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Container(
@@ -80,7 +80,7 @@ class _GroupAppBarState extends State<GroupAppBar> {
           children: [
             widget.data.image != null && widget.data.image!.isNotEmpty
               ? CircleAvatar( radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark ,backgroundImage: NetworkImage(widget.data.image!),)
-              : CircleAvatar( radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark ,child: Text(widget.data.name[0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor) ,),),
+              : CircleAvatar( radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark ,child: Text(widget.data.name[0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor) ,),),
             //   ),
             sizeBoxW(sizeW(context)*0.013),
             Column(

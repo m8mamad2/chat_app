@@ -70,7 +70,7 @@ class _TabGroupScreenState extends State<TabGroupScreen> {
                           // backgroundColor: theme(context).primaryColorDark,
                           backgroundColor: theme(context).primaryColorDark,
                           radius: sizeW(context)*0.034, 
-                          child: Text(data[index].name[0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor),),),
+                          child: Text(data[index].name[0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor),),),
                       ),
                   );
                 },);
@@ -81,7 +81,7 @@ class _TabGroupScreenState extends State<TabGroupScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: theme(context).primaryColorDark,
         onPressed: ()=> context.navigation(context, const CreateGroupScreen()),
-        child: Icon(Icons.add,color: theme(context).backgroundColor),
+        child: Icon(Icons.add,color: theme(context).scaffoldBackgroundColor),
       ),
     );
   }

@@ -27,7 +27,7 @@ class _SettingChangeLanguageState extends State<SettingChangeLanguage> {
                     ),
                   ),
         title: Text('Change Language'.tr(),style: theme(context).textTheme.titleMedium!.copyWith(fontSize: sizeW(context)*0.025,fontFamily: 'header',),),
-        backgroundColor: theme(context).backgroundColor, 
+        backgroundColor: theme(context).scaffoldBackgroundColor, 
         elevation: 0,
         leading: IconButton(icon: const Icon(Icons.arrow_back),onPressed: () => context.navigationBack(context),),
       ),

@@ -50,7 +50,7 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
           CircleAvatar(
               radius: sizeW(context)*0.04,
               backgroundColor: theme(context).primaryColorDark,
-              child: Icon(icon,color: theme(context).backgroundColor,),
+              child: Icon(icon,color: theme(context).scaffoldBackgroundColor,),
           ),
           sizeBoxH(sizeH(context)*0.015),
           Text(title.tr(),style:  TextStyle(color: theme(context).primaryColorDark),)
@@ -95,7 +95,7 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
             height: sizeH(context)*0.15,
             decoration: BoxDecoration(
               border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),
-              color: theme(context).backgroundColor,
+              color: theme(context).scaffoldBackgroundColor,
             ),
             child: Padding(
               padding:  EdgeInsets.symmetric(horizontal: sizeW(context)*0.03),
@@ -146,7 +146,7 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
                 height: sizeH(context)*0.15,
                 decoration: BoxDecoration(
                   border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.001)),
-                  color: theme(context).backgroundColor,
+                  color: theme(context).scaffoldBackgroundColor,
                 ),
                 child: Row(
                 children: [
@@ -197,7 +197,7 @@ class _ChatButtonsWidgetState extends State<ChatButtonsWidget> {
                                 right: isEnglish(context) ? 0 : sizeW(context)*0.08,
                                 ),
                               decoration: BoxDecoration(
-                                color:  theme(context).backgroundColor,
+                                color:  theme(context).scaffoldBackgroundColor,
                                 border: Border(top: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.002)),
                               ),
                               child:ListView.builder(

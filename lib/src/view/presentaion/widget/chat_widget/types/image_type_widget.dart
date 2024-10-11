@@ -73,11 +73,11 @@ class ImageLoadingTypeWidget extends StatelessWidget {
               color: theme(context).primaryColorDark,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: theme(context).backgroundColor,
+                color: theme(context).scaffoldBackgroundColor,
                 width: 2
               )
             ),
-            child: smallLoading(context,color: theme(context).backgroundColor)
+            child: smallLoading(context,color: theme(context).scaffoldBackgroundColor)
           ),
         ),
       ),

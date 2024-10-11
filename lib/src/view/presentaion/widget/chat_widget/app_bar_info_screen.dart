@@ -49,7 +49,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                   height: sizeH(context)*0.27,
                   decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.0015)),
-                    color: theme(context).backgroundColor,
+                    color: theme(context).scaffoldBackgroundColor,
                   ),
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.019,vertical: 10),
@@ -65,7 +65,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                             : CircleAvatar(
                                 radius: sizeW(context)*0.045,
                                 backgroundColor: theme(context).primaryColorDark,
-                                child: Text(widget.data.name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor)),
+                                child: Text(widget.data.name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor)),
                               ),
                           sizeBoxW(sizeW(context)*0.02),
                           Text(widget.data.name ?? 'no Name',style: theme(context).textTheme.titleMedium!.copyWith(fontFamily: 'header',color: theme(context).cardColor,fontSize: sizeW(context)*0.024))
@@ -106,7 +106,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                     child: CircleAvatar(
                       radius: sizeW(context)*0.04,
                       backgroundColor: theme(context).primaryColorDark,
-                      child: Icon(Icons.chat,color: theme(context).backgroundColor,),
+                      child: Icon(Icons.chat,color: theme(context).scaffoldBackgroundColor,),
                     ),
                   ),
                 ),
@@ -119,7 +119,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
             initialIndex: 0,
             length: 2,  
             child: Scaffold(
-              backgroundColor: theme(context).backgroundColor,
+              backgroundColor: theme(context).scaffoldBackgroundColor,
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(sizeH(context)*0.3),
                 child: TabBar(
@@ -169,7 +169,7 @@ class AppBarInfoScreenState extends State<AppBarInfoScreen> {
                                 ),
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) => ListTile(
-                                  leading: CircleAvatar(radius: sizeW(context)*0.04,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.insert_drive_file_outlined,color: theme(context).backgroundColor,),),
+                                  leading: CircleAvatar(radius: sizeW(context)*0.04,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.insert_drive_file_outlined,color: theme(context).scaffoldBackgroundColor,),),
                                   onTap: ()=>context.read<UploadBloc>().add(DownloadFileEvent(snapshot.data![index]!.messsage,snapshot.data![index]!.fileType!,snapshot.data![index]!.uid)),
                                   title:BlocBuilder<UploadBloc,UploadState>(
                                     builder: (context, state) {

@@ -16,9 +16,9 @@ class _ErrorBlocWidgetState extends State<ErrorBlocWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: theme(context).backgroundColor,
+      backgroundColor: theme(context).scaffoldBackgroundColor,
       appBar: AppBar( 
-        backgroundColor: theme(context).backgroundColor,
+        backgroundColor: theme(context).scaffoldBackgroundColor,
         elevation: 0,
         actions: null,
         leading: null),

@@ -24,7 +24,7 @@ class _SettingPrivacyScreenState extends State<SettingPrivacyScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: theme(context).backgroundColor,
+        backgroundColor: theme(context).scaffoldBackgroundColor,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(sizeH(context)*0.001),
           child: Container(
@@ -40,7 +40,7 @@ class _SettingPrivacyScreenState extends State<SettingPrivacyScreen> {
         children: [
           Container(
             width: sizeW(context),
-            color: theme(context).backgroundColor,
+            color: theme(context).scaffoldBackgroundColor,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,

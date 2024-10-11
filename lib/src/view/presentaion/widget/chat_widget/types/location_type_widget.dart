@@ -31,7 +31,7 @@ class LocationTypeWidget extends StatelessWidget {
                   width: 2
                 )
               ),
-              child: Icon(Icons.location_on_outlined,size:sizeW(context)*0.07 ,color: theme(context).backgroundColor,)
+              child: Icon(Icons.location_on_outlined,size:sizeW(context)*0.07 ,color: theme(context).scaffoldBackgroundColor,)
             ),
           ),
         ),

@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: widget.isDark ? const Color(0xff1A1C1E) : theme(context).backgroundColor,
+      backgroundColor: widget.isDark ? const Color(0xff1A1C1E) : theme(context).scaffoldBackgroundColor,
       body: Center(
         child: Stack(
           alignment: Alignment.center,
@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 margin: EdgeInsets.only(bottom: sizeH(context)*0.4,left: sizeW(context)*0.2),
-                width: sizeW(context),height: sizeH(context)*0.2,color: widget.isDark ?const Color(0xff1A1C1E) : theme(context).backgroundColor,)),
+                width: sizeW(context),height: sizeH(context)*0.2,color: widget.isDark ?const Color(0xff1A1C1E) : theme(context).scaffoldBackgroundColor,)),
             Container(
               margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.8),
               child: FutureBuilder(

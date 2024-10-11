@@ -1,19 +1,19 @@
 part of 'lock_bloc.dart';
 
 @immutable
-class LockState {}
+class LockStartBloc {}
 
-class InitialLockState extends LockState {}
+class InitialLockStartBloc extends LockStartBloc {}
 
-class LoadingLockState extends LockState {}
+class LoadingLockStartBloc extends LockStartBloc {}
 
-class SuccessLockState extends LockState {
+class SuccessLockStartBloc extends LockStartBloc {
   final List<LockEntity>? data;
-  SuccessLockState({this.data});
+  SuccessLockStartBloc({this.data});
 }
 
-class FailLockState extends LockState {
+class FailLockStartBloc extends LockStartBloc {
   final String fail;
-  FailLockState(this.fail);
+  FailLockStartBloc(this.fail);
 }
 

@@ -36,7 +36,7 @@ class SettingImtesWidget extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         width: sizeW(context),
-        color: theme(context).backgroundColor,
+        color: theme(context).scaffoldBackgroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

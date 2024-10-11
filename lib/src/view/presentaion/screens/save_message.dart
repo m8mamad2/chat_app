@@ -57,7 +57,7 @@ class _SaveMessageScreenState extends State<SaveMessageScreen> with WidgetsBindi
             height: sizeH(context),
             decoration: BoxDecoration(
               image:  DecorationImage(image:AssetImage(state.isDark ?? false ? 'assets/image/bg_chat.jpg' : 'assets/image/bg_chat_light.jpg',),fit: BoxFit.cover ),
-              color: theme(context).backgroundColor,
+              color: theme(context).scaffoldBackgroundColor,
             ),
             child: GestureDetector(
               onTap: ()=>FocusScope.of(context).unfocus(),
@@ -122,7 +122,7 @@ class _SaveMessageScreenState extends State<SaveMessageScreen> with WidgetsBindi
                                                 ),
                                                 borderRadius: BorderRadius.circular(20),
                                               ),
-                                              child: Center(child: Text('start point',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).backgroundColor),)),
+                                              child: Center(child: Text('start point',style: theme(context).textTheme.bodySmall!.copyWith(color: theme(context).scaffoldBackgroundColor),)),
                                             ),))
                                           : const Padding(
                                             padding: EdgeInsets.symmetric(vertical: 32),
@@ -192,7 +192,7 @@ class _SaveMessageScreenState extends State<SaveMessageScreen> with WidgetsBindi
         return Container(
           width: sizeW(context),
           height: sizeH(context),
-          decoration: BoxDecoration(color: theme(context).backgroundColor,),
+          decoration: BoxDecoration(color: theme(context).scaffoldBackgroundColor,),
           child: FailBlocWidget('Error : Please Try Again'),
         );
       
@@ -234,7 +234,7 @@ class _SaveMessageScreenState extends State<SaveMessageScreen> with WidgetsBindi
   }
 
   PreferredSizeWidget searchingAppbar()=> AppBar(
-      backgroundColor: theme(context).backgroundColor,
+      backgroundColor: theme(context).scaffoldBackgroundColor,
       elevation: 0,
       scrolledUnderElevation: 0,
       bottom: PreferredSize(
@@ -246,7 +246,7 @@ class _SaveMessageScreenState extends State<SaveMessageScreen> with WidgetsBindi
       ),
       toolbarHeight: sizeH(context)*0.16,
       leading: IconButton(icon: Icon(Icons.arrow_back,color: theme(context).cardColor,),onPressed: onPress,),
-      actions: [ _searchController.text.isEmpty ? const SizedBox.shrink() : IconButton(onPressed: ()=>_searchController.clear(), icon: Icon(Icons.clear,color: theme(context).backgroundColor,)) ],
+      actions: [ _searchController.text.isEmpty ? const SizedBox.shrink() : IconButton(onPressed: ()=>_searchController.clear(), icon: Icon(Icons.clear,color: theme(context).scaffoldBackgroundColor,)) ],
       title: TextField(
         autofocus: true,
         decoration:const InputDecoration(border: InputBorder.none),
@@ -339,10 +339,10 @@ class AppBarSaveMessageState extends State<AppBarSaveMessage> {
     return Scaffold(
       appBar: AppBar(
       scrolledUnderElevation: 0,
-      backgroundColor: theme(context).backgroundColor,
+      backgroundColor: theme(context).scaffoldBackgroundColor,
       leading: IconButton(icon: Icon(Icons.arrow_back,color: theme(context).cardColor,),onPressed: ()=>context.navigationBack(context),),
       elevation: 0,
-      foregroundColor: theme(context).backgroundColor,
+      foregroundColor: theme(context).scaffoldBackgroundColor,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Container(
@@ -353,7 +353,7 @@ class AppBarSaveMessageState extends State<AppBarSaveMessage> {
       title: InkWell(
         child: Row(
           children: [ 
-            CircleAvatar(radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.save_outlined,color: theme(context).backgroundColor,),),
+            CircleAvatar(radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.save_outlined,color: theme(context).scaffoldBackgroundColor,),),
             sizeBoxW(sizeW(context)*0.013),
             Text('Save Messages'..tr(),style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).cardColor,fontSize: sizeW(context)*0.02,fontFamily: 'header')),
           ],
@@ -368,7 +368,7 @@ class AppBarSaveMessageState extends State<AppBarSaveMessage> {
             initialIndex: 0,
             length: 2,  
             child: Scaffold(
-              backgroundColor: theme(context).backgroundColor,
+              backgroundColor: theme(context).scaffoldBackgroundColor,
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(sizeH(context)*0.3),
                 child: TabBar(
@@ -418,7 +418,7 @@ class AppBarSaveMessageState extends State<AppBarSaveMessage> {
                                 ),
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) => ListTile(
-                                  leading: CircleAvatar(radius: sizeW(context)*0.04,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.insert_drive_file_outlined,color: theme(context).backgroundColor,),),
+                                  leading: CircleAvatar(radius: sizeW(context)*0.04,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.insert_drive_file_outlined,color: theme(context).scaffoldBackgroundColor,),),
                                   onTap: ()=>context.read<UploadBloc>().add(DownloadFileEvent(snapshot.data![index]!.messsage,snapshot.data![index]!.fileType!,snapshot.data![index]!.uid)),
                                   title:BlocBuilder<UploadBloc,UploadState>(
                                     builder: (context, state) {
@@ -480,10 +480,10 @@ class _SaveMessageAppBarState extends State<SaveMessageAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       scrolledUnderElevation: 0,
-      backgroundColor: theme(context).backgroundColor,
+      backgroundColor: theme(context).scaffoldBackgroundColor,
       leading: IconButton(icon: Icon(Icons.arrow_back,color: theme(context).cardColor,),onPressed: ()=>context.navigationBack(context),),
       elevation: 0,
-      foregroundColor: theme(context).backgroundColor,
+      foregroundColor: theme(context).scaffoldBackgroundColor,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Container(
@@ -496,7 +496,7 @@ class _SaveMessageAppBarState extends State<SaveMessageAppBar> {
         onTap: ()=> context.navigation(context, AppBarSaveMessage(currentUserId: widget.currentUserId,)),
         child: Row(
           children: [ 
-            CircleAvatar(radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.save_outlined,color: theme(context).backgroundColor,),),
+            CircleAvatar(radius: sizeW(context)*0.03,backgroundColor: theme(context).primaryColorDark,child: Icon(Icons.save_outlined,color: theme(context).scaffoldBackgroundColor,),),
             sizeBoxW(sizeW(context)*0.013),
             Text('Save Messages',style: theme(context).textTheme.titleSmall!.copyWith(color: theme(context).cardColor,fontSize: sizeW(context)*0.02,fontFamily: 'header')),
           ],

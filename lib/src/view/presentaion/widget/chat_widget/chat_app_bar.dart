@@ -39,9 +39,9 @@ class _ChatAppBarState extends State<ChatAppBar> {
 
     return AppBar(
       scrolledUnderElevation: 0,
-      backgroundColor: theme(context).backgroundColor,
+      backgroundColor: theme(context).scaffoldBackgroundColor,
       elevation: 0,
-      foregroundColor: theme(context).backgroundColor,
+      foregroundColor: theme(context).scaffoldBackgroundColor,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Container(
@@ -74,7 +74,7 @@ class _ChatAppBarState extends State<ChatAppBar> {
           children: [
             widget.data.image != null 
               ? CircleAvatar( radius: sizeW(context)*0.03, backgroundColor: theme(context).primaryColorDark ,backgroundImage: NetworkImage(widget.data.image!),)
-              : CircleAvatar( radius: sizeW(context)*0.03, backgroundColor: theme(context).primaryColorDark ,child: Center(child: Text(widget.data.name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor) ,)),),
+              : CircleAvatar( radius: sizeW(context)*0.03, backgroundColor: theme(context).primaryColorDark ,child: Center(child: Text(widget.data.name![0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor) ,)),),
             sizeBoxW(sizeW(context)*0.013),
             Column(
               children: [

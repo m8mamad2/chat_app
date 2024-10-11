@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: sizeH(context)*0.18,
-          backgroundColor: theme(context).backgroundColor,
+          backgroundColor: theme(context).scaffoldBackgroundColor,
           elevation: 0,
           centerTitle: true,
           title: Image.asset(

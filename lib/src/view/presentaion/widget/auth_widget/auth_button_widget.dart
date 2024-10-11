@@ -13,5 +13,5 @@ Widget authElevatedButton(BuildContext context,String text,VoidCallback onPress)
         ),
         backgroundColor: theme(context).primaryColorDark
       ), 
-      child:  Text(text,style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).backgroundColor),),
+      child:  Text(text,style: theme(context).textTheme.titleMedium!.copyWith(color: theme(context).scaffoldBackgroundColor),),
       );

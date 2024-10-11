@@ -57,7 +57,7 @@ class _AppbarGroupInfoScreenState extends State<AppbarGroupInfoScreen> {
                     height: sizeH(context)*0.27,
                     decoration: BoxDecoration(
                       border: Border(bottom: BorderSide(color: theme(context).primaryColorDark,width: sizeW(context)*0.0015)),
-                      color: theme(context).backgroundColor,
+                      color: theme(context).scaffoldBackgroundColor,
                     ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: sizeW(context)*0.019,vertical: 10),
@@ -65,7 +65,7 @@ class _AppbarGroupInfoScreenState extends State<AppbarGroupInfoScreen> {
                         children: [
                           widget.data.image != null && widget.data.image!.isNotEmpty
                             ? CircleAvatar( radius: sizeW(context)*0.045,backgroundColor: theme(context).primaryColorDark ,backgroundImage: NetworkImage(widget.data.image!),)
-                            : CircleAvatar( radius: sizeW(context)*0.045,backgroundColor: theme(context).primaryColorDark ,child: Text(widget.data.name[0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).backgroundColor)),),
+                            : CircleAvatar( radius: sizeW(context)*0.045,backgroundColor: theme(context).primaryColorDark ,child: Text(widget.data.name[0].toUpperCase(),style: theme(context).textTheme.titleLarge!.copyWith(fontFamily: 'header',color: theme(context).scaffoldBackgroundColor)),),
                           sizeBoxW(sizeW(context)*0.02),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +107,7 @@ class _AppbarGroupInfoScreenState extends State<AppbarGroupInfoScreen> {
                       child: CircleAvatar(
                         radius: sizeW(context)*0.04,
                         backgroundColor: theme(context).primaryColorDark,
-                        child: Icon(Icons.chat,color: theme(context).backgroundColor,),
+                        child: Icon(Icons.chat,color: theme(context).scaffoldBackgroundColor,),
                       ),
                     ),
                   ),
@@ -115,7 +115,7 @@ class _AppbarGroupInfoScreenState extends State<AppbarGroupInfoScreen> {
               ],
             ),
             Container(
-              color: theme(context).backgroundColor,
+              color: theme(context).scaffoldBackgroundColor,
               margin: const EdgeInsets.only(top: 5),
               width: sizeW(context),
               child: Column(
